@@ -24,6 +24,15 @@ const index = () => {
         icon: require("../../assets/icons/profile.png"),
         status: "Pending"
     },
+    {
+        id: 1,
+        title: "Reimburse Title",
+        description: "description none",
+        amount: "+ Rp 100.000.000",
+        date: "12 Okt 2025",
+        icon: require("../../assets/icons/profile.png"),
+        status: "Pending"
+    },
   ];
   return (
     <View className='w-full bg-white flex-1 justify-start items-center'>

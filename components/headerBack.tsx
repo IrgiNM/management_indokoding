@@ -5,7 +5,7 @@ import { headerBackType } from '@/types/headerBackType'
 
 const HeaderBack = ({ title, subTitle } : headerBackType ) => {
   return (
-    <View className='flex flex-row justify-start items-center relative top-[30px] w-full p-[30px] py-[15px]'>
+    <View className='flex flex-row justify-start items-center relative top-[30px] w-full h-[100px] px-[30px] py-[0px]'>
       <View className='w-[45px] h-[45px] rounded-xl bg-blue-50 flex justify-center items-center'>
           <Image source={require("../assets/objek/arrow-back.png")} style={{ width: 13, height: 17 }}/>
       </View>
