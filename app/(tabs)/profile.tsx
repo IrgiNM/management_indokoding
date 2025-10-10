@@ -2,13 +2,15 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import HeaderBack from '@/components/headerBack'
 
-const reimburse = () => {
+const profile = () => {
   return (
     <View className='bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
-      <HeaderBack title='Pengajuan Reimburse'/>
+      <HeaderBack title='My Profile'/>
+
+      
     </View>
   )
 }
 
-export default reimburse
+export default profile

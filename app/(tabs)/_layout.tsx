@@ -12,7 +12,9 @@ const _layout = () => {
             tabBarShowLabel: false, // sembunyikan teks bawaan
             tabBarStyle: {
             position: "absolute",
-            paddingTop: 20,
+            paddingTop: 25,
+            paddingRight: 20,
+            paddingLeft: 20,
             bottom: 50,
             left: 20,
             right: 20,
@@ -33,7 +35,12 @@ const _layout = () => {
             options={{ 
                 headerShown: false,
                 tabBarIcon: ({ focused }) => (
-                    <TabIcon focused={focused} image={require("../../assets/icons/home.png")} title="Home"/>
+                    <TabIcon 
+                        focused={focused} 
+                        image={require("../../assets/icons/home.png")}
+                        imageActive={require("../../assets/icons/home-active.png")}
+                        title="Home"
+                    />
                 )
             }}
         />
@@ -42,7 +49,12 @@ const _layout = () => {
             options={{ 
                 headerShown: false, 
                 tabBarIcon: ({ focused }) => (
-                    <TabIcon focused={focused} image={require("../../assets/icons/home.png")} title="History"/>
+                    <TabIcon 
+                        focused={focused} 
+                        image={require("../../assets/icons/history.png")}
+                        imageActive={require("../../assets/icons/history-active.png")}
+                        title="History"
+                    />
                 )
             }}
         />
@@ -51,7 +63,12 @@ const _layout = () => {
             options={{ 
                 headerShown: false, 
                 tabBarIcon: ({ focused }) => (
-                    <TabIcon focused={focused} image={require("../../assets/icons/home.png")} title="Reimburse"/>
+                    <TabIcon 
+                        focused={focused} 
+                        image={require("../../assets/icons/reimburse.png")}
+                        imageActive={require("../../assets/icons/reimburse-active.png")}
+                        title="Reimburse"
+                    />
                 )
             }}
         />
@@ -60,7 +77,12 @@ const _layout = () => {
             options={{ 
                 headerShown: false, 
                 tabBarIcon: ({ focused }) => (
-                    <TabIcon focused={focused} image={require("../../assets/icons/home.png")} title="Profile"/>
+                    <TabIcon 
+                        focused={focused} 
+                        image={require("../../assets/icons/profile.png")}
+                        imageActive={require("../../assets/icons/profile-active.png")}
+                        title="Profile"
+                    />
                 )
             }}
         />

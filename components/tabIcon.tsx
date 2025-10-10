@@ -3,20 +3,20 @@ import React from 'react'
 import { Image } from 'expo-image'
 import { tabIconType } from '@/types/tabIconType'
 
-const TabIcon = ({ focused, image, title }: tabIconType ) => {
+const TabIcon = ({ focused, image, imageActive, title }: tabIconType ) => {
   return (
-    <View className='flex justify-center items-center'>
+    <View className='flex justify-start items-center'>
         <Image
-            source={image}
+            source={focused ? imageActive : image}
             style={{
-            width: 25,
-            height: 25,
-            tintColor: focused ? "#007AFF" : "#000",
+            width: 30,
+            height: 30,
+            // tintColor: focused ? "#00185A" : "#00185A",
             }}
         />
         <Text
-            className='text-[10px] w-full mt-2'
-            style={{ color: focused ? "#007AFF" : "#000" }}
+            className='text-[10px] w-full mt-3 text-[#00185A]'
+            style={{ color: "#00185A"}}
         >
             {title}
         </Text>
