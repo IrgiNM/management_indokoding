@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TextInput } from 'react-native'
+import { View, Text, ScrollView, TextInput, Pressable } from 'react-native'
 import React from 'react'
 import HeaderBack from '@/components/headerBack'
 
@@ -10,7 +10,7 @@ const reimburse = () => {
       </View>
       <HeaderBack title='Pengajuan Reimburse'/>
 
-      <ScrollView className='w-full pb-[50px]'>
+      <ScrollView className='w-full ml-[75px] pb-[50px] mt-5'>
         <View className=' '>
           <Text className='font-bold'>Title:</Text>
           <TextInput
@@ -28,19 +28,30 @@ const reimburse = () => {
             </View>
           </View>
         </View>
-        <View className='flex-row gap-5 w-full  mt-5'>
+        <View className='flex-row gap-2 w-full  mt-2'>
           <TextInput
-                className='p-[10px]  pl-[20px] w-[170px] flex flex-row justify-center items-center border-[1px] rounded-lg mt-2'
-                placeholder='Add New Reimburse'
+                className='p-[10px]  pl-[20px] w-[180px] flex flex-row justify-center items-center border-[1px] rounded-lg mt-2'
+                placeholder='Add New Category'
                 />
           <TextInput
                 className='p-[10px]  pl-[20px] w-[130px] flex flex-row justify-center items-center border-[1px] rounded-lg mt-2'
-                placeholder='Add New Category'
+                placeholder='Add Price'
                 />
         </View>
-        <View>
-          <Text className='bg-gray-300 rounded-lg w-[60px]'>Bensin</Text>
+          <View className='flex-row gap-1'>
+            <Text className='bg-gray-300 rounded-lg w-[60px] p-[2px] mt-2 text-center text-[12px]'>Bensin</Text>
+            <Text className='bg-gray-300 rounded-lg w-[60px] p-[2px] mt-2 text-center text-[12px]'>Listrik</Text>
+            <Text className='bg-gray-300 rounded-lg w-[60px] p-[2px] mt-2 text-center text-[12px]'>Hotel</Text>
         </View>
+
+        <Pressable  className='p-[10px] w-[320px] flex flex-row justify-center items-center bg-gray-500 rounded-b-lg rounded-t-sm mt-3'
+              >
+                <Text className=' font-bold text-[20px] text-white'>
+                    +
+                </Text>
+        </Pressable>
+
+
         <View className='w-full h-[1000px]'>
 
         </View>
