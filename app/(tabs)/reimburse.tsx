@@ -11,6 +11,7 @@ const reimburse = () => {
       <HeaderBack title='Pengajuan Reimburse'/>
 
       <ScrollView className='w-full ml-[75px] pb-[50px] mt-5'>
+        <View className='px-30 flex-col justify-start '>
         <View className=' '>
           <Text className='font-bold'>Title:</Text>
           <TextInput
@@ -51,12 +52,35 @@ const reimburse = () => {
                 </Text>
         </Pressable>
 
+        <View className=' mt-5 '>
+          <Text className='font-bold'>Description:</Text>
+          <TextInput
+            className='p-[10px] pl-[20px] pb-[50px] w-[320px] flex flex-row justify-center items-center border-[1px] rounded-lg mt-2'
+            placeholder='Add New Title'
+            multiline={true}            // biar bisa banyak baris
+            numberOfLines={4}           // tinggi awal
+            textAlignVertical='top'     // teks mulai dari atas
+          />
+        </View>
+
+        <View className=' mt-5 '>
+          <Text className='font-bold'>Title:</Text>
+          <View className='flex-row gap-5'>
+            <Text className=' pb-[50px] pl-5  bg-gray-500 w-[130px] mt-2 rounded-lg '></Text>
+            <Text className=' pb-[50px] pl-5  bg-gray-500 w-[130px] mt-2 rounded-lg '></Text>
+          </View>
+        </View>
+
 
         <View className='w-full h-[1000px]'>
 
         </View>
-
+      </View>
       </ScrollView>
+
+      <View className='bg-gray-400 mt-10 w-[320px]'>
+            <Text className=' pb-[50px] pl-5  w-[130px] mt-2 rounded-lg '></Text>
+      </View>
 
 
       {/* <ScrollView className='w-full pb-[50px]'>
