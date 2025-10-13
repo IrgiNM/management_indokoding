@@ -2,6 +2,7 @@ import { View, Text, ScrollView, FlatList, Pressable } from 'react-native'
 import React from 'react'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
+import CardInfo from '@/components/cardInfo'
 
 const home = () => {
 
@@ -149,29 +150,18 @@ const home = () => {
 
         {/* LIST REIMBURSE */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View className='h-[100px] w-full flex flex-row justify-start items-center bg-blue-100 mt-5 pl-[10px] pr-[30px]'>
-                {dataReimburse.map((item) => (
-                    <View className='w-[300px] h-[60px] bg-white rounded-lg ml-5 flex flex-row justify-start items-center shadow-md'>
-                        <View className='w-[40px] h-[40px] rounded-lg bg-blue-50 ml-3 flex justify-center items-center overflow-hidden border border-black'>
-                            <Image source={item.icon} style={{ width: 15, height: 15 }}/>
-                        </View>
-                        <View className='flex flex-col justify-start items-start ml-3'>
-                            <Text className='text-[10px] font-bold'>
-                                {item.title}
-                            </Text>
-                            <Text className='text-[10px]'>
-                                {item.description}
-                            </Text>
-                        </View>
-                        <View className='flex flex-col justify-start items-end absolute right-[15px] ml-3'>
-                            <Text className='text-[12px] font-bold'>
-                                {item.amount}
-                            </Text>
-                            <Text className='text-[10px]'>
-                                {item.date}
-                            </Text>
-                        </View>
-                    </View>
+            <View className='h-[100px] w-full flex flex-row justify-start items-center gap-3 bg-blue-100 mt-5 pl-[30px] pr-[30px]'>
+                {dataReimburse.map((item, idx) => (
+                    <CardInfo 
+                        amount={item.amount} 
+                        date={item.date}
+                        description={item.description}
+                        icon={item.icon}
+                        title={item.title}
+                        key={idx}
+                        id={item.id}
+                        w="w-[300px]"
+                    />
                 ))}
             </View>
         </ScrollView>
