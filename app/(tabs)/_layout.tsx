@@ -62,6 +62,7 @@ const _layout = () => {
             name='reimburse'
             options={{ 
                 headerShown: false, 
+                tabBarStyle: { display: 'none' },
                 tabBarIcon: ({ focused }) => (
                     <TabIcon 
                         focused={focused} 
@@ -81,7 +82,21 @@ const _layout = () => {
                         focused={focused} 
                         image={require("../../assets/icons/profile.png")}
                         imageActive={require("../../assets/icons/profile-active.png")}
-                        title="Profile"
+                        title="profile"
+                    />
+                )
+            }}
+        />
+        <Tabs.Screen
+            name='addkaryawan'
+            options={{ 
+                headerShown: false, 
+                tabBarIcon: ({ focused }) => (
+                    <TabIcon 
+                        focused={focused} 
+                        image={require("../../assets/icons/home.png")}
+                        imageActive={require("../../assets/icons/home-active.png")}
+                        title="addkaryawan"
                     />
                 )
             }}
