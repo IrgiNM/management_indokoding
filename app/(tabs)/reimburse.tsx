@@ -22,12 +22,12 @@ const reimburse = () => {
 
         <View className=' mt-5'>
           <Text className='font-bold'>List Reimburse:</Text>
-          <View className='flex p-[20px] w-[320px] border-[1px] mt-2 rounded-lg '>
-            <View className='flex-row justify-between'>
+          
+            <View className='flex-row justify-between p-[20px] w-[320px] border-[1px] mt-2 rounded-lg'>
               <Text className=''>Je Jamuran</Text>
               <Text className='font-bold'>Rp.1000.000</Text>
             </View>
-          </View>
+          
         </View>
         <View className='flex-row gap-2 w-full  mt-2'>
           <TextInput
