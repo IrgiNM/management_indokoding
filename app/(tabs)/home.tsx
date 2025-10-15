@@ -14,30 +14,34 @@ const home = () => {
     {
         id: 1,
         title: "All",
-        icon: require("../../assets/icons/reimburse-active.png"),
+        icon: "null",
         color: 'bg-purple-50',
         action: () => setStatusActive(1),
+        border: "border-purple-600"
     },
     {
         id: 2,
         title: "Pending",
-        icon: require("../../assets/icons/pending.png"),
+        icon: require("../../assets/icons/pending-tint.png"),
         color: 'bg-yellow-50',
-        action: () => setStatusActive(2)
+        action: () => setStatusActive(2),
+        border: "border-yellow-600"
     },
     {
         id: 3,
         title: "Approved",
-        icon: require("../../assets/icons/approve.png"),
+        icon: require("../../assets/icons/approve-tint.png"),
         color: 'bg-green-50',
-        action: () => setStatusActive(3)
+        action: () => setStatusActive(3),
+        border: "border-green-600"
     },
     {
         id: 4,
         title: "Rejected",
-        icon: require("../../assets/icons/decline.png"),
+        icon: require("../../assets/icons/decline-tint.png"),
         color: 'bg-red-50',
-        action: () => setStatusActive(4)
+        action: () => setStatusActive(4),
+        border: "border-red-600"
     },
   ]
 
@@ -52,7 +56,7 @@ const home = () => {
         id: 1,
         title: "Add karyawan",
         icon: require("../../assets/icons/home-active.png"),
-        link: () => {router.replace('/(tabs)/addkaryawan')},
+        link: () => {router.replace('/(admin)/addkaryawan')},
     },
     {
         id: 1,
@@ -69,7 +73,7 @@ const home = () => {
         description: "description none",
         amount: "+ Rp 100.000.000",
         date: "12 Okt 2025",
-        icon: require("../../assets/icons/profile.png"),
+        icon: require("../../assets/icons/pending-time.png"),
     },
     {
         id: 1,
@@ -77,7 +81,7 @@ const home = () => {
         description: "description none",
         amount: "+ Rp 100.000.000",
         date: "12 Okt 2025",
-        icon: require("../../assets/icons/profile.png"),
+        icon: require("../../assets/icons/pending-time.png"),
     },
   ]
 
@@ -102,8 +106,8 @@ const home = () => {
                 </Text>
             </View>
         </View>
-        <View className='w-[45px] h-[45px] rounded-xl bg-purple-50 flex justify-center items-center'>
-            <Image source={require("../../assets/icons/history-active.png")} style={{ width: 22, height: 22 }}/>
+        <View className='w-[45px] h-[45px] rounded-xl bg-purple-50 border-[.5px] border-purple-600 border-b-[1px] flex justify-center items-center'>
+            <Image source={require("../../assets/icons/notif.png")} tintColor={"#7300BF"} style={{ width: 22, height: 22 }}/>
             <View className='w-[12px] h-[12px] bg-red-500 absolute -top-1 -right-1 rounded-full'/>
         </View>
       </View>
@@ -122,7 +126,7 @@ const home = () => {
                         <Text className="text-[10px] text-white">Total Reimburse</Text>
                         <View className='w-full flex flex-row justify-between items-center'>
                             <Text className="text-[20px] text-white font-bold">Rp 100.000.000</Text>
-                            <Pressable onPress={() => {}} className="w-[100px] border-[.5px] border-b-[1px] border-white rounded-lg flex flex-row justify-center items-center bg-purple-500">
+                            <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)' }} onPress={() => {}} className="w-[100px] border-[.5px] border-b-[1px] border-white rounded-lg flex flex-row justify-center items-center bg-purple-500">
                                 <Text className="text-[12px] font-bold py-[5px] text-white">Okt 2025</Text>
                                 <Image
                                 source={require('../../assets/icons/arrow-dropdown.png')}
@@ -138,22 +142,22 @@ const home = () => {
             </ImageBackground>
 
             {/* STATUS REIMBURSE */}
-            <View className='w-full mt-2 flex- flex-col justify-start items-center p-[0px] pt-[5px]'>
+            <View className='w-full mt-5 flex- flex-col justify-start items-center p-[0px] pt-[5px]'>
                 {/* HEAD MORE */}
                 <View className='flex flex-row justify-between items-center w-full mb-3'>
-                    <Text className='text-[10px] font-bold'>
+                    <Text className='text-[10px] font-bold text-[#40006B]'>
                         This Month’s Reimbursement
                     </Text>
-                    <Pressable onPress={() => {router.replace('/(tabs)/history')}} className='flex flex-row justify-center items-center p-[10px] py-[5px] bg-purple-50 border-[.5px] border-b-[1px] border-purple-500 rounded-md'>
-                        <Text className='text-[10px]'>
+                    <Pressable onPress={() => {router.replace('/(tabs)/history')}} className='flex flex-row justify-center items-center p-[10px] py-[5px] bg-purple-50 border-[.5px] border-b-[1px] border-purple-600 rounded-md'>
+                        <Text className='text-[10px] text-[#40006B]'>
                             More
                         </Text>
-                        <Image source={require("../../assets/objek/arrow-more.png")} style={{ width: 6, height: 8, marginLeft: 5 }}/>
+                        <Image source={require("../../assets/objek/arrow-more.png")} style={{ width: 6, height: 8, marginLeft: 5 }} tintColor={"#40006B"}/>
                     </Pressable>
                 </View>
 
                 {/* STATUS ICON */}
-                <View className='w-full justify-evenly items-center gap-5 mt-3'>
+                <View className='w-full justify-evenly items-center gap-5 mt-0'>
                     <FlatList
                         horizontal
                         showsHorizontalScrollIndicator={false}
@@ -161,11 +165,21 @@ const home = () => {
                         data={iconStatus}
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={({item}) => (
-                            <Pressable onPress={item.action} className='flex flex-col justify-center items-center'>
-                                <View className={`${statusActieve === item.id && 'border-[.5px] border-b-[1px]'} flex justify-center items-center w-[50px] h-[50px] rounded-full ${item.color}`}>
-                                    <Image source={item.icon} style={{ width: 25, height: 25 }}/>
+                            <Pressable onPress={item.action} android_ripple={{ color: 'rgba(0,0,0,0.1)' }} className='flex flex-col justify-center items-center relative'>
+                                <Text className='relative z-10 -right-[15px] top-[10px] pt-[3px] w-[20px] h-[20px] rounded-full bg-purple-800 text-white text-[10px] text-center'>
+                                    5
+                                </Text>
+                                <View className={`${statusActieve === item.id && `border-[.5px] border-b-[1px] ${item.border}`} flex justify-center items-center w-[50px] h-[50px] rounded-full ${item.color}`}>
+                                    {item.icon === "null" ? (
+                                        <Text className='text-[15px] font-bold text-purple-800'>
+                                            All
+                                        </Text>
+                                    ):
+                                    (
+                                        <Image source={item.icon} style={{ width: 25, height: 25 }}/>
+                                    )}
                                 </View>
-                                <Text className='text-[10px] mt-2'>
+                                <Text className='text-[10px] mt-2 text-[#40006B]'>
                                     {item.title}
                                 </Text>
                             </Pressable>
@@ -179,7 +193,7 @@ const home = () => {
 
         {/* LIST REIMBURSE */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View className='h-[100px] w-full flex flex-row justify-start items-center gap-3 bg-blue-100 mt-5 pl-[30px] pr-[30px]'>
+            <View className='h-[100px] w-full flex flex-row justify-start items-center gap-3 bg-[#F1E3FA] mt-5 pl-[30px] pr-[30px]'>
                 {dataReimburse.map((item, idx) => (
                     <CardInfo 
                         amount={item.amount} 
@@ -208,7 +222,7 @@ const home = () => {
             <View className='w-full justify-start items-center gap-4 flex flex-row flex-wrap mt-7 px-[20px]'>
                 {iconMenu.map((item) => (
                     <Pressable onPress={item.link}className='flex flex-col justify-center items-center'>
-                            <View className='flex justify-center items-center w-[50px] h-[50px] rounded-full bg-blue-100'>
+                            <View className='flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-blue-50'>
                                 <Image source={item.icon} style={{ width: 25, height: 25 }}/>
                             </View>
                             <Text className='text-[10px] mt-2'>

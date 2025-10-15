@@ -87,20 +87,6 @@ const _layout = () => {
                 )
             }}
         />
-        <Tabs.Screen
-            name='addkaryawan'
-            options={{ 
-                headerShown: false, 
-                tabBarIcon: ({ focused }) => (
-                    <TabIcon 
-                        focused={focused} 
-                        image={require("../../assets/icons/home.png")}
-                        imageActive={require("../../assets/icons/home-active.png")}
-                        title="addkaryawan"
-                    />
-                )
-            }}
-        />
     </Tabs>
   )
 }
