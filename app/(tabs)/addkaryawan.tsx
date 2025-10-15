@@ -6,8 +6,6 @@ const addkaryawan = () => {
   return (
     <View className='bg-white flex-1 justify-center items-center'>
       <HeaderBack title='Reimbursement History' subTitle='Detail'/>
-      
-
 
       <ScrollView className='w-full pb-[50px]'>
               <View className='w-full px-[20px] flex justify-start items-center  flex-col gap-3 mt-[20px]'>

@@ -38,7 +38,7 @@ const login = () => {
       onChangeText={setUsername}
       />
 
-      <Pressable onPress={() => {router.replace('/(tabs)/home')}}className='p-[15px] w-[270px] flex flex-row justify-center items-center bg-black rounded-lg mt-10'
+      <Pressable onPress={() => {router.replace('/(tabs)/home')}} className='p-[15px] w-[270px] flex flex-row justify-center items-center bg-black rounded-lg mt-10'
       >
         <Text className='ml-2 font-bold text-white'>
             Login
