@@ -1,31 +1,35 @@
 import { View, Text, Pressable } from 'react-native'
 import React from 'react'
 import { Image } from 'expo-image'
-import { cardInfoType } from '@/types/cardInfoType'
+import { cardKaryawanType } from '@/types/cardKaryawanType'
 
-const CardInfo = ({id, amount, date, description, icon, title, link, status, w}: cardInfoType) => {
+const CardKaryawan = ({email, reimburse, username, image, link, w}: cardKaryawanType) => {
   return (
-    <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)' }} onPress={link} className={`${w} h-[60px] bg-white rounded-lg flex flex-row justify-between items-center shadow-md`}>
+    <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)' }} onPress={link} className={`${w} h-[60px] bg-white border-[.5px] border-b-[1px] rounded-lg flex flex-row justify-between items-center shadow-md`}>
       <View className='flex flex-row justify-start items-center'>
-        <View className='w-[40px] h-[40px] rounded-lg bg-white ml-3 flex justify-center items-center overflow-hidden border border-purple-300'>
-            <Image source={icon} style={{ width: 20, height: 20 }} tintColor={"#7300BF"}/>
+        <View className='w-[40px] h-[40px] rounded-full bg-white ml-3 flex justify-center items-center overflow-hidden border border-purple-300'>
+            {image ? <Image source={image} style={{ width: 40, height: 40 }} className='rounded-full'/> :
+            <Text>
+                {username.charAt(0).toUpperCase()}
+            </Text>
+            }
         </View>
         <View className='flex flex-col justify-start items-start ml-3'>
             <Text className='text-[10px] font-bold text-[#40006B]'>
-                {title}
+                {username}
             </Text>
             <Text className='text-[10px] text-[#40006B]'>
-                {description}
+                {email}
             </Text>
         </View>
       </View>
       <View className='flex flex-row justify-end items-center pr-[20px]'>
         <View className='flex flex-col justify-start items-end relative right-[5px] mr-3'>
             <Text className='text-[12px] font-extrabold text-[#8F00EE]'>
-                {amount}
+                {reimburse}
             </Text>
             <Text className='text-[10px] text-[#40006B]'>
-                {date}
+                in this month
             </Text>
         </View>
         <Image
@@ -39,4 +43,4 @@ const CardInfo = ({id, amount, date, description, icon, title, link, status, w}:
   )
 }
 
-export default CardInfo
+export default CardKaryawan

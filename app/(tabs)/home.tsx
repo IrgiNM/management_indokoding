@@ -48,21 +48,15 @@ const home = () => {
   const iconMenu = [
     {
         id: 1,
-        title: "All",
-        icon: require("../../assets/icons/reimburse-active.png"),
-        link: () => {router.replace('/(admin)/dataKaryawanDetail')},
-    },
-    {
-        id: 1,
-        title: "Add karyawan",
-        icon: require("../../assets/icons/home-active.png"),
-        link: () => {router.replace('/(admin)/addkaryawan')},
-    },
-    {
-        id: 1,
         title: "detail karyawan",
         icon: require("../../assets/icons/home-active.png"),
         link: () => {router.replace('/(admin)/dataKaryawanDetail')},
+    },
+    {
+        id: 1,
+        title: "data karyawan",
+        icon: require("../../assets/icons/home-active.png"),
+        link: () => {router.replace('../(admin)/dataKaryawan')},
     },
   ]
 
@@ -74,6 +68,7 @@ const home = () => {
         amount: "+ Rp 100.000.000",
         date: "12 Okt 2025",
         icon: require("../../assets/icons/pending-time.png"),
+        link: () => {router.replace('../(detail)/detailReimburse')},
     },
     {
         id: 1,
@@ -82,6 +77,7 @@ const home = () => {
         amount: "+ Rp 100.000.000",
         date: "12 Okt 2025",
         icon: require("../../assets/icons/pending-time.png"),
+        link: () => {router.replace('../(detail)/detailReimburse')},
     },
   ]
 
@@ -204,6 +200,7 @@ const home = () => {
                         key={idx}
                         id={item.id}
                         w="w-[300px]"
+                        link={item.link}
                     />
                 ))}
             </View>
