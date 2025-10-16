@@ -15,5 +15,9 @@ export default function RootLayout() {
       name="(admin)"
       options={{ headerShown: false }}
     />
+    <Stack.Screen
+      name="(detail)"
+      options={{ headerShown: false }}
+    />
   </Stack>;
 }
