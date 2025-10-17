@@ -1,9 +1,11 @@
-import { View, Text, ScrollView, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, ScrollView, Pressable, Animated, Dimensions } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react'
 import { Image } from 'expo-image'
 import HeaderBack from '@/components/headerBack'
 import { cardInfoType } from '@/types/cardInfoType'
 import CardInfo from '@/components/cardInfo'
+
+const { width } = Dimensions.get('window');
 
 const historyReimburseKaryawan = () => {
 
@@ -113,6 +115,14 @@ const historyReimburseKaryawan = () => {
     console.log("data:",dataMonth);
   }, [dataMonth]);
 
+  // ✨ Tambahan: animasi scroll horizontal username
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const users = ['C', 'D', 'A', 'E', 'B'];
+  const sortedUsers = [...users].sort();
+
+  // ✅ Tambahan state buat handle klik username
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+
   return (
     <View className='w-full bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
@@ -193,9 +203,67 @@ const historyReimburseKaryawan = () => {
               </View>
             )
           })}
-          <View className='w-full h-[300px]'/>
+          <View className='w-full h-[30px]'/>
         </View>
       </ScrollView>
+
+      <View className='bg-gray-300  w-full h-[130px]  flex-row items-Start px-[30px]  rounded-t-[20px] gap-[10px]'>
+            
+              <Pressable 
+              className=' w-[50px] h-[50px] flex  justify-center items-center  border-[1px] rounded-lg mt-9'>
+                <Text className='text-white'>All</Text>
+              </Pressable >
+
+      {/*  Scroll horizontal dengan animasi scale */}
+      <Animated.ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        snapToAlignment="center"
+        decelerationRate="fast"
+        snapToInterval={80}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
+        className='w-full'
+        contentContainerStyle={{ paddingHorizontal: 20 }}
+      >
+        {sortedUsers.map((username, index) => {
+          const inputRange = [
+            (index - 1) * 80,
+            index * 80,
+            (index + 1) * 80,
+          ];
+
+          const scale = scrollX.interpolate({
+            inputRange,
+            outputRange: [0.9, 1.2, 0.9],
+            extrapolate: 'clamp',
+          });
+
+          const isActive = selectedUser === username; // ✨ tambahan
+
+          return (
+            <Animated.View
+              key={index}
+              style={{
+                transform: [{ scale }],
+                marginRight: 15,
+              }}
+            >
+              <Pressable 
+                onPress={() => setSelectedUser(username)} // ✨ tambahan
+                className={`${isActive ? 'bg-purple-600' : 'bg-gray-400'} w-[60px] h-[60px] flex justify-center items-center rounded-full mt-8`}
+              >
+                <Text className='text-white text-lg font-bold'>{username}</Text>
+              </Pressable>
+            </Animated.View>
+          );
+        })}
+      </Animated.ScrollView>
+              
+      </View>
     </View>
   )
 }
