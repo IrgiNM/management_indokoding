@@ -48,6 +48,12 @@ const home = () => {
   const iconMenu = [
     {
         id: 1,
+        title: "create reimburse",
+        icon: require("../../assets/icons/reimburse-active.png"),
+        link: () => {router.replace('/reimburse')},
+    },
+    {
+        id: 1,
         title: "detail karyawan",
         icon: require("../../assets/icons/home-active.png"),
         link: () => {router.replace('/(admin)/dataKaryawanDetail')},
@@ -216,13 +222,13 @@ const home = () => {
             </View>
 
             {/* STATUS ICON */}
-            <View className='w-full justify-start items-center gap-4 flex flex-row flex-wrap mt-7 px-[20px]'>
+            <View className='w-full justify-start items-center gap-7 flex flex-row flex-wrap mt-7 px-[20px]'>
                 {iconMenu.map((item) => (
                     <Pressable onPress={item.link}className='flex flex-col justify-center items-center'>
-                            <View className='flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-blue-50'>
+                            <View className='flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-white border-[.5px] border-b-[1px] border-purple-600'>
                                 <Image source={item.icon} style={{ width: 25, height: 25 }}/>
                             </View>
-                            <Text className='text-[10px] mt-2'>
+                            <Text className='text-[10px] text-center w-[50px] mt-2'>
                                 {item.title}
                             </Text>
                     </Pressable>

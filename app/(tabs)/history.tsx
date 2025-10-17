@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Image } from 'expo-image'
 import HeaderBack from '@/components/headerBack'
@@ -14,8 +14,8 @@ const index = () => {
         description: "description none",
         amount: "+ Rp 100.000.000",
         date: "2025-10-13",
-        icon: require("../../assets/icons/profile.png"),
-        status: "pending",
+        icon: require("../../assets/icons/pending-time.png"),
+        status: "Approved",
     },
     {
         id: 1,
@@ -23,8 +23,8 @@ const index = () => {
         description: "description none",
         amount: "+ Rp 100.000.000",
         date: "2025-10-14",
-        icon: require("../../assets/icons/profile.png"),
-        status: "pending"
+        icon: require("../../assets/icons/pending-time.png"),
+        status: "Pending"
     },
     {
         id: 1,
@@ -32,8 +32,8 @@ const index = () => {
         description: "description none",
         amount: "+ Rp 100.000.000",
         date: "2025-09-13",
-        icon: require("../../assets/icons/profile.png"),
-        status: "pending"
+        icon: require("../../assets/icons/pending-time.png"),
+        status: "Pending"
     },
     {
         id: 1,
@@ -41,8 +41,8 @@ const index = () => {
         description: "description none",
         amount: "+ Rp 100.000.000",
         date: "2025-09-13",
-        icon: require("../../assets/icons/profile.png"),
-        status: "pending"
+        icon: require("../../assets/icons/pending-time.png"),
+        status: "Approved"
     },
     {
         id: 1,
@@ -50,8 +50,8 @@ const index = () => {
         description: "description none",
         amount: "+ Rp 100.000.000",
         date: "2025-09-13",
-        icon: require("../../assets/icons/profile.png"),
-        status: "pending"
+        icon: require("../../assets/icons/pending-time.png"),
+        status: "Rejected"
     },
     {
         id: 1,
@@ -59,11 +59,39 @@ const index = () => {
         description: "description none",
         amount: "+ Rp 100.000.000",
         date: "2025-08-13",
-        icon: require("../../assets/icons/profile.png"),
-        status: "pending"
+        icon: require("../../assets/icons/pending-time.png"),
+        status: "Pending"
     },
   ];
-  // const dataMonth: string[] = [];
+
+  const [statusActive, setStatusActive] = useState('All');
+  const statusList = [
+    { 
+      id: 1, 
+      status: 'All', 
+      icon: require('../../assets/icons/s-all.png'),
+      link: ()=>{setStatusActive('All')}
+    },
+    { 
+      id: 2, 
+      status: 'Pending', 
+      icon: require('../../assets/icons/s-pending.png'),
+      link: ()=>{setStatusActive('Pending')}
+    },
+    { 
+      id: 3, 
+      status: 'Approved', 
+      icon: require('../../assets/icons/s-approve.png'),
+      link: ()=>{setStatusActive('Approved')}
+    },
+    { 
+      id: 4, 
+      status: 'Rejected', 
+      icon: require('../../assets/icons/s-decline.png'),
+      link: ()=>{setStatusActive('Rejected')}
+    },
+  ]
+
   const [dataMonth, setDataMonth] = useState<string[]>([]);
 
   const today = new Date().toISOString().split("T")[0];
@@ -89,6 +117,18 @@ const index = () => {
     <View className='w-full bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
       <HeaderBack title='History Reimburse' subTitle='detail'/>
+      <View className='w-full px-[20px] py-[10px] bg-white pt-[20px] mt-2'>
+        <View className='w-full flex flex-row justify-between items-center bg-purple-50 border-[.5px] border-b-[1px] rounded-full border-purple-600 py-[5px] px-[5px]'>
+          {statusList.map((item, index)=>{
+            return(
+              <Pressable key={index} onPress={item.link} className={`flex flex-row justify-center items-center py-[10px] px-[13px] gap-2 rounded-full ${item.status === statusActive ? 'bg-purple-700' : 'bg-purple-50 border-[.5px] border-b-[1px] border-purple-200' }`}>
+                <Image source={item.icon} style={{ width: 10, height: 10 }} tintColor={item.status === statusActive ? "#FFFFFF" : "#000000"}/>
+                <Text className={`text-[10px] ${item.status === statusActive ? 'text-white' : 'text-purple-900' } font-bold`}>{item.status}</Text>
+              </Pressable>
+            )
+          })}
+        </View>
+      </View>
 
       {/* HISTORY LIST */}
       <ScrollView className='w-full pb-[50px]'>
@@ -105,7 +145,7 @@ const index = () => {
                     {dataReimburse.map((item, idx) => {
                       const itemISO = new Date(item.date).toISOString();
                       const itemMonth = itemISO.slice(0,7);
-                      if(itemMonth === thisMonth){
+                      if(itemMonth === thisMonth && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive))){
                         return (
                           <CardInfo 
                             amount={item.amount} 
@@ -134,7 +174,7 @@ const index = () => {
                   {dataReimburse.map((item, idx) => {
                     const itemISO = new Date(item.date).toISOString();
                     const itemMonth = itemISO.slice(0,7);
-                    if(itemMonth === month){
+                    if(itemMonth === month && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive))){
                       return (
                         <CardInfo 
                           amount={item.amount} 
