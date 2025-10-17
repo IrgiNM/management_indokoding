@@ -55,13 +55,13 @@ const home = () => {
     {
         id: 1,
         title: "detail karyawan",
-        icon: require("../../assets/icons/home-active.png"),
+        icon: require("../../assets/icons/karyawan.png"),
         link: () => {router.replace('/(admin)/dataKaryawanDetail')},
     },
     {
         id: 1,
         title: "data karyawan",
-        icon: require("../../assets/icons/home-active.png"),
+        icon: require("../../assets/icons/karyawan.png"),
         link: () => {router.replace('../(admin)/dataKaryawan')},
     },
     {
@@ -228,7 +228,7 @@ const home = () => {
             </View>
 
             {/* STATUS ICON */}
-            <View className='w-full justify-start items-center gap-7 flex flex-row flex-wrap mt-7 px-[20px]'>
+            <View className='w-full justify-start items-center gap-5 flex flex-row flex-wrap mt-7 px-[20px]'>
                 {iconMenu.map((item) => (
                     <Pressable onPress={item.link}className='flex flex-col justify-center items-center'>
                             <View className='flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-white border-[.5px] border-b-[1px] border-purple-600'>
