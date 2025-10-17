@@ -64,6 +64,12 @@ const home = () => {
         icon: require("../../assets/icons/home-active.png"),
         link: () => {router.replace('../(admin)/dataKaryawan')},
     },
+    {
+        id: 1,
+        title: "data Reimburse",
+        icon: require("../../assets/icons/home-active.png"),
+        link: () => {router.replace('../(admin)/historyReimburseKaryawan')},
+    },
   ]
 
   const dataReimburse = [
