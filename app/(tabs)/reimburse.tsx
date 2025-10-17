@@ -64,7 +64,7 @@ const reimburse = () => {
         </View>
 
         <View className=' mt-5 '>
-          <Text className='font-bold'>Title:</Text>
+          <Text className='font-bold'>Image:</Text>
           <View className='flex-row gap-5'>
             <Text className=' pb-[50px] pl-5  bg-gray-500 w-[130px] mt-2 rounded-lg '></Text>
             <Text className=' pb-[50px] pl-5  bg-gray-500 w-[130px] mt-2 rounded-lg '></Text>
@@ -78,8 +78,16 @@ const reimburse = () => {
       </View>
       </ScrollView>
 
-      <View className='bg-gray-400 mt-10 w-[320px]'>
-            <Text className=' pb-[50px] pl-5  w-[130px] mt-2 rounded-lg '></Text>
+      <View className='bg-gray-300  w-full h-[150px] px-[40px] pt-[30px] flex-col items-center  rounded-t-[30px]'>
+        <View className='w-full flex-row  justify-between '>
+            <Text className='font-semibold'>Total Price</Text>
+            <Text className='font-bold'>Rp.350.000</Text>
+        </View>
+        <View className='w-full h-[1px] bg-black mt-2 '></View>
+        <Pressable 
+        className=' w-[320px] h-[40px] flex flex-row justify-center items-center bg-gray-500 rounded-lg mt-5'>
+          <Text className='text-white'>Buat Pengajuan</Text>
+        </Pressable >
       </View>
 
 
