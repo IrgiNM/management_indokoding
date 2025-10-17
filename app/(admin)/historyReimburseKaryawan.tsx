@@ -5,7 +5,7 @@ import HeaderBack from '@/components/headerBack'
 import { cardInfoType } from '@/types/cardInfoType'
 import CardInfo from '@/components/cardInfo'
 
-const index = () => {
+const historyReimburseKaryawan = () => {
 
   const dataReimburse: cardInfoType[] = [
     {
@@ -116,7 +116,7 @@ const index = () => {
   return (
     <View className='w-full bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
-      <HeaderBack title='History Reimburse' subTitle='detail'/>
+      <HeaderBack title='Data Reimburse Karyawan'/>
       <View className='w-full px-[20px] py-[10px] bg-white pt-[20px] mt-2'>
         <View className='w-full flex flex-row justify-between items-center bg-purple-50 border-[.5px] border-b-[1px] rounded-full border-purple-600 py-[5px] px-[5px]'>
           {statusList.map((item, index)=>{
@@ -200,4 +200,4 @@ const index = () => {
   )
 }
 
-export default index
+export default historyReimburseKaryawan
