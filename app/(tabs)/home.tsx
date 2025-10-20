@@ -33,7 +33,7 @@ const home = () => {
         icon: require("../../assets/icons/approve-tint.png"),
         color: 'bg-green-50',
         action: () => setStatusActive(3),
-        border: "border-green-600"
+        border: "border-purple-600"
     },
     {
         id: 4,
@@ -41,7 +41,7 @@ const home = () => {
         icon: require("../../assets/icons/decline-tint.png"),
         color: 'bg-red-50',
         action: () => setStatusActive(4),
-        border: "border-red-600"
+        border: "border-purple-600"
     },
   ]
 
