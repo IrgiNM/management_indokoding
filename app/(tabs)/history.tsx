@@ -4,9 +4,10 @@ import { Image } from 'expo-image'
 import HeaderBack from '@/components/headerBack'
 import { cardInfoType } from '@/types/cardInfoType'
 import CardInfo from '@/components/cardInfo'
+import { useRouter } from 'expo-router'
 
 const index = () => {
-
+  const router = useRouter();
   const dataReimburse: cardInfoType[] = [
     {
         id: 1,
@@ -116,14 +117,14 @@ const index = () => {
   return (
     <View className='w-full bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
-      <HeaderBack title='History Reimburse' subTitle='detail'/>
+      <HeaderBack title='History Reimburse' subTitle='detail' type='python'/>
       <View className='w-full px-[20px] py-[10px] bg-white pt-[20px] mt-2'>
-        <View className='w-full flex flex-row justify-between items-center bg-purple-50 border-[.5px] border-b-[1px] rounded-full border-purple-600 py-[5px] px-[5px]'>
+        <View className='w-full flex flex-row justify-between items-center bg-yellow-50 border-[.5px] border-b-[1px] rounded-full border-blue-600 py-[5px] px-[5px]'>
           {statusList.map((item, index)=>{
             return(
-              <Pressable key={index} onPress={item.link} className={`flex flex-row justify-center items-center py-[10px] px-[13px] gap-2 rounded-full ${item.status === statusActive ? 'bg-purple-700' : 'bg-purple-50 border-[.5px] border-b-[1px] border-purple-200' }`}>
-                <Image source={item.icon} style={{ width: 10, height: 10 }} tintColor={item.status === statusActive ? "#FFFFFF" : "#000000"}/>
-                <Text className={`text-[10px] ${item.status === statusActive ? 'text-white' : 'text-purple-900' } font-bold`}>{item.status}</Text>
+              <Pressable key={index} onPress={item.link} className={`flex flex-row justify-center items-center py-[10px] px-[13px] gap-2 rounded-full ${item.status === statusActive ? 'bg-blue-700' : 'bg-yellow-50 border-[.5px] border-b-[1px] border-blue-200' }`}>
+                <Image source={item.icon} style={{ width: 10, height: 10 }} tintColor={item.status === statusActive ? "#FFE364" : "#002F9D"}/>
+                <Text className={`text-[10px] ${item.status === statusActive ? 'text-white' : 'text-[#002F9D]' } font-bold`}>{item.status}</Text>
               </Pressable>
             )
           })}
@@ -155,7 +156,9 @@ const index = () => {
                             title={item.title}
                             key={idx}
                             id={item.id}
+                            type='python'
                             w="w-full"
+                            link= {() => {router.replace('../(detail)/detailReimburse')}}
                           />
                         )
                       }
@@ -184,7 +187,9 @@ const index = () => {
                           title={item.title}
                           key={idx}
                           id={item.id}
+                          type='python'
                           w="w-full"
+                          link= {() => {router.replace('../(detail)/detailReimburse')}}
                         />
                       )
                     }

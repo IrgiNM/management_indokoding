@@ -4,14 +4,23 @@ import { Image } from 'expo-image'
 import HeaderBack from '@/components/headerBack'
 import { cardInfoType } from '@/types/cardInfoType'
 import CardInfo from '@/components/cardInfo'
-
 const { width } = Dimensions.get('window');
 
 const historyReimburseKaryawan = () => {
 
+  const [isActive, setIsActive] = useState("All");
+  const [checkActive, setCheckActive] = useState(false);
+  const [statusActive, setStatusActive] = useState('All');
+  const [selectedId, setSelectedId] = useState<string[]>([]);
+
+  const [dataMonth, setDataMonth] = useState<string[]>([]);
+  const today = new Date().toISOString().split("T")[0];
+  const thisMonth = today.slice(0,7);
+
   const dataReimburse: cardInfoType[] = [
     {
         id: 1,
+        user: "tantri",
         title: "Reimburse Title",
         description: "description none",
         amount: "+ Rp 100.000.000",
@@ -20,7 +29,8 @@ const historyReimburseKaryawan = () => {
         status: "Approved",
     },
     {
-        id: 1,
+        id: 2,
+        user: "irgi",
         title: "Reimburse Title",
         description: "description none",
         amount: "+ Rp 100.000.000",
@@ -29,7 +39,8 @@ const historyReimburseKaryawan = () => {
         status: "Pending"
     },
     {
-        id: 1,
+        id: 3,
+        user: "irgi",
         title: "Reimburse Title",
         description: "description none",
         amount: "+ Rp 100.000.000",
@@ -38,7 +49,8 @@ const historyReimburseKaryawan = () => {
         status: "Pending"
     },
     {
-        id: 1,
+        id: 4,
+        user: "zahra",
         title: "Reimburse Title",
         description: "description none",
         amount: "+ Rp 100.000.000",
@@ -47,7 +59,8 @@ const historyReimburseKaryawan = () => {
         status: "Approved"
     },
     {
-        id: 1,
+        id: 5,
+        user: "zahra",
         title: "Reimburse Title",
         description: "description none",
         amount: "+ Rp 100.000.000",
@@ -56,7 +69,8 @@ const historyReimburseKaryawan = () => {
         status: "Rejected"
     },
     {
-        id: 1,
+        id: 6,
+        user: "dinar",
         title: "Reimburse Title",
         description: "description none",
         amount: "+ Rp 100.000.000",
@@ -65,8 +79,6 @@ const historyReimburseKaryawan = () => {
         status: "Pending"
     },
   ];
-
-  const [statusActive, setStatusActive] = useState('All');
   const statusList = [
     { 
       id: 1, 
@@ -92,12 +104,21 @@ const historyReimburseKaryawan = () => {
       icon: require('../../assets/icons/s-decline.png'),
       link: ()=>{setStatusActive('Rejected')}
     },
-  ]
-
-  const [dataMonth, setDataMonth] = useState<string[]>([]);
-
-  const today = new Date().toISOString().split("T")[0];
-  const thisMonth = today.slice(0,7);
+  ];
+  const users = [
+    {
+      username: "tantri"
+    },
+    {
+      username: "zahra"
+    },
+    {
+      username: "irgi"
+    },
+    {
+      username: "dinar"
+    },
+  ];
 
   useEffect(() => {
     const months: string[] = [];
@@ -115,13 +136,15 @@ const historyReimburseKaryawan = () => {
     console.log("data:",dataMonth);
   }, [dataMonth]);
 
-  // ✨ Tambahan: animasi scroll horizontal username
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const users = ['C', 'D', 'A', 'E', 'B'];
-  const sortedUsers = [...users].sort();
+  const toggleSelect = (id: string) => {
+    setSelectedId(prev =>
+      prev.includes(id)
+        ? prev.filter(item => item !== id) // hapus jika sudah ada
+        : [...prev, id] // tambah jika belum ada
+    );
+  };
 
-  // ✅ Tambahan state buat handle klik username
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  
 
   return (
     <View className='w-full bg-white flex-1 justify-start items-center'>
@@ -155,18 +178,30 @@ const historyReimburseKaryawan = () => {
                     {dataReimburse.map((item, idx) => {
                       const itemISO = new Date(item.date).toISOString();
                       const itemMonth = itemISO.slice(0,7);
-                      if(itemMonth === thisMonth && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive))){
+                      if(itemMonth === thisMonth && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive)) && (isActive === "All" ? (item.user !== isActive) : (item.user === isActive))){
                         return (
-                          <CardInfo 
-                            amount={item.amount} 
-                            date={item.date}
-                            description={item.description}
-                            icon={item.icon}
-                            title={item.title}
-                            key={idx}
-                            id={item.id}
-                            w="w-full"
-                          />
+                          <View className='w-full flex flex-row justify-start items-center' key={idx}>
+                            {checkActive && (
+                              <Pressable key={index} onPress={()=>{toggleSelect(item.id.toString())}} className={`flex flex-row justify-center items-center mx-5 w-[22px] h-[22px] border rounded-lg border-purple-600`}>
+                                {
+                                  selectedId.includes(item.id.toString()) && (
+                                    <Image source={require("../../assets/icons/s-approve.png")} style={{ width: 10, height: 10 }} tintColor={"#9333EA"}/>
+                                  )
+                                }
+                              </Pressable>
+                            )}
+                            <CardInfo 
+                              amount={item.amount} 
+                              date={item.date}
+                              description={item.description}
+                              icon={item.icon}
+                              title={isActive==="All" ? item.user??'tidak ada username' : item.title}
+                              key={idx}
+                              id={item.id}
+                              w="w-full"
+                              longPress={() => setCheckActive(true)}
+                            />
+                          </View>
                         )
                       }
                     })}
@@ -184,18 +219,29 @@ const historyReimburseKaryawan = () => {
                   {dataReimburse.map((item, idx) => {
                     const itemISO = new Date(item.date).toISOString();
                     const itemMonth = itemISO.slice(0,7);
-                    if(itemMonth === month && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive))){
+                    if(itemMonth === month && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive)) && (isActive === "All" ? (item.user !== isActive) : (item.user === isActive))){
                       return (
-                        <CardInfo 
-                          amount={item.amount} 
-                          date={item.date}
-                          description={item.description}
-                          icon={item.icon}
-                          title={item.title}
-                          key={idx}
-                          id={item.id}
-                          w="w-full"
-                        />
+                        <View className='w-full flex flex-row justify-start items-center' key={idx}>
+                          {checkActive && (
+                            <Pressable key={index} onPress={()=>{toggleSelect(item.id.toString())}} className={`flex flex-row justify-center items-center mx-5 w-[22px] h-[22px] border rounded-lg border-purple-600`}>
+                              {
+                                selectedId.includes(item.id.toString()) && (
+                                  <Image source={require("../../assets/icons/s-approve.png")} style={{ width: 10, height: 10 }} tintColor={"#9333EA"}/>
+                                )
+                              }
+                            </Pressable>
+                          )}
+                          <CardInfo 
+                            amount={item.amount} 
+                            date={item.date}
+                            description={item.description}
+                            icon={item.icon}
+                            title={isActive==="All" ? item.user??'tidak ada username' : item.title}
+                            id={item.id}
+                            w="w-full"
+                            longPress={() => setCheckActive(true)}
+                          />
+                        </View>
                       )
                     }
                   })}
@@ -205,63 +251,34 @@ const historyReimburseKaryawan = () => {
           })}
           <View className='w-full h-[30px]'/>
         </View>
+        <View className='w-full h-[200px]'/>
       </ScrollView>
 
-      <View className='bg-gray-300  w-full h-[130px]  flex-row items-Start px-[30px]  rounded-t-[20px] gap-[10px]'>
-            
-              <Pressable 
-              className=' w-[50px] h-[50px] flex  justify-center items-center  border-[1px] rounded-lg mt-9'>
-                <Text className='text-white'>All</Text>
-              </Pressable >
+      <View className='bg-white w-full h-[150px] flex-row items-start px-[30px] pt-[20px] rounded-t-3xl absolute bottom-0 gap-[10px] border border-purple-600'>
+        <Pressable onPress={() => setIsActive("All")}
+        className={`w-[45px] h-[45px] flex  justify-center items-center mt-2 border-[1px] ${isActive==="All"?"border-purple-600 border-b-[2px]":"border-purple-200"} rounded-lg`}>
+          <Text className={`text-[12px] ${isActive==="All"?"text-purple-600":"text-purple-200"}`}>All</Text>
+        </Pressable >
 
       {/*  Scroll horizontal dengan animasi scale */}
-      <Animated.ScrollView
+      <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        snapToAlignment="center"
-        decelerationRate="fast"
-        snapToInterval={80}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: true }
-        )}
-        scrollEventThrottle={16}
-        className='w-full'
-        contentContainerStyle={{ paddingHorizontal: 20 }}
       >
-        {sortedUsers.map((username, index) => {
-          const inputRange = [
-            (index - 1) * 80,
-            index * 80,
-            (index + 1) * 80,
-          ];
-
-          const scale = scrollX.interpolate({
-            inputRange,
-            outputRange: [0.9, 1.2, 0.9],
-            extrapolate: 'clamp',
-          });
-
-          const isActive = selectedUser === username; // ✨ tambahan
-
-          return (
-            <Animated.View
-              key={index}
-              style={{
-                transform: [{ scale }],
-                marginRight: 15,
-              }}
-            >
-              <Pressable 
-                onPress={() => setSelectedUser(username)} // ✨ tambahan
-                className={`${isActive ? 'bg-purple-600' : 'bg-gray-400'} w-[60px] h-[60px] flex justify-center items-center rounded-full mt-8`}
-              >
-                <Text className='text-white text-lg font-bold'>{username}</Text>
-              </Pressable>
-            </Animated.View>
-          );
-        })}
-      </Animated.ScrollView>
+        <View className='w-full h-[60px] flex flex-row items-center gap-2'>
+          {users.map((item, index) => {
+            return (
+                <Pressable 
+                  key={index}
+                  onPress={() => setIsActive(item.username)} // ✨ tambahan
+                  className={`bg-purple-300 w-[50px] h-[50px] flex justify-center items-center rounded-full ${isActive===item.username&&"border border-b-[2px] border-purple-600"}`}
+                >
+                  <Text className='text-white text-lg font-bold'>{item.username.charAt(0).toUpperCase()}</Text>
+                </Pressable>
+            );
+          })}
+        </View>
+      </ScrollView>
               
       </View>
     </View>

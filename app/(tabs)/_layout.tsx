@@ -47,7 +47,8 @@ const _layout = () => {
         <Tabs.Screen
             name='history'
             options={{ 
-                headerShown: false, 
+                headerShown: false,
+                tabBarStyle: { display: 'none' }, 
                 tabBarIcon: ({ focused }) => (
                     <TabIcon 
                         focused={focused} 

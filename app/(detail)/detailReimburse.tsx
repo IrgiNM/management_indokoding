@@ -2,7 +2,7 @@ import { View, Text, ScrollView, TextInput, Pressable } from 'react-native'
 import React from 'react'
 import HeaderBack from '@/components/headerBack'
 
-const addkaryawan = () => {
+const detailReimburse = () => {
   return (
     <View className='bg-white flex-1 justify-center items-center'>
       <HeaderBack title='Reimbursement History' subTitle='Detail'/>
@@ -77,4 +77,4 @@ const addkaryawan = () => {
   )
 }
 
-export default addkaryawan
+export default detailReimburse
