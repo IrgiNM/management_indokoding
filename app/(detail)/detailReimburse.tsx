@@ -112,7 +112,31 @@ const detailReimburse = () => {
         </Pressable>
       </View>
 
-      
+      {/* POPUP */}
+      {popUpActive && (
+        <>
+          <View className='absolute w-full z-30 h-full opacity-70 bg-black'/>
+          <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-40'>
+            <View className='w-full bg-white p-[20px] pt-[70px] rounded-lg flex flex-col justify-start items-center'>
+              <Text className='text-[12px] w-full text-center'>
+                Are you sure want to cancel this reimbursement?
+              </Text>
+              <View className='flex flex-row justify-center items-center gap-3 mt-5 w-full'>
+                <Pressable onPress={() => {setPopUpActive(false)}} className='w-[50%] border border-b-[2px] border-purple-800 bg-purple-50 rounded-lg py-[10px] flex justify-center items-center'>
+                  <Text className='font-bold text-[12px]'>
+                    No
+                  </Text>
+                </Pressable>
+                <Pressable onPress={() => {}} className='w-[50%] border border-b-[2px] border-purple-800 bg-[#FF0066] rounded-lg py-[10px] flex justify-center items-center'>
+                  <Text className='font-bold text-[12px] text-white'>
+                    Yes, Cancel
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </>
+      )}
 
     </View>
   )
