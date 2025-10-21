@@ -104,7 +104,6 @@ const index = () => {
                             id={item.id}
                             type='python'
                             w="w-full"
-                            link= {() => {router.replace('../(detail)/detailReimburse')}}
                           />
                         )
                       }
@@ -135,7 +134,6 @@ const index = () => {
                           id={item.id}
                           type='python'
                           w="w-full"
-                          link= {() => {router.replace('../(detail)/detailReimburse')}}
                         />
                       )
                     }

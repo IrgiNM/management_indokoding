@@ -9,7 +9,6 @@ export type cardInfoType = {
     date: string,
     status?: string,
     type?: string,
-    link?: ()=> void,
     longPress?: ()=> void,
     w?: string,
 }

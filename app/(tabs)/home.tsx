@@ -205,7 +205,6 @@ const home = () => {
                         key={idx}
                         id={item.id}
                         w="w-[300px]"
-                        link={item.link}
                     />
                 ))}
             </View>

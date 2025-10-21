@@ -35,15 +35,40 @@ const dataKaryawan = () => {
   return (
     <View className='relative w-full bg-white flex-1 justify-start items-center'>
 
+      {/* HEADER */}
+      <HeaderBack title='Data Karyawan'/>
+
+      {/* HISTORY LIST */}
+      <ScrollView className='w-full pb-[50px]'>
+        <View className='w-full flex justify-start items-center flex-col gap-3 mt-[20px] px-[20px]'>
+          {dataKaryawan.map((item,index)=>{
+            return(
+              <CardKaryawan 
+                key={index} 
+                id={item.id} 
+                email={item.email} 
+                reimburse={item.reimburse} 
+                username={item.username} 
+                link={() => {router.replace('/(admin)/dataKaryawanDetail')}} w='w-full'
+              />
+
+            )
+          })}
+          <View className='w-full h-[300px]'/>
+        </View>
+      </ScrollView>
+
+      {/* BUTTON ADD KARYAWAN POPUP */}
+      <Pressable onPress={() => {setCreateActive(true)}} className='w-[60px] h-[60px] rounded-lg border-[1px] border-b-[2px] border-purple-600 bg-purple-50 relative bottom-[80px] -right-[120px] flex justify-center items-center'>
+          <Image source={require("../../assets/icons/add-karyawan-2.png")} style={{ width: 30, height: 30 }}/>
+      </Pressable>
+
+      {/* POP UP CREATE KARYAWAN */}
       {createActive && (
         <>
           {/* EFEK BLUR */}
-          <View className='absolute z-10 w-full h-full blur bg-[#2d014b] opacity-70'/>
-          {/* <BlurView
-            intensity={100}
-            tint="light"
-            className="absolute z-10 w-full h-full"
-          ></BlurView> */}
+          <View className='absolute z-10 w-full h-full blur bg-black opacity-70'/>
+          {/* FORM ADD KARYAWAN */}
           <View className='absolute z-20 bottom-[0px] w-full h-[500px] bg-white flex justify-start gap-3 items-center px-[30px] pt-[30px] rounded-t-3xl'>
             <Text className='w-full font-bold mb-5'>Create Karyawan</Text>
             <TextInput
@@ -85,34 +110,6 @@ const dataKaryawan = () => {
           </View>
         </>
       )}
-
-
-      {/* HEADER */}
-      <HeaderBack title='Data Karyawan'/>
-
-      {/* HISTORY LIST */}
-      <ScrollView className='w-full pb-[50px]'>
-        <View className='w-full flex justify-start items-center flex-col gap-3 mt-[20px] px-[20px]'>
-          {dataKaryawan.map((item,index)=>{
-            return(
-              <CardKaryawan 
-                key={index} 
-                id={item.id} 
-                email={item.email} 
-                reimburse={item.reimburse} 
-                username={item.username} 
-                link={() => {router.replace('/(admin)/dataKaryawanDetail')}} w='w-full'
-              />
-
-            )
-          })}
-          <View className='w-full h-[300px]'/>
-        </View>
-      </ScrollView>
-
-      <Pressable onPress={() => {setCreateActive(true)}} className='w-[60px] h-[60px] rounded-lg border-[1px] border-b-[2px] border-purple-600 bg-purple-50 relative bottom-[80px] -right-[120px] flex justify-center items-center'>
-          <Image source={require("../../assets/icons/add-karyawan-2.png")} style={{ width: 30, height: 30 }}/>
-      </Pressable>
 
     </View>
   )
