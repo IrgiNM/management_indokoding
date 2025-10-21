@@ -11,12 +11,12 @@ const HeaderBack = ({ title, subTitle, type } : headerBackType ) => {
       <Pressable onPress={() => {router.replace('/(tabs)/home')}} className={`w-[45px] h-[45px] border-[.5px] border-b-[1px] 
         ${
           type === "js" ? "border-[#9A3412] bg-white" :
-          type === "python" ? "border-[#2563EB] bg-yellow-50" :
+          type === "python" ? "border-[#004EBC] bg-yellow-50" :
           "border-[#9333EA] bg-purple-50"
         } rounded-xl flex justify-center items-center`}>
           <Image source={require("../assets/objek/arrow-back.png")} style={{ width: 13, height: 17 }} tintColor={
             type === "js" ? "#9A3412" :
-            type === "python" ? "#002F9D" :
+            type === "python" ? "#004EBC" :
             "#9333EA"
           }/>
       </Pressable>

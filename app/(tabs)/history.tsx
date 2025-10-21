@@ -5,65 +5,11 @@ import HeaderBack from '@/components/headerBack'
 import { cardInfoType } from '@/types/cardInfoType'
 import CardInfo from '@/components/cardInfo'
 import { useRouter } from 'expo-router'
+import { reimburseData } from '@/data/reimburseData'
 
 const index = () => {
   const router = useRouter();
-  const dataReimburse: cardInfoType[] = [
-    {
-        id: 1,
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "2025-10-13",
-        icon: require("../../assets/icons/pending-time.png"),
-        status: "Approved",
-    },
-    {
-        id: 1,
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "2025-10-14",
-        icon: require("../../assets/icons/pending-time.png"),
-        status: "Pending"
-    },
-    {
-        id: 1,
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "2025-09-13",
-        icon: require("../../assets/icons/pending-time.png"),
-        status: "Pending"
-    },
-    {
-        id: 1,
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "2025-09-13",
-        icon: require("../../assets/icons/pending-time.png"),
-        status: "Approved"
-    },
-    {
-        id: 1,
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "2025-09-13",
-        icon: require("../../assets/icons/pending-time.png"),
-        status: "Rejected"
-    },
-    {
-        id: 1,
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "2025-08-13",
-        icon: require("../../assets/icons/pending-time.png"),
-        status: "Pending"
-    },
-  ];
+  const dataReimburse: cardInfoType[] = reimburseData;
 
   const [statusActive, setStatusActive] = useState('All');
   const statusList = [
@@ -122,9 +68,9 @@ const index = () => {
         <View className='w-full flex flex-row justify-between items-center bg-yellow-50 border-[.5px] border-b-[1px] rounded-full border-blue-600 py-[5px] px-[5px]'>
           {statusList.map((item, index)=>{
             return(
-              <Pressable key={index} onPress={item.link} className={`flex flex-row justify-center items-center py-[10px] px-[13px] gap-2 rounded-full ${item.status === statusActive ? 'bg-blue-700' : 'bg-yellow-50 border-[.5px] border-b-[1px] border-blue-200' }`}>
-                <Image source={item.icon} style={{ width: 10, height: 10 }} tintColor={item.status === statusActive ? "#FFE364" : "#002F9D"}/>
-                <Text className={`text-[10px] ${item.status === statusActive ? 'text-white' : 'text-[#002F9D]' } font-bold`}>{item.status}</Text>
+              <Pressable key={index} onPress={item.link} className={`flex flex-row justify-center items-center py-[10px] px-[13px] gap-2 rounded-full ${item.status === statusActive ? 'bg-[#1893FF]' : 'bg-yellow-50 border-[.5px] border-b-[1px] border-blue-200' }`}>
+                <Image source={item.icon} style={{ width: 10, height: 10 }} tintColor={item.status === statusActive ? "#FFE364" : "#004EBC"}/>
+                <Text className={`text-[10px] ${item.status === statusActive ? 'text-white' : 'text-[#004EBC]' } font-bold`}>{item.status}</Text>
               </Pressable>
             )
           })}
@@ -142,7 +88,7 @@ const index = () => {
                     <Text className='text-[12px] font-bold mb-2'>This Month</Text>
                     <Text className='text-[12px] font-bold mb-2'>Rp. 5.000.000</Text>
                   </View>
-                  <View className='w-full px-[20px] pt-[15px] bg-blue-50 pb-[30px] flex flex-col justify-start items-center gap-2'>
+                  <View className='w-full px-[20px] pt-[15px] bg-blue-200 pb-[30px] flex flex-col justify-start items-center gap-2'>
                     {dataReimburse.map((item, idx) => {
                       const itemISO = new Date(item.date).toISOString();
                       const itemMonth = itemISO.slice(0,7);
@@ -152,9 +98,9 @@ const index = () => {
                             amount={item.amount} 
                             date={item.date}
                             description={item.description}
-                            icon={item.icon}
                             title={item.title}
                             key={idx}
+                            status={item.status}
                             id={item.id}
                             type='python'
                             w="w-full"
@@ -173,7 +119,7 @@ const index = () => {
                   <Text className='text-[12px] font-bold mb-2'>{month}</Text>
                   <Text className='text-[12px] font-bold mb-2'>Rp. 5.000.000</Text>
                 </View>
-                <View className='w-full px-[20px] pt-[15px] bg-blue-50 pb-[30px] flex flex-col justify-start items-center gap-2'>
+                <View className='w-full px-[20px] pt-[15px] bg-blue-100 pb-[30px] flex flex-col justify-start items-center gap-2'>
                   {dataReimburse.map((item, idx) => {
                     const itemISO = new Date(item.date).toISOString();
                     const itemMonth = itemISO.slice(0,7);
@@ -183,8 +129,8 @@ const index = () => {
                           amount={item.amount} 
                           date={item.date}
                           description={item.description}
-                          icon={item.icon}
                           title={item.title}
+                          status={item.status}
                           key={idx}
                           id={item.id}
                           type='python'

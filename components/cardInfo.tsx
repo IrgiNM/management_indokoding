@@ -3,7 +3,7 @@ import React from 'react'
 import { Image } from 'expo-image'
 import { cardInfoType } from '@/types/cardInfoType'
 
-const CardInfo = ({id, amount, date, description, icon, title, link, type, status, w, longPress}: cardInfoType) => {
+const CardInfo = ({id, amount, date, description, title, link, type, status, w, longPress}: cardInfoType) => {
   return (
     <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)' }} onPress={link} onLongPress={longPress} className={`${w} h-[60px] bg-white rounded-lg flex flex-row justify-between items-center shadow-md border-[.5px] border-b-[1px] 
     ${
@@ -15,13 +15,18 @@ const CardInfo = ({id, amount, date, description, icon, title, link, type, statu
         <View className={`w-[40px] h-[40px] rounded-lg bg-white ml-3 flex justify-center items-center overflow-hidden border
           ${
             type === "js" ? "border-[#9A3412] bg-white" :
-            type === "python" ? "border-[#0034a4] bg-blue-100" :
+            type === "python" ? "border-[#004EBC] bg-blue-100" :
             "border-[#9333EA] bg-purple-50"
           } border-purple-300`}>
-            <Image source={icon} style={{ width: 20, height: 20 }} tintColor=
+            <Image source={
+              status === "Approved" ? require('../assets/icons/approve-icon.png') :
+              status === "Pending" ? require('../assets/icons/pending-time.png') :
+              status === "Rejected" ? require('../assets/icons/decline-icon.png') :
+              require('../assets/icons/decline.png')
+            } style={{ width: 20, height: 20 }} tintColor=
             {
               type === "js" ? "#9A3412" :
-              type === "python" ? "#002F9D" :
+              type === "python" ? "#004EBC" :
               "border-[#9333EA] bg-purple-50" 
             }/>
         </View>

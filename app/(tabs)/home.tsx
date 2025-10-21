@@ -201,7 +201,6 @@ const home = () => {
                         amount={item.amount} 
                         date={item.date}
                         description={item.description}
-                        icon={item.icon}
                         title={item.title}
                         key={idx}
                         id={item.id}

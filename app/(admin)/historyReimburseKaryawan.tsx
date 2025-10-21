@@ -5,6 +5,7 @@ import HeaderBack from '@/components/headerBack'
 import { cardInfoType } from '@/types/cardInfoType'
 import CardInfo from '@/components/cardInfo'
 const { width } = Dimensions.get('window');
+import { reimburseData } from '@/data/reimburseData'
 
 const historyReimburseKaryawan = () => {
 
@@ -17,68 +18,7 @@ const historyReimburseKaryawan = () => {
   const today = new Date().toISOString().split("T")[0];
   const thisMonth = today.slice(0,7);
 
-  const dataReimburse: cardInfoType[] = [
-    {
-        id: 1,
-        user: "tantri",
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "2025-10-13",
-        icon: require("../../assets/icons/pending-time.png"),
-        status: "Approved",
-    },
-    {
-        id: 2,
-        user: "irgi",
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "2025-10-14",
-        icon: require("../../assets/icons/pending-time.png"),
-        status: "Pending"
-    },
-    {
-        id: 3,
-        user: "irgi",
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "2025-09-13",
-        icon: require("../../assets/icons/pending-time.png"),
-        status: "Pending"
-    },
-    {
-        id: 4,
-        user: "zahra",
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "2025-09-13",
-        icon: require("../../assets/icons/pending-time.png"),
-        status: "Approved"
-    },
-    {
-        id: 5,
-        user: "zahra",
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "2025-09-13",
-        icon: require("../../assets/icons/pending-time.png"),
-        status: "Rejected"
-    },
-    {
-        id: 6,
-        user: "dinar",
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "2025-08-13",
-        icon: require("../../assets/icons/pending-time.png"),
-        status: "Pending"
-    },
-  ];
+  const dataReimburse: cardInfoType[] = reimburseData;
   const statusList = [
     { 
       id: 1, 
@@ -194,7 +134,7 @@ const historyReimburseKaryawan = () => {
                               amount={item.amount} 
                               date={item.date}
                               description={item.description}
-                              icon={item.icon}
+                              status={item.status}
                               title={isActive==="All" ? item.user??'tidak ada username' : item.title}
                               key={idx}
                               id={item.id}
@@ -235,7 +175,7 @@ const historyReimburseKaryawan = () => {
                             amount={item.amount} 
                             date={item.date}
                             description={item.description}
-                            icon={item.icon}
+                            status={item.status}
                             title={isActive==="All" ? item.user??'tidak ada username' : item.title}
                             id={item.id}
                             w="w-full"

@@ -7,7 +7,6 @@ export type cardInfoType = {
     description: string,
     amount: string,
     date: string,
-    icon: ImageSourcePropType,
     status?: string,
     type?: string,
     link?: ()=> void,
