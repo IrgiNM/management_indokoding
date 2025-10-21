@@ -50,6 +50,11 @@ const detailReimburse = () => {
       <ScrollView className='w-full'>
         <View className='w-full px-[30px] flex justify-start items-center  flex-col gap-3 mt-[20px]'>
 
+          {/* TITLE */}
+          <View className='mt-2 w-full'>
+            <Text className=' rounded-lg w-full text-[12px] border border-b-2 border-purple-800 h-[40px] text-center pt-[10px] text-purple-900 bg-purple-100 mt-2 font-bold'>{firstData.title}</Text>
+          </View>
+
           {/* IMAGE */}
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <View className='w-full flex-row gap-5 mt-3'>
@@ -78,19 +83,17 @@ const detailReimburse = () => {
           {/* REIMBURSE DATA */}
           <View className='flex flex-row gap-5 justify-between w-full mt-2'>
             <View className='w-[45%] flex flex-col'>
-              <Text className='font-bold text-[12px]'>Date</Text>
-              <Text className=' rounded-lg w-full text-[12px] h-[40px] text-center pt-[10px] bg-gray-300 mt-2'>03/10/2005</Text>
+              <Text className='font-bold text-[12px] text-purple-900'>Date</Text>
+              <Text className=' rounded-lg w-full text-[12px] h-[40px] text-center pt-[10px] text-purple-900 bg-purple-100 mt-2'>03/10/2005</Text>
             </View>
             <View className='w-[45%] flex flex-col'>
-              <Text className='font-bold text-[12px]'>Total Price</Text>
-              <Text className=' rounded-lg w-full text-[12px] h-[40px] text-center pt-[10px] bg-gray-300 mt-2'>Rp.50.000.000</Text>
+              <Text className='font-bold text-[12px] text-purple-900'>Total Price</Text>
+              <Text className=' rounded-lg w-full text-[12px] h-[40px] text-center pt-[10px] text-purple-900 bg-purple-100 mt-2'>Rp.50.000.000</Text>
             </View>
           </View>
           <View className='mt-2 w-full'>
-            <Text className='font-bold text-[12px]'>Description:</Text>
-            <Text
-            className=' pl-[20px] pb-[50px] bg-gray-300 w-full flex flex-row justify-center items-center rounded-lg mt-2'
-            />
+            <Text className='font-bold text-[12px] text-purple-900'>Description:</Text>
+            <Text className=' rounded-lg w-full text-[12px] h-[40px] text-justify px-[20px] pt-[10px] text-purple-900 bg-purple-100 mt-2'>{firstData.title}</Text>
           </View>
 
           {/* IMBUHAN */}
