@@ -7,7 +7,6 @@ export const reimburseData = [
     amount: "+ Rp 150.000",
     date: "2025-10-13",
     status: "Approved",
-    id_item: [1, 2, 3],
   },
   {
     id: 2,
@@ -17,7 +16,6 @@ export const reimburseData = [
     amount: "+ Rp 200.000",
     date: "2025-10-14",
     status: "Pending",
-    id_item: [4, 5],
   },
   {
     id: 3,
@@ -27,7 +25,6 @@ export const reimburseData = [
     amount: "+ Rp 300.000",
     date: "2025-09-13",
     status: "Approved",
-    id_item: [6, 7, 8],
   },
   {
     id: 4,
@@ -37,7 +34,6 @@ export const reimburseData = [
     amount: "+ Rp 400.000",
     date: "2025-09-20",
     status: "Rejected",
-    id_item: [9, 10],
   },
   {
     id: 5,
@@ -47,7 +43,6 @@ export const reimburseData = [
     amount: "+ Rp 500.000",
     date: "2025-09-25",
     status: "Pending",
-    id_item: [1, 5, 8],
   },
   {
     id: 6,
@@ -57,7 +52,6 @@ export const reimburseData = [
     amount: "+ Rp 350.000",
     date: "2025-08-10",
     status: "Approved",
-    id_item: [2, 3, 6],
   },
   {
     id: 7,
@@ -67,7 +61,6 @@ export const reimburseData = [
     amount: "+ Rp 250.000",
     date: "2025-08-15",
     status: "Pending",
-    id_item: [7, 8],
   },
   {
     id: 8,
@@ -77,7 +70,6 @@ export const reimburseData = [
     amount: "+ Rp 50.000",
     date: "2025-08-17",
     status: "Approved",
-    id_item: [9],
   },
   {
     id: 9,
@@ -87,7 +79,6 @@ export const reimburseData = [
     amount: "+ Rp 1.200.000",
     date: "2025-07-10",
     status: "Rejected",
-    id_item: [10, 3, 1],
   },
   {
     id: 10,
@@ -97,7 +88,6 @@ export const reimburseData = [
     amount: "+ Rp 600.000",
     date: "2025-07-15",
     status: "Approved",
-    id_item: [2, 4, 6],
   },
   {
     id: 11,
@@ -107,7 +97,6 @@ export const reimburseData = [
     amount: "+ Rp 80.000",
     date: "2025-06-12",
     status: "Approved",
-    id_item: [8, 9],
   },
   {
     id: 12,
@@ -117,7 +106,6 @@ export const reimburseData = [
     amount: "+ Rp 450.000",
     date: "2025-05-20",
     status: "Pending",
-    id_item: [5, 7],
   },
   {
     id: 13,
@@ -127,7 +115,6 @@ export const reimburseData = [
     amount: "+ Rp 300.000",
     date: "2025-05-30",
     status: "Approved",
-    id_item: [1, 2],
   },
   {
     id: 14,
@@ -137,7 +124,6 @@ export const reimburseData = [
     amount: "+ Rp 200.000",
     date: "2025-04-10",
     status: "Rejected",
-    id_item: [4, 10],
   },
   {
     id: 15,
@@ -147,60 +133,56 @@ export const reimburseData = [
     amount: "+ Rp 100.000",
     date: "2025-03-18",
     status: "Approved",
-    id_item: [6, 8],
   },
 ];
+
 
 
 export const reimburseItems = [
-  {
-    id: 1,
-    namaItem: "Transportasi Meeting",
-    amount: 150000,
-  },
-  {
-    id: 2,
-    namaItem: "Makan Siang Klien",
-    amount: 200000,
-  },
-  {
-    id: 3,
-    namaItem: "ATK Kantor",
-    amount: 120000,
-  },
-  {
-    id: 4,
-    namaItem: "Biaya Parkir",
-    amount: 30000,
-  },
-  {
-    id: 5,
-    namaItem: "Servis Laptop",
-    amount: 400000,
-  },
-  {
-    id: 6,
-    namaItem: "Internet Bulanan",
-    amount: 250000,
-  },
-  {
-    id: 7,
-    namaItem: "Kopi Rapat Tim",
-    amount: 80000,
-  },
-  {
-    id: 8,
-    namaItem: "Cetak Dokumen",
-    amount: 50000,
-  },
-  {
-    id: 9,
-    namaItem: "Tiket Kereta Dinas",
-    amount: 350000,
-  },
-  {
-    id: 10,
-    namaItem: "Peralatan Event",
-    amount: 600000,
-  },
+  { id: 1, amount: 150000, id_reimburse: 1, id_category: 1 },
+  { id: 2, amount: 200000, id_reimburse: 1, id_category: 2 },
+  { id: 3, amount: 120000, id_reimburse: 2, id_category: 3 },
+  { id: 4, amount: 30000, id_reimburse: 3, id_category: 4 },
+  { id: 5, amount: 400000, id_reimburse: 3, id_category: 5 },
+  { id: 6, amount: 250000, id_reimburse: 3, id_category: 6 },
+  { id: 7, amount: 80000, id_reimburse: 4, id_category: 7 },
+  { id: 8, amount: 50000, id_reimburse: 4, id_category: 8 },
+  { id: 9, amount: 350000, id_reimburse: 4, id_category: 9 },
+  { id: 10, amount: 600000, id_reimburse: 5, id_category: 10 },
+  { id: 11, amount: 175000, id_reimburse: 6, id_category: 1 },
+  { id: 12, amount: 90000, id_reimburse: 6, id_category: 2 },
+  { id: 13, amount: 270000, id_reimburse: 7, id_category: 3 },
+  { id: 14, amount: 40000, id_reimburse: 8, id_category: 4 },
+  { id: 15, amount: 500000, id_reimburse: 8, id_category: 5 },
+  { id: 16, amount: 225000, id_reimburse: 8, id_category: 6 },
+  { id: 17, amount: 95000, id_reimburse: 8, id_category: 7 },
+  { id: 18, amount: 65000, id_reimburse: 9, id_category: 8 },
+  { id: 19, amount: 380000, id_reimburse: 10, id_category: 9 },
+  { id: 20, amount: 720000, id_reimburse: 10, id_category: 10 },
+  { id: 21, amount: 130000, id_reimburse: 11, id_category: 1 },
+  { id: 22, amount: 210000, id_reimburse: 11, id_category: 2 },
+  { id: 23, amount: 180000, id_reimburse: 12, id_category: 3 },
+  { id: 24, amount: 60000, id_reimburse: 12, id_category: 4 },
+  { id: 25, amount: 430000, id_reimburse: 13, id_category: 5 },
+  { id: 26, amount: 270000, id_reimburse: 13, id_category: 6 },
+  { id: 27, amount: 85000, id_reimburse: 14, id_category: 7 },
+  { id: 28, amount: 55000, id_reimburse: 14, id_category: 8 },
+  { id: 29, amount: 300000, id_reimburse: 15, id_category: 9 },
+  { id: 30, amount: 100000, id_reimburse: 15, id_category: 10 },
 ];
+
+
+
+export const categoryData = [
+  { id: 1, namaCategory: "Transportasi" },
+  { id: 2, namaCategory: "Makanan & Minuman" },
+  { id: 3, namaCategory: "Peralatan Kantor" },
+  { id: 4, namaCategory: "Perjalanan Dinas" },
+  { id: 5, namaCategory: "Pemeliharaan & Servis" },
+  { id: 6, namaCategory: "Pemasaran" },
+  { id: 7, namaCategory: "Acara & Event" },
+  { id: 8, namaCategory: "Biaya Operasional" },
+  { id: 9, namaCategory: "Langganan & Software" },
+  { id: 10, namaCategory: "Pelatihan & Seminar" },
+];
+
