@@ -15,7 +15,7 @@ const reimburse = () => {
         <View className=' '>
           <Text className='font-bold'>Title:</Text>
           <TextInput
-                className='p-[10px]  pl-[20px] w-[320px] flex flex-row justify-center items-center border-[1px] rounded-lg mt-2'
+                className='p-[10px]  pl-[20px] w-[320px] flex flex-row justify-center items-center border-[1px] border-blue-800  rounded-lg mt-2'
                 placeholder='Add New Title'
                 />
         </View>
@@ -23,31 +23,31 @@ const reimburse = () => {
         <View className=' mt-5'>
           <Text className='font-bold'>List Reimburse:</Text>
           
-            <View className='flex-row justify-between p-[20px] w-[320px] border-[1px] mt-2 rounded-lg'>
-              <Text className=''>Je Jamuran</Text>
-              <Text className='font-bold'>Rp.1000.000</Text>
+            <View className='flex-row justify-between  p-[20px] w-[320px] border-[1px] border-blue-800 mt-2 rounded-lg'>
+              <Text className='text-blue-800 font-semibold'>Je Jamuran</Text>
+              <Text className='font-bold text-blue-800'>Rp.1000.000</Text>
             </View>
           
         </View>
         <View className='flex-row gap-2 w-full  mt-2'>
           <TextInput
-                className='p-[10px]  pl-[20px] w-[180px] flex flex-row justify-center items-center border-[1px] rounded-lg mt-2'
+                className='p-[10px]  pl-[20px] w-[180px] flex flex-row justify-center items-center border-[1px] border-blue-800 rounded-lg mt-2'
                 placeholder='Add New Category'
                 />
           <TextInput
-                className='p-[10px]  pl-[20px] w-[130px] flex flex-row justify-center items-center border-[1px] rounded-lg mt-2'
+                className='p-[10px]  pl-[20px] w-[130px] flex flex-row justify-center items-center border-[1px] border-blue-800 rounded-lg mt-2'
                 placeholder='Add Price'
                 />
         </View>
           <View className='flex-row gap-1'>
-            <Text className='bg-gray-300 rounded-lg w-[60px] p-[2px] mt-2 text-center text-[12px]'>Bensin</Text>
-            <Text className='bg-gray-300 rounded-lg w-[60px] p-[2px] mt-2 text-center text-[12px]'>Listrik</Text>
-            <Text className='bg-gray-300 rounded-lg w-[60px] p-[2px] mt-2 text-center text-[12px]'>Hotel</Text>
+            <Text className='bg-orange-100 rounded-lg w-[60px] p-[2px] mt-2 text-center text-[12px]'>Bensin</Text>
+            <Text className='bg-orange-100 rounded-lg w-[60px] p-[2px] mt-2 text-center text-[12px]'>Listrik</Text>
+            <Text className='bg-orange-100 rounded-lg w-[60px] p-[2px] mt-2 text-center text-[12px]'>Hotel</Text>
         </View>
 
-        <Pressable  className='p-[10px] w-[320px] flex flex-row justify-center items-center bg-gray-500 rounded-b-lg rounded-t-sm mt-3'
+        <Pressable  className='p-[10px] w-[320px] flex flex-row justify-center items-center bg-orange-400 rounded-b-lg rounded-t-sm mt-3'
               >
-                <Text className=' font-bold text-[20px] text-white'>
+                <Text className=' font-bold text-[20px] text-orange-100'>
                     +
                 </Text>
         </Pressable>
@@ -55,8 +55,8 @@ const reimburse = () => {
         <View className=' mt-5 '>
           <Text className='font-bold'>Description:</Text>
           <TextInput
-            className='p-[10px] pl-[20px] pb-[50px] w-[320px] flex flex-row justify-center items-center border-[1px] rounded-lg mt-2'
-            placeholder='Add New Title'
+            className=' p-[10px] pl-[20px] pb-[50px] w-[320px] flex flex-row justify-center items-center border-[1px] border-blue-800 rounded-lg mt-2'
+            placeholder='Add New Description'
             multiline={true}            // biar bisa banyak baris
             numberOfLines={4}           // tinggi awal
             textAlignVertical='top'     // teks mulai dari atas
@@ -66,61 +66,32 @@ const reimburse = () => {
         <View className=' mt-5 '>
           <Text className='font-bold'>Image:</Text>
           <View className='flex-row gap-5'>
-            <Text className=' pb-[50px] pl-5  bg-gray-500 w-[130px] mt-2 rounded-lg '></Text>
-            <Text className=' pb-[50px] pl-5  bg-gray-500 w-[130px] mt-2 rounded-lg '></Text>
+            <Text className=' pb-[50px] pl-5  bg-blue-800 w-[130px] mt-2 rounded-lg '></Text>
+            <Text className=' pb-[50px] pl-5  bg-blue-800 w-[130px] mt-2 rounded-lg '></Text>
           </View>
         </View>
 
 
-        <View className='w-full h-[1000px]'>
+        <View className='w-full h-[100px]'>
 
         </View>
       </View>
       </ScrollView>
 
-      <View className='bg-gray-300  w-full h-[150px] px-[40px] pt-[30px] flex-col items-center  rounded-t-[30px]'>
+      <View className='bg-blue-800  w-full h-[150px] px-[40px] pt-[30px] flex-col items-center  rounded-t-[30px]'>
         <View className='w-full flex-row  justify-between '>
-            <Text className='font-semibold'>Total Price</Text>
-            <Text className='font-bold'>Rp.350.000</Text>
+            <Text className='text-white font-semibold'>Total Price</Text>
+            <Text className='text-white font-bold'>Rp.350.000</Text>
         </View>
-        <View className='w-full h-[1px] bg-black mt-2 '></View>
+        <View className='w-full h-[1px] bg-white mt-2 '></View>
         <Pressable 
-        className=' w-[320px] h-[40px] flex flex-row justify-center items-center bg-gray-500 rounded-lg mt-5'>
+        className=' w-[320px] h-[40px] flex flex-row justify-center items-center bg-orange-400 rounded-lg mt-5'>
           <Text className='text-white'>Buat Pengajuan</Text>
         </Pressable >
       </View>
 
 
-      {/* <ScrollView className='w-full pb-[50px]'>
-        <View className='w-full px-[20px] flex justify-start items-center  flex-col gap-3 mt-[20px]'>
-          <View className='bg-gray-500 justify-center  rounded-t-lg w-[300px] h-[35px] items-center '>
-            <Text className='text-white font-bold '>
-              Pending
-            </Text>
-          </View>
-         
-          <View className='w-[250px] flex-row bg-gray-500 right-7 h-40  '>
-            <Text></Text>
-            <View className='w-[250px] flex-row bg-gray-500 right-7 h-40 left-[280px]  '></View>
-          </View>
-
-          <View className='flex flex-row'>
-            <View className='flex flex-col'>
-              <Text className='font-bold'>Date</Text>
-              <Text className='px-[10px] bg-gray-300'>Date</Text>
-            </View>
-            <View className='flex flex-col '>
-              <Text className='font-bold'>Total Price</Text>
-              <Text className='px-[10px] bg-gray-300'>Date</Text>
-            </View>
-          </View>
-
-          </View>
-          <View className='w-[130px] border-lg right-7 h-10 rounded-lg '>
-            <Text></Text>
-          </View>
-
-      </ScrollView> */}
+      
   
     </View>
   )

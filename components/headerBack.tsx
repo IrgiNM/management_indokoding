@@ -4,7 +4,7 @@ import { Image } from 'expo-image'
 import { headerBackType } from '@/types/headerBackType'
 import { useRouter } from 'expo-router'
 
-const HeaderBack = ({ title, subTitle, type } : headerBackType ) => {
+const HeaderBack = ({ title, subTitle, type, textColor } : headerBackType ) => {
   const router = useRouter();
   return (
     <View className='flex flex-row justify-start items-center relative top-[30px] w-full h-[100px] px-[30px] py-[0px]'>
@@ -20,9 +20,9 @@ const HeaderBack = ({ title, subTitle, type } : headerBackType ) => {
             "#9333EA"
           }/>
       </Pressable>
-      <Text className='text-[15px] font-bold ml-5 h-[45px] pt-[12px]'>{title}</Text>
+      <Text className={`text-[15px] font-bold ml-5 h-[45px] pt-[12px] ${textColor}`}>{title}</Text>
       {subTitle && 
-        <Text className='ml-3 h-[45px] pt-[14px]'>-  {subTitle}</Text>
+        <Text className={`ml-3 h-[45px] pt-[14px] ${textColor}`}>-  {subTitle}</Text>
       }
     </View>
   )
