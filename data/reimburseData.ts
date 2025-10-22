@@ -1,7 +1,9 @@
-export const reimburseData = [
+import { ReimburseType } from "@/types/reimburseDataType";
+
+export const reimburseData: ReimburseType[] = [
   {
     id: 1,
-    user: "tantri",
+    id_user: 4,
     title: "Reimburse Transport",
     description: "Taxi to meeting location",
     amount: "+ Rp 150.000",
@@ -10,7 +12,7 @@ export const reimburseData = [
   },
   {
     id: 2,
-    user: "irgi",
+    id_user: 2,
     title: "Reimburse Lunch Meeting",
     description: "Client meeting meal expense",
     amount: "+ Rp 200.000",
@@ -19,7 +21,7 @@ export const reimburseData = [
   },
   {
     id: 3,
-    user: "zahra",
+    id_user: 3,
     title: "Reimburse Office Supplies",
     description: "Printer ink and paper",
     amount: "+ Rp 300.000",
@@ -28,7 +30,7 @@ export const reimburseData = [
   },
   {
     id: 4,
-    user: "dinar",
+    id_user: 1,
     title: "Reimburse Travel",
     description: "Train ticket to Bandung",
     amount: "+ Rp 400.000",
@@ -37,7 +39,7 @@ export const reimburseData = [
   },
   {
     id: 5,
-    user: "tantri",
+    id_user: 4,
     title: "Reimburse Maintenance",
     description: "Laptop service",
     amount: "+ Rp 500.000",
@@ -46,7 +48,7 @@ export const reimburseData = [
   },
   {
     id: 6,
-    user: "irgi",
+    id_user: 2,
     title: "Reimburse Marketing",
     description: "Flyer design and printing",
     amount: "+ Rp 350.000",
@@ -55,7 +57,7 @@ export const reimburseData = [
   },
   {
     id: 7,
-    user: "zahra",
+    id_user: 3,
     title: "Reimburse Event Support",
     description: "Snacks and drinks for event",
     amount: "+ Rp 250.000",
@@ -64,7 +66,7 @@ export const reimburseData = [
   },
   {
     id: 8,
-    user: "dinar",
+    id_user: 1,
     title: "Reimburse Parking",
     description: "Parking at office area",
     amount: "+ Rp 50.000",
@@ -73,7 +75,7 @@ export const reimburseData = [
   },
   {
     id: 9,
-    user: "irgi",
+    id_user: 2,
     title: "Reimburse Project Tools",
     description: "Software subscription",
     amount: "+ Rp 1.200.000",
@@ -82,7 +84,7 @@ export const reimburseData = [
   },
   {
     id: 10,
-    user: "zahra",
+    id_user: 3,
     title: "Reimburse Office Decoration",
     description: "Plants and wall art",
     amount: "+ Rp 600.000",
@@ -91,7 +93,7 @@ export const reimburseData = [
   },
   {
     id: 11,
-    user: "tantri",
+    id_user: 4,
     title: "Reimburse Delivery Fee",
     description: "Courier for documents",
     amount: "+ Rp 80.000",
@@ -100,7 +102,7 @@ export const reimburseData = [
   },
   {
     id: 12,
-    user: "dinar",
+    id_user: 1,
     title: "Reimburse Seminar Fee",
     description: "Online workshop payment",
     amount: "+ Rp 450.000",
@@ -109,7 +111,7 @@ export const reimburseData = [
   },
   {
     id: 13,
-    user: "irgi",
+    id_user: 2,
     title: "Reimburse Fuel",
     description: "Client visit fuel cost",
     amount: "+ Rp 300.000",
@@ -118,7 +120,7 @@ export const reimburseData = [
   },
   {
     id: 14,
-    user: "zahra",
+    id_user: 3,
     title: "Reimburse Equipment",
     description: "Headset replacement",
     amount: "+ Rp 200.000",
@@ -127,7 +129,7 @@ export const reimburseData = [
   },
   {
     id: 15,
-    user: "dinar",
+    id_user: 1,
     title: "Reimburse Internet",
     description: "Remote work internet package",
     amount: "+ Rp 100.000",
@@ -135,6 +137,7 @@ export const reimburseData = [
     status: "Approved",
   },
 ];
+
 
 
 

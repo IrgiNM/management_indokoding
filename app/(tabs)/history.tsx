@@ -6,10 +6,13 @@ import { cardInfoType } from '@/types/cardInfoType'
 import CardInfo from '@/components/cardInfo'
 import { useRouter } from 'expo-router'
 import { reimburseData } from '@/data/reimburseData'
+import { thisMonth } from '@/hooks/todayFunction'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { dataReimburseMain, getDataReimburseUser } from '@/hooks/dataReimburseFunction'
+import { ReimburseType } from '@/types/reimburseDataType'
 
 const index = () => {
-  const router = useRouter();
-  const dataReimburse: cardInfoType[] = reimburseData;
+  const { dataReimburse, dataMonth } = dataReimburseMain();
 
   const [statusActive, setStatusActive] = useState('All');
   const statusList = [
@@ -39,38 +42,17 @@ const index = () => {
     },
   ]
 
-  const [dataMonth, setDataMonth] = useState<string[]>([]);
-
-  const today = new Date().toISOString().split("T")[0];
-  const thisMonth = today.slice(0,7);
-
-  useEffect(() => {
-    const months: string[] = [];
-    dataReimburse.map((item) => {
-      const itemISO = new Date(item.date).toISOString();
-      const itemMonth = itemISO.slice(0,7);
-      months.push(itemMonth);
-    });
-
-    const uniqueMonths = [...new Set(months)];
-    setDataMonth(uniqueMonths);
-  }, []);
-
-  useEffect(() => {
-    console.log("data:",dataMonth);
-  }, [dataMonth]);
-
   return (
     <View className='w-full bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
-      <HeaderBack title='History Reimburse' subTitle='detail' type='python'/>
+      <HeaderBack title='History Reimburse' subTitle='detail' type=''/>
       <View className='w-full px-[20px] py-[10px] bg-white pt-[20px] mt-2'>
-        <View className='w-full flex flex-row justify-between items-center bg-yellow-50 border-[.5px] border-b-[1px] rounded-full border-blue-600 py-[5px] px-[5px]'>
+        <View className='w-full flex flex-row justify-between items-center bg-green-50 border-[.5px] border-b-[1px] rounded-full border-purple-600 py-[5px] px-[5px]'>
           {statusList.map((item, index)=>{
             return(
-              <Pressable key={index} onPress={item.link} className={`flex flex-row justify-center items-center py-[10px] px-[13px] gap-2 rounded-full ${item.status === statusActive ? 'bg-[#1893FF]' : 'bg-yellow-50 border-[.5px] border-b-[1px] border-blue-200' }`}>
-                <Image source={item.icon} style={{ width: 10, height: 10 }} tintColor={item.status === statusActive ? "#FFE364" : "#004EBC"}/>
-                <Text className={`text-[10px] ${item.status === statusActive ? 'text-white' : 'text-[#004EBC]' } font-bold`}>{item.status}</Text>
+              <Pressable key={index} onPress={item.link} className={`flex flex-row justify-center items-center py-[10px] px-[13px] gap-2 rounded-full ${item.status === statusActive ? 'bg-purple-600' : 'bg-green-50 border-[.5px] border-b-[1px] border-purple-200' }`}>
+                <Image source={item.icon} style={{ width: 10, height: 10 }} tintColor={item.status === statusActive ? "#FFFFFF" : "#6B21A8"}/>
+                <Text className={`text-[10px] ${item.status === statusActive ? 'text-white' : 'text-purple-900' } font-bold`}>{item.status}</Text>
               </Pressable>
             )
           })}
@@ -88,7 +70,7 @@ const index = () => {
                     <Text className='text-[12px] font-bold mb-2'>This Month</Text>
                     <Text className='text-[12px] font-bold mb-2'>Rp. 5.000.000</Text>
                   </View>
-                  <View className='w-full px-[20px] pt-[15px] bg-blue-200 pb-[30px] flex flex-col justify-start items-center gap-2'>
+                  <View className='w-full px-[20px] pt-[15px] bg-purple-200 pb-[30px] flex flex-col justify-start items-center gap-2'>
                     {dataReimburse.map((item, idx) => {
                       const itemISO = new Date(item.date).toISOString();
                       const itemMonth = itemISO.slice(0,7);
@@ -102,7 +84,7 @@ const index = () => {
                             key={idx}
                             status={item.status}
                             id={item.id}
-                            type='python'
+                            type=''
                             w="w-full"
                           />
                         )
@@ -118,7 +100,7 @@ const index = () => {
                   <Text className='text-[12px] font-bold mb-2'>{month}</Text>
                   <Text className='text-[12px] font-bold mb-2'>Rp. 5.000.000</Text>
                 </View>
-                <View className='w-full px-[20px] pt-[15px] bg-blue-100 pb-[30px] flex flex-col justify-start items-center gap-2'>
+                <View className='w-full px-[20px] pt-[15px] bg-purple-50 pb-[30px] flex flex-col justify-start items-center gap-2'>
                   {dataReimburse.map((item, idx) => {
                     const itemISO = new Date(item.date).toISOString();
                     const itemMonth = itemISO.slice(0,7);
@@ -132,7 +114,7 @@ const index = () => {
                           status={item.status}
                           key={idx}
                           id={item.id}
-                          type='python'
+                          type=''
                           w="w-full"
                         />
                       )

@@ -3,7 +3,8 @@ import React, { useState } from 'react'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router';
 import { userData } from '@/data/userData';
-import { Cookies } from '@react-native-cookies/cookies';
+// import CookieManager from '@react-native-cookies/cookies';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -66,32 +67,34 @@ const Login = () => {
   //   }
   // };
 
-  // const handleLogin = () => {
-  //   dataUser.map(async(item)=>{
-  //     if(item.username === username && item.password === password){
-  //       await Cookies.set('http://localhost', 'user_id', response.id.toString(), {
-  //         path: '/',
-  //         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // berlaku 7 hari
-  //         secure: true,
-  //         httpOnly: false,
-  //       });
-  //       router.replace('/(tabs)/home');
-  //     }
-  //   })
+  // const handleLogin = async () => {
+  //   const data = dataUser.find(item => item.username === username && item.password === password);
+  //   if(data){
+  //     await CookieManager.set('app://local', {
+  //       name: 'user_id',
+  //       value: data.id.toString(),
+  //       path: '/',
+  //       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 hari
+  //     });
+  //   }
+  //   router.replace('/(tabs)/home');
   // }
 
-  // const handleLogin = async () => {
-  //   try {
-  //     // misal response dari API login
-  //     const response = { id: 12, name: "Irgi Nazwa", email: "irgi@example.com" };
-  
-  //     // simpan ID user
-  //     await AsyncStorage.setItem('userId', response.id.toString());
-  //     console.log('User ID disimpan:', response.id);
-  //   } catch (error) {
-  //     console.error('Gagal menyimpan user ID:', error);
-  //   }
-  // };
+  const handleLogin = async () => {
+    setIsLoading(true);
+    try {
+      const data = dataUser.find(item => item.username === username && item.password === password);
+      if(data){
+        await AsyncStorage.setItem('userId', data.id.toString());
+        router.replace('/(tabs)/home');
+      }
+    } catch (error) {
+      console.error('Gagal menyimpan user ID:', error);
+    }
+    finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <View className='flex-1 w-full bg-black'>
@@ -128,7 +131,7 @@ const Login = () => {
         />
 
         <Pressable 
-          onPress={() => {router.replace('/(tabs)/home')}} // <-- 1. Panggil fungsi handleLogin
+          onPress={() => {handleLogin()}} // <-- 1. Panggil fungsi handleLogin
           disabled={isLoading} // <-- 2. Bikin tombol nonaktif saat loading
           className={`p-[15px] w-[270px] flex flex-row justify-center items-center rounded-lg mt-10 ${isLoading ? 'bg-gray-500' : 'bg-black'}`} // <-- 3. Ubah warna saat loading
         >

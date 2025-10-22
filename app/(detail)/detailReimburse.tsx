@@ -11,7 +11,11 @@ const detailReimburse = () => {
   const { id } = useLocalSearchParams();
   const firstData = reimburseData.find(item => item.id === Number(id))!;
   const dataReimburseDetail = reimburseItems.filter(item => item.id_reimburse === Number(id));
+  const totalAmount = dataReimburseDetail.reduce((sum, item) => sum + item.amount, 0);
+
   const dataCategory = categoryData;
+
+
 
   return (
     <View className='bg-white flex-1 justify-center items-center'>
@@ -68,13 +72,13 @@ const detailReimburse = () => {
           </ScrollView>
 
           {/* LIST REIMBURSE */}
-          <View className='flex-col  p-[20px] w-full border-[.5px] mt-5 rounded-lg'>
+          <View className='flex-col gap-2 p-[20px] w-full border-[.5px] border-purple-600 mt-5 rounded-lg'>
             {dataReimburseDetail.map((item, index)=>{
               const category = dataCategory.find(category => category.id === item.id_category);
               return (
                 <View key={index} className='flex-row justify-between'>
-                  <Text className='text-[12px]'>{category?.namaCategory}</Text>
-                  <Text className='font-bold text-[12px]'>{formatRupiah(item.amount)}</Text>
+                  <Text className='text-[12px] text-purple-900'>{category?.namaCategory}</Text>
+                  <Text className='font-bold text-[12px] text-purple-900'>{formatRupiah(item.amount)}</Text>
                 </View>
               )
             })}
@@ -82,18 +86,18 @@ const detailReimburse = () => {
 
           {/* REIMBURSE DATA */}
           <View className='flex flex-row gap-5 justify-between w-full mt-2'>
-            <View className='w-[45%] flex flex-col'>
+            <View className='w-[47%] flex flex-col'>
               <Text className='font-bold text-[12px] text-purple-900'>Date</Text>
-              <Text className=' rounded-lg w-full text-[12px] h-[40px] text-center pt-[10px] text-purple-900 bg-purple-100 mt-2'>03/10/2005</Text>
+              <Text className=' rounded-lg w-full text-[12px] h-[40px] text-center pt-[10px] text-purple-900 bg-purple-100 mt-2'>{firstData.date}</Text>
             </View>
-            <View className='w-[45%] flex flex-col'>
+            <View className='w-[47%] flex flex-col'>
               <Text className='font-bold text-[12px] text-purple-900'>Total Price</Text>
-              <Text className=' rounded-lg w-full text-[12px] h-[40px] text-center pt-[10px] text-purple-900 bg-purple-100 mt-2'>Rp.50.000.000</Text>
+              <Text className=' rounded-lg w-full text-[12px] h-[40px] font-bold text-center pt-[10px] text-purple-900 bg-purple-100 mt-2'>{formatRupiah(totalAmount)}</Text>
             </View>
           </View>
           <View className='mt-2 w-full'>
             <Text className='font-bold text-[12px] text-purple-900'>Description:</Text>
-            <Text className=' rounded-lg w-full text-[12px] h-[40px] text-justify px-[20px] pt-[10px] text-purple-900 bg-purple-100 mt-2'>{firstData.title}</Text>
+            <Text className=' rounded-lg w-full text-[12px] h-[40px] text-justify px-[20px] pt-[10px] text-purple-900 bg-purple-100 mt-2'>{firstData.description}</Text>
           </View>
 
           {/* IMBUHAN */}

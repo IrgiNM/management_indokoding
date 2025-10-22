@@ -3,12 +3,14 @@ import React, { useState } from 'react'
 import { Image, ImageBackground } from 'expo-image'
 import { useRouter } from 'expo-router'
 import CardInfo from '@/components/cardInfo'
+import { dataReimburseMain } from '@/hooks/dataReimburseFunction'
 const { width } = Dimensions.get('window');
 
 const home = () => {
 
   const router = useRouter();
   const [statusActieve, setStatusActive] = useState(1);
+  const { dataReimburse, dataMonth } = dataReimburseMain();
 
   const iconStatus = [
     {
@@ -66,26 +68,6 @@ const home = () => {
     },
   ]
 
-  const dataReimburse = [
-    {
-        id: 1,
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "12 Okt 2025",
-        icon: require("../../assets/icons/pending-time.png"),
-        link: () => {router.replace('../(detail)/detailReimburse')},
-    },
-    {
-        id: 1,
-        title: "Reimburse Title",
-        description: "description none",
-        amount: "+ Rp 100.000.000",
-        date: "12 Okt 2025",
-        icon: require("../../assets/icons/pending-time.png"),
-        link: () => {router.replace('../(detail)/detailReimburse')},
-    },
-  ]
 
   return (
     <View className='bg-white flex-1 justify-start items-center'>
@@ -202,6 +184,7 @@ const home = () => {
                         date={item.date}
                         description={item.description}
                         title={item.title}
+                        status={item.status}
                         key={idx}
                         id={item.id}
                         w="w-[300px]"
@@ -221,8 +204,8 @@ const home = () => {
 
             {/* STATUS ICON */}
             <View className='w-full justify-start items-center gap-5 flex flex-row flex-wrap mt-7 px-[20px]'>
-                {iconMenu.map((item) => (
-                    <Pressable onPress={item.link}className='flex flex-col justify-center items-center'>
+                {iconMenu.map((item, index) => (
+                    <Pressable key={index} onPress={item.link}className='flex flex-col justify-center items-center'>
                             <View className='flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-white border-[.5px] border-b-[1px] border-purple-600'>
                                 <Image source={item.icon} style={{ width: 25, height: 25 }}/>
                             </View>

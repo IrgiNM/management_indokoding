@@ -28,9 +28,9 @@ const CardInfo = ({id, amount, date, description, title, type, status, w, longPr
           "bg-[#f5ebff]" 
         } ml-3 flex justify-center items-center overflow-hidden border
           ${
-            type === "js" ? "border-[#9A3412] bg-white" :
-            type === "python" ? "border-[#004EBC] bg-blue-100" :
-            "border-[#9333EA] bg-purple-50"
+            type === "js" ? "border-[#9A3412]" :
+            type === "python" ? "border-[#004EBC]" :
+            "border-[#9333EA]"
           } border-purple-300`}>
             <Image source={
               status === "Approved" ? require('../assets/icons/approve-icon.png') :
