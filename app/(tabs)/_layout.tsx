@@ -48,7 +48,7 @@ const _layout = () => {
             name='history'
             options={{ 
                 headerShown: false,
-                tabBarStyle: { display: 'none' }, 
+                // tabBarStyle: { display: 'none' },
                 tabBarIcon: ({ focused }) => (
                     <TabIcon 
                         focused={focused} 
