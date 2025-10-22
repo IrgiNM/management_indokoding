@@ -78,6 +78,7 @@ const _layout = () => {
             name='profile'
             options={{ 
                 headerShown: false, 
+                tabBarStyle: { display: 'none' },
                 tabBarIcon: ({ focused }) => (
                     <TabIcon 
                         focused={focused} 
