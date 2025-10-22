@@ -2,13 +2,16 @@ import { View, Text, ScrollView, TextInput, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import HeaderBack from '@/components/headerBack'
 import { Image } from 'expo-image'
-import { reimburseData } from '@/data/reimburseData'
+import { categoryData, reimburseData, reimburseItems } from '@/data/reimburseData'
 import { useLocalSearchParams } from 'expo-router'
+import { formatRupiah } from '@/hooks/formatRupiahFunction'
 
 const detailReimburse = () => {
   const [popUpActive, setPopUpActive] = useState(false);
   const { id } = useLocalSearchParams();
   const firstData = reimburseData.find(item => item.id === Number(id))!;
+  const dataReimburseDetail = reimburseItems.filter(item => item.id_reimburse === Number(id));
+  const dataCategory = categoryData;
 
   return (
     <View className='bg-white flex-1 justify-center items-center'>
@@ -35,7 +38,7 @@ const detailReimburse = () => {
             firstData.status === "Rejected" ? "#88003B" :
             "border-[#9333EA] bg-purple-50" 
           }/>
-          <Text className={`text-white font-bold text-[10px] ${
+          <Text className={`font-bold text-[10px] ${
             firstData.status === "Approved" ? "text-[#00883D]" :
             firstData.status === "Pending" ? "text-[#885600]" :
             firstData.status === "Rejected" ? "text-[#88003B]" :
@@ -66,18 +69,15 @@ const detailReimburse = () => {
 
           {/* LIST REIMBURSE */}
           <View className='flex-col  p-[20px] w-full border-[.5px] mt-5 rounded-lg'>
-            <View className='flex-row justify-between'>
-              <Text className='text-[12px]'>Je Jamuran</Text>
-              <Text className='font-bold text-[12px]'>Rp.1000.000</Text>
-            </View>
-            <View className='flex-row justify-between mt-2 '>
-              <Text className='text-[12px]'>Je Jamuran</Text>
-              <Text className='font-bold text-[12px]'>Rp.1000.000</Text>
-            </View>
-            <View className='flex-row justify-between mt-2 '>
-              <Text className='text-[12px]'>Je Jamuran</Text>
-              <Text className='font-bold text-[12px]'>Rp.1000.000</Text>
-            </View>
+            {dataReimburseDetail.map((item, index)=>{
+              const category = dataCategory.find(category => category.id === item.id_category);
+              return (
+                <View key={index} className='flex-row justify-between'>
+                  <Text className='text-[12px]'>{category?.namaCategory}</Text>
+                  <Text className='font-bold text-[12px]'>{formatRupiah(item.amount)}</Text>
+                </View>
+              )
+            })}
           </View>
 
           {/* REIMBURSE DATA */}
