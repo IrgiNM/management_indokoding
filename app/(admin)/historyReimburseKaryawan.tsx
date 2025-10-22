@@ -1,11 +1,11 @@
-import { View, Text, ScrollView, Pressable, Animated, Dimensions } from 'react-native'
-import React, { useEffect, useState, useRef } from 'react'
-import { Image } from 'expo-image'
-import HeaderBack from '@/components/headerBack'
-import { cardInfoType } from '@/types/cardInfoType'
 import CardInfo from '@/components/cardInfo'
-const { width } = Dimensions.get('window');
+import HeaderBack from '@/components/headerBack'
 import { reimburseData } from '@/data/reimburseData'
+import { cardInfoType } from '@/types/cardInfoType'
+import { Image } from 'expo-image'
+import React, { useEffect, useState } from 'react'
+import { Dimensions, Pressable, ScrollView, Text, View } from 'react-native'
+const { width } = Dimensions.get('window');
 
 const historyReimburseKaryawan = () => {
 
@@ -194,34 +194,58 @@ const historyReimburseKaryawan = () => {
         <View className='w-full h-[200px]'/>
       </ScrollView>
 
-      <View className='bg-white w-full h-[150px] flex-row items-start px-[30px] pt-[20px] rounded-t-3xl absolute bottom-0 gap-[10px] border border-purple-600'>
-        <Pressable onPress={() => setIsActive("All")}
-        className={`w-[45px] h-[45px] flex  justify-center items-center mt-2 border-[1px] ${isActive==="All"?"border-purple-600 border-b-[2px]":"border-purple-200"} rounded-lg`}>
-          <Text className={`text-[12px] ${isActive==="All"?"text-purple-600":"text-purple-200"}`}>All</Text>
-        </Pressable >
+      {/* APPROVE OR NO BUTTON */}
+      {/* FILTER USER */}
+      <View className='w-full h-[220px] flex flex-col absolute bottom-0 z-10'>
+        
+        {checkActive ? (
+          <View className='w-full h-[70px] flex flex-row justify-end items-center gap-[10px] pr-[20px]'>
+            <Pressable onPress={() => setCheckActive(false)} className='h-[40px] border border-b-[2px] border-purple-800 flex flex-row justify-center items-center px-[20px] bg-green-400 rounded-full gap-2'>
+              <Image source={require("../../assets/icons/s-approve.png")} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
+              <Text className='font-bold text-[10px] text-white'>approved</Text>
+            </Pressable>
+            <Pressable onPress={() => setCheckActive(false)} className='h-[40px] px-[20px] border border-b-[2px] border-purple-800 flex flex-row justify-center items-center bg-red-400 rounded-full gap-2'>
+              <Image source={require("../../assets/icons/s-decline.png")} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
+              <Text className='font-bold text-[10px] text-white'>rejected</Text>
+            </Pressable>
+            <Pressable onPress={() => setCheckActive(false)} className='h-[40px] w-[40px] border border-b-[2px] border-purple-800 flex justify-center items-center bg-white rounded-full'>
+              <Image source={require("../../assets/icons/s-decline.png")} style={{ width: 10, height: 10 }} tintColor={"#9333EA"}/>
+            </Pressable>
+          </View>
+        ):
+        (
+          <View className='w-full h-[70px]'/>
+        )}
 
-      {/*  Scroll horizontal dengan animasi scale */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      >
-        <View className='w-full h-[60px] flex flex-row items-center gap-2'>
-          {users.map((item, index) => {
-            return (
-                <Pressable 
-                  key={index}
-                  onPress={() => setIsActive(item.username)} // ✨ tambahan
-                  className={`bg-purple-300 w-[50px] h-[50px] flex justify-center items-center rounded-full ${isActive===item.username&&"border border-b-[2px] border-purple-600"}`}
-                >
-                  <Text className='text-white text-lg font-bold'>{item.username.charAt(0).toUpperCase()}</Text>
-                </Pressable>
-            );
-          })}
+        <View className='bg-white w-full h-[150px] flex-row items-start px-[30px] pt-[20px] rounded-t-3xl gap-[10px] border border-purple-600'>
+          <Pressable onPress={() => setIsActive("All")}
+          className={`w-[45px] h-[45px] flex  justify-center items-center mt-2 border-[1px] ${isActive==="All"?"border-purple-600 border-b-[2px]":"border-purple-200"} rounded-lg`}>
+            <Text className={`text-[12px] ${isActive==="All"?"text-purple-600":"text-purple-200"}`}>All</Text>
+          </Pressable >
+
+          {/*  Scroll horizontal dengan animasi scale */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          >
+            <View className='w-full h-[60px] flex flex-row items-center gap-2'>
+              {users.map((item, index) => {
+                return (
+                    <Pressable 
+                      key={index}
+                      onPress={() => setIsActive(item.username)} // ✨ tambahan
+                      className={`bg-purple-300 w-[50px] h-[50px] flex justify-center items-center rounded-full ${isActive===item.username&&"border border-b-[2px] border-purple-600"}`}
+                    >
+                      <Text className='text-white text-lg font-bold'>{item.username.charAt(0).toUpperCase()}</Text>
+                    </Pressable>
+                );
+              })}
+            </View>
+          </ScrollView>
         </View>
-      </ScrollView>
+      </View>
               
       </View>
-    </View>
   )
 }
 
