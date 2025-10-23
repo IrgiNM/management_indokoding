@@ -86,6 +86,7 @@ const Login = () => {
       const data = dataUser.find(item => item.username === username && item.password === password);
       if(data){
         await AsyncStorage.setItem('userId', data.id.toString());
+        
         router.replace('/(tabs)/home');
       }
     } catch (error) {
