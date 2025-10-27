@@ -1,101 +1,97 @@
 import { View, Text, Pressable, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router';
 import { userData } from '@/data/userData';
 // import CookieManager from '@react-native-cookies/cookies';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserId, saveToken } from '@/hooks/tokenFunction';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const dataUser = userData;
   const router = useRouter();
-  const API_BASE_URL = 'http://192.168.100.92:8000'; 
+  const API_BASE_URL = 'http://192.168.1.31:8000';
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const handleLogin = async () => {
+    // 1. Cek apakah sedang loading, kalau iya, jangan lakukan apa-apa
+    if (isLoading) return;
+
+    // 2. Mulai proses login
+    setIsLoading(true);
+    setError(null); // Bersihkan error lama
+
+    // 3. Kirim data ke backend (ini bagian "ajaib"-nya)
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/login/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Ubah data state kita jadi string JSON
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
+
+      // 4. Baca jawaban dari backend
+      const data = await response.json();
+
+      // 5. Tentukan hasilnya
+      if (response.ok) {
+        // --- BERHASIL! ---
+        console.log('Login berhasil, token:', data.token);
+        console.log('dataUser : ', data);
+        
+        // TODO: Nanti kita akan simpan token ini
+        
+        // Pindahkan user ke halaman home
+        router.replace('/(tabs)/home'); 
+
+      } else {
+        // --- GAGAL (Username/password salah) ---
+        // 'non_field_errors' adalah pesan error default dari Django
+        setError(data.non_field_errors[0] || 'Username atau password salah.');
+      }
+
+    } catch (err) {
+      // --- GAGAL (Server mati / Jaringan / IP salah) ---
+      console.error('Error koneksi:', err);
+      setError('Gagal terhubung ke server. Pastikan IP sudah benar.');
+    } finally {
+      // 6. Selesai (baik gagal atau sukses, loadingnya dihentikan)
+      setIsLoading(false); 
+    }
+  };
+
   // const handleLogin = async () => {
-  //   // 1. Cek apakah sedang loading, kalau iya, jangan lakukan apa-apa
-  //   if (isLoading) return;
-
-  //   // 2. Mulai proses login
   //   setIsLoading(true);
-  //   setError(null); // Bersihkan error lama
-
-  //   // 3. Kirim data ke backend (ini bagian "ajaib"-nya)
   //   try {
-  //     const response = await fetch(`${API_BASE_URL}/api/login/`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       // Ubah data state kita jadi string JSON
-  //       body: JSON.stringify({
-  //         username: username,
-  //         password: password,
-  //       }),
-  //     });
-
-  //     // 4. Baca jawaban dari backend
-  //     const data = await response.json();
-
-  //     // 5. Tentukan hasilnya
-  //     if (response.ok) {
-  //       // --- BERHASIL! ---
-  //       console.log('Login berhasil, token:', data.token);
-        
-  //       // TODO: Nanti kita akan simpan token ini
-        
-  //       // Pindahkan user ke halaman home
-  //       router.replace('/(tabs)/home'); 
-
-  //     } else {
-  //       // --- GAGAL (Username/password salah) ---
-  //       // 'non_field_errors' adalah pesan error default dari Django
-  //       setError(data.non_field_errors[0] || 'Username atau password salah.');
+  //     const data = dataUser.find(item => item.username === username && item.password === password);
+  //     if(data){
+  //       await saveToken(data.id.toString());
+  //       router.replace('/(tabs)/home');
   //     }
-
-  //   } catch (err) {
-  //     // --- GAGAL (Server mati / Jaringan / IP salah) ---
-  //     console.error('Error koneksi:', err);
-  //     setError('Gagal terhubung ke server. Pastikan IP sudah benar.');
-  //   } finally {
-  //     // 6. Selesai (baik gagal atau sukses, loadingnya dihentikan)
-  //     setIsLoading(false); 
+  //   } catch (error) {
+  //     console.error('Gagal menyimpan user ID:', error);
+  //   }
+  //   finally {
+  //     setIsLoading(false);
   //   }
   // };
 
-  // const handleLogin = async () => {
-  //   const data = dataUser.find(item => item.username === username && item.password === password);
-  //   if(data){
-  //     await CookieManager.set('app://local', {
-  //       name: 'user_id',
-  //       value: data.id.toString(),
-  //       path: '/',
-  //       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 hari
-  //     });
-  //   }
-  //   router.replace('/(tabs)/home');
-  // }
-
-  const handleLogin = async () => {
-    setIsLoading(true);
-    try {
-      const data = dataUser.find(item => item.username === username && item.password === password);
-      if(data){
-        await AsyncStorage.setItem('userId', data.id.toString());
-        
+  useEffect(()=>{
+    const checkLogin = async ()=>{
+      if(await getUserId()){
         router.replace('/(tabs)/home');
       }
-    } catch (error) {
-      console.error('Gagal menyimpan user ID:', error);
     }
-    finally {
-      setIsLoading(false);
-    }
-  };
+    checkLogin();
+  }, []);
 
   return (
     <View className='flex-1 w-full bg-black'>

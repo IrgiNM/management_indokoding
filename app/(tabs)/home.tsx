@@ -1,16 +1,24 @@
 import { View, Text, ScrollView, FlatList, Pressable, Dimensions } from 'react-native'
-import React, { useState } from 'react'
+import React, { use, useState } from 'react'
 import { Image, ImageBackground } from 'expo-image'
 import { useRouter } from 'expo-router'
 import CardInfo from '@/components/cardInfo'
 import { dataReimburseMain } from '@/hooks/dataReimburseFunction'
+import { getUserId } from '@/hooks/tokenFunction'
+import { getDataUserLogin } from '@/hooks/userFunction'
+import { UserType } from '@/types/userType'
+import { formatRupiah } from '@/hooks/formatRupiahFunction'
 const { width } = Dimensions.get('window');
 
 const home = () => {
 
   const router = useRouter();
   const [statusActieve, setStatusActive] = useState(1);
-  const { dataReimburse, dataMonth } = dataReimburseMain();
+  const { dataReimburse, dataMonth, totalAmountReimburse } = dataReimburseMain();
+  const dataUserLogin = getDataUserLogin();
+
+  
+//   const dataUser = getDataUserLogin();
 
   const iconStatus = [
     {
@@ -53,18 +61,21 @@ const home = () => {
         title: "create reimburse",
         icon: require("../../assets/icons/reimburse-active.png"),
         link: () => {router.replace('/reimburse')},
+        role: "all"
     },
     {
         id: 1,
         title: "data Reimburse",
         icon: require("../../assets/icons/data-reimburse.png"),
         link: () => {router.replace('../(admin)/historyReimburseKaryawan')},
+        role: "admin"
     },
     {
         id: 1,
         title: "data karyawan",
         icon: require("../../assets/icons/karyawan.png"),
         link: () => {router.replace('../(admin)/dataKaryawan')},
+        role: "admin"
     },
   ]
 
@@ -82,11 +93,10 @@ const home = () => {
                 </Text> */}
             </View>
             <View className='flex flex-col justify-start items-start ml-3'>
-                <Text className='font-bold'>
-                    Hi,
+                <Text className='font-bold'>Hi,
                 </Text>
                 <Text>
-                    Username
+                    {dataUserLogin?.[0]?.username}
                 </Text>
             </View>
         </View>
@@ -109,7 +119,7 @@ const home = () => {
                     <View className="flex flex-col justify-start items-start">
                         <Text className="text-[10px] text-white">Total Reimburse</Text>
                         <View className='w-full flex flex-row justify-between items-center'>
-                            <Text className="text-[20px] text-white font-bold">Rp 100.000.000</Text>
+                            <Text className="text-[20px] text-white font-bold">{formatRupiah(totalAmountReimburse||0)}</Text>
                             <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)' }} onPress={() => {}} className="w-[100px] border-[.5px] border-b-[1px] border-white rounded-lg flex flex-row justify-center items-center bg-purple-500">
                                 <Text className="text-[12px] font-bold py-[5px] text-white">Okt 2025</Text>
                                 <Image
@@ -180,7 +190,7 @@ const home = () => {
             <View className='h-[100px] w-full flex flex-row justify-start items-center gap-3 bg-[#F1E3FA] mt-5 pl-[30px] pr-[30px]'>
                 {dataReimburse.map((item, idx) => (
                     <CardInfo 
-                        amount={item.amount} 
+                        amount={item.amount.toString()} 
                         date={item.date}
                         description={item.description}
                         title={item.title}

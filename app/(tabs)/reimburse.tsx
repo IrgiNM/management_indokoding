@@ -14,6 +14,7 @@ const reimburse = () => {
   const [titleReimburse, setTitleReimburse] = useState('');
   const [dataItem, setDataItem] = useState<{ name: string; price: number }[]>([]);
   const [descriptionReimburse, setDescriptionReimburse] = useState('');
+  const status = 'Pending';
   
   return (
     <View className='bg-white flex-1 justify-start items-center'>

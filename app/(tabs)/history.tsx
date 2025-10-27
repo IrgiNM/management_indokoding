@@ -34,9 +34,9 @@ const index = () => {
       icon: require('../../assets/icons/s-approve.png'),
       link: ()=>{setStatusActive('Approved')}
     },
-    { 
-      id: 4, 
-      status: 'Rejected', 
+    {
+      id: 4,
+      status: 'Rejected',
       icon: require('../../assets/icons/s-decline.png'),
       link: ()=>{setStatusActive('Rejected')}
     },
@@ -77,7 +77,7 @@ const index = () => {
                       if(itemMonth === thisMonth && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive))){
                         return (
                           <CardInfo 
-                            amount={item.amount} 
+                            amount={item.amount.toString()} 
                             date={item.date}
                             description={item.description}
                             title={item.title}
@@ -107,7 +107,7 @@ const index = () => {
                     if(itemMonth === month && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive))){
                       return (
                         <CardInfo 
-                          amount={item.amount} 
+                          amount={item.amount.toString()} 
                           date={item.date}
                           description={item.description}
                           title={item.title}

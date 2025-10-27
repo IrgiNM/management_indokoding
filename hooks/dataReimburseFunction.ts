@@ -11,6 +11,7 @@ export function getDataReimburseUser(userId: number) {
 export const dataReimburseMain = () => {
     const [dataReimburse, setDataReimburse] = useState<ReimburseType[]>([]);
     const [dataMonth, setDataMonth] = useState<string[]>([]);
+    const [totalAmountReimburse, setTotalAmountReimburse] = useState<number>(0);
 
     useEffect(() => {
         const getUserId = async () => {
@@ -42,5 +43,11 @@ export const dataReimburseMain = () => {
         console.log(' reimburse bulan:', dataMonth);
     }, [dataMonth, dataReimburse]);
 
-    return {dataReimburse, dataMonth};
+    useEffect(()=>{
+        const total = dataReimburse.reduce((sum, item) => sum + item.amount, 0);
+        setTotalAmountReimburse(total);
+        console.log('Total amount reimburse:', total);
+    }, [dataReimburse]);
+
+    return {dataReimburse, dataMonth, totalAmountReimburse};
 }

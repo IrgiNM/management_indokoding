@@ -3,7 +3,7 @@ export type ReimburseType = {
     id_user: number;
     title: string;
     description: string;
-    amount: string;
+    amount: number;
     date: string;
     status: string; // bisa dibatasi dengan union type
   };

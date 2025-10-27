@@ -3,6 +3,7 @@ import React from 'react'
 import { Image } from 'expo-image'
 import { cardInfoType } from '@/types/cardInfoType'
 import { useRouter } from 'expo-router'
+import { formatRupiah } from '@/hooks/formatRupiahFunction'
 
 const CardInfo = ({id, amount, date, description, title, type, status, w, longPress}: cardInfoType) => {
   const router = useRouter();
@@ -62,7 +63,7 @@ const CardInfo = ({id, amount, date, description, title, type, status, w, longPr
                 type === "python" ? "text-[#2563EB]" :
                 "text-[#9333EA]"
               }`}>
-                {amount}
+                {formatRupiah(Number(amount))}
             </Text>
             <Text className='text-[10px] '>
                 {date}

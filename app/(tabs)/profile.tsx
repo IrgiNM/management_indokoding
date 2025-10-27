@@ -3,9 +3,10 @@ import React from 'react'
 import HeaderBack from '@/components/headerBack'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
+import { logoutUser } from '@/hooks/tokenFunction'
 
 const profile = () => {
-const router = useRouter();
+  const router = useRouter();
   return (
     <View className='bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
@@ -41,13 +42,20 @@ const router = useRouter();
         
        
       </View>  
-      <View className='absolute z-20 bottom-[0px] w-full h-[150px] border border-blue-800 bg-white flex justify-start gap-3 items-center px-[30px] pt-[20px] rounded-t-3xl'>
+      <View className='absolute z-20 bottom-[0px] w-full h-[200px] border border-blue-800 bg-white flex justify-start gap-3 items-center px-[30px] pt-[20px] rounded-t-3xl'>
         <Pressable onPress={() => {router.replace('/(detail)/editProfile')}} className='p-[15px] w-full flex flex-row justify-center items-center   rounded-lg bg-blue-800'
         >
           <Text className='mr-2 text-white font-bold'>
               Edit Profile
           </Text>
           <Image source={require('../../assets/icons/s-decline.png')} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
+        </Pressable>
+        <Pressable onPress={() => {logoutUser()}} className='p-[15px] w-full flex flex-row justify-center items-center   rounded-lg bg-red-800'
+        >
+          <Text className='mr-2 text-white font-bold'>
+              Log Out
+          </Text>
+          {/* <Image source={require('../../assets/icons/s-decline.png')} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/> */}
         </Pressable>
       </View>
 
