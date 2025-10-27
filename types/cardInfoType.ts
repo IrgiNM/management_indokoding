@@ -5,7 +5,7 @@ export type cardInfoType = {
     user?: string,
     title: string,
     description: string,
-    amount: string,
+    amount: number,
     date: string,
     status?: string,
     type?: string,

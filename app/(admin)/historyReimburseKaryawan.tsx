@@ -19,6 +19,7 @@ const historyReimburseKaryawan = () => {
   const thisMonth = today.slice(0,7);
 
   const dataReimburse: cardInfoType[] = reimburseData;
+
   const statusList = [
     { 
       id: 1, 
