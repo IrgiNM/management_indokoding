@@ -11,7 +11,7 @@ const CardInfo = ({id, amount, date, description, title, type, status, w, longPr
     <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)' }}
     onPress={() => {
       router.push({
-        pathname: "../(detail)/detailReimburse",
+        pathname: "../(admin)/detailReimburseAdmin",
         params: { id: id }, // kirim id ke halaman tujuan
       });
     }}
