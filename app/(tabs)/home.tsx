@@ -4,17 +4,18 @@ import { Image, ImageBackground } from 'expo-image'
 import { useRouter } from 'expo-router'
 import CardInfo from '@/components/cardInfo'
 import { dataReimburseMain } from '@/hooks/dataReimburseFunction'
-import { getUserId } from '@/hooks/tokenFunction'
 import { getDataUserLogin } from '@/hooks/userFunction'
 import { UserType } from '@/types/userType'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
+import { ReimbursementType } from '@/types/reimburseDataType'
 const { width } = Dimensions.get('window');
 
 const home = () => {
 
   const router = useRouter();
   const [statusActieve, setStatusActive] = useState(1);
-  const { dataReimburse, dataMonth, totalAmountReimburse } = dataReimburseMain();
+  const { dataReimburseUser, totalAmountReimburse } = dataReimburseMain();
+//   const [dataReimburse, setDataReimburse] = useState<ReimbursementType[]>([]);
   const dataUserLogin = getDataUserLogin();
 
   
@@ -96,7 +97,7 @@ const home = () => {
                 <Text className='font-bold'>Hi,
                 </Text>
                 <Text>
-                    {dataUserLogin?.[0]?.username}
+                    {dataUserLogin?.username}
                 </Text>
             </View>
         </View>
@@ -130,8 +131,6 @@ const home = () => {
                             </Pressable>
                         </View>
                     </View>
-
-                    
                 </View>
             </ImageBackground>
 
@@ -186,22 +185,38 @@ const home = () => {
         </View>
 
         {/* LIST REIMBURSE */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View className='h-[100px] w-full flex flex-row justify-start items-center gap-3 bg-[#F1E3FA] mt-5 pl-[30px] pr-[30px]'>
-                {dataReimburse.map((item, idx) => (
-                    <CardInfo 
-                        amount={item.amount.toString()} 
-                        date={item.date}
-                        description={item.description}
-                        title={item.title}
-                        status={item.status}
-                        key={idx}
-                        id={item.id}
-                        w="w-[300px]"
+        {dataReimburseUser.length > 0 ? (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View className='h-[100px] w-full flex flex-row justify-start items-center gap-3 pl-[30px] pr-[30px] bg-[#F1E3FA] mt-5'>
+                    {dataReimburseUser.map((item, idx) => (
+                        <CardInfo 
+                            amount={Number(item.total_amount)} 
+                            date={item.created_at??'null'}
+                            description={item.description}
+                            title={item.title}
+                            status={item.status}
+                            key={idx}
+                            id={item.id??0}
+                            w="w-[300px]"
+                        />
+                    ))}
+                </View>
+            </ScrollView>
+        ) : (
+            <View className='h-[100px] w-full flex flex-row justify-center items-center gap-3 bg-[#F1E3FA] mt-5'>
+                <View className='flex flex-row justify-center items-center gap-2 text-[10px] py-3 px-[30px] border-[.5px] rounded-full border-purple-600 bg-purple-100 text-purple-800 font-bold'>
+                    <Image
+                    source={require('../../assets/icons/s-decline.png')}
+                    style={{ width: 7, height: 7 }}
+                    tintColor={'purple'}
                     />
-                ))}
+                    <Text className='text-[10px] text-purple-800 font-bold'>
+                        Not Reimbursements
+                    </Text>
+                </View>
             </View>
-        </ScrollView>
+        )}
+        
 
         {/* MENU LIST */}
         <View className='w-full flex justify-start items-center px-[30px] pt-[10px]'>

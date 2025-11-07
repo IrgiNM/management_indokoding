@@ -5,14 +5,13 @@ import HeaderBack from '@/components/headerBack'
 import { cardInfoType } from '@/types/cardInfoType'
 import CardInfo from '@/components/cardInfo'
 import { useRouter } from 'expo-router'
-import { reimburseData } from '@/data/reimburseData'
 import { thisMonth } from '@/hooks/todayFunction'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { dataReimburseMain, getDataReimburseUser } from '@/hooks/dataReimburseFunction'
-import { ReimburseType } from '@/types/reimburseDataType'
+import { dataReimburseMain } from '@/hooks/dataReimburseFunction'
+import { ReimbursementType } from '@/types/reimburseDataType'
 
 const index = () => {
-  const { dataReimburse, dataMonth } = dataReimburseMain();
+  const { dataReimburseUser, dataMonth } = dataReimburseMain();
 
   const [statusActive, setStatusActive] = useState('All');
   const statusList = [
@@ -71,19 +70,19 @@ const index = () => {
                     <Text className='text-[12px] font-bold mb-2'>Rp. 5.000.000</Text>
                   </View>
                   <View className='w-full px-[20px] pt-[15px] bg-purple-200 pb-[30px] flex flex-col justify-start items-center gap-2'>
-                    {dataReimburse.map((item, idx) => {
-                      const itemISO = new Date(item.date).toISOString();
+                    {dataReimburseUser.map((item, idx) => {
+                      const itemISO = item.created_at??'';
                       const itemMonth = itemISO.slice(0,7);
                       if(itemMonth === thisMonth && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive))){
                         return (
-                          <CardInfo 
-                            amount={item.amount.toString()} 
-                            date={item.date}
+                          <CardInfo
+                            amount={Number(item.total_amount)}
+                            date={item.created_at??''}
                             description={item.description}
                             title={item.title}
                             key={idx}
                             status={item.status}
-                            id={item.id}
+                            id={item.id??0}
                             type=''
                             w="w-full"
                           />
@@ -101,19 +100,19 @@ const index = () => {
                   <Text className='text-[12px] font-bold mb-2'>Rp. 5.000.000</Text>
                 </View>
                 <View className='w-full px-[20px] pt-[15px] bg-purple-50 pb-[30px] flex flex-col justify-start items-center gap-2'>
-                  {dataReimburse.map((item, idx) => {
-                    const itemISO = new Date(item.date).toISOString();
+                  {dataReimburseUser.map((item, idx) => {
+                    const itemISO = item.created_at??'';
                     const itemMonth = itemISO.slice(0,7);
                     if(itemMonth === month && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive))){
                       return (
-                        <CardInfo 
-                          amount={item.amount.toString()} 
-                          date={item.date}
+                        <CardInfo
+                          amount={Number(item.total_amount)}
+                          date={item.created_at??''}
                           description={item.description}
                           title={item.title}
                           status={item.status}
                           key={idx}
-                          id={item.id}
+                          id={item.id??0}
                           type=''
                           w="w-full"
                         />
