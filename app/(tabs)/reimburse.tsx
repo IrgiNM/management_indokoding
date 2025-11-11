@@ -6,7 +6,8 @@ import { formatRupiah } from '@/hooks/formatRupiahFunction'
 import * as ImagePicker from 'expo-image-picker';
 import { PickedImageType } from '@/types/PickerImageType'
 import { dataReimburseMain } from '@/hooks/dataReimburseFunction'
-import { createCategory } from '@/hooks/api'
+import { createCategory, createReimburse, createReimburseItem } from '@/hooks/api'
+import { ReimbursementSendType } from '@/types/reimburseDataType'
 
 const reimburse = () => {
 
@@ -18,18 +19,57 @@ const reimburse = () => {
   const { categoryReimburse } = dataReimburseMain();
   const [categoryData, setCategoryData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+
   // DATA REIMBURSE
   const [titleReimburse, setTitleReimburse] = useState('');
-  const [dataItem, setDataItem] = useState<{ name: string; price: number }[]>([]);
-  const [dataCategory, setDataCategory] = useState<{ name: string }[]>([]);
   const [descriptionReimburse, setDescriptionReimburse] = useState('');
-  const status = 'Pending';
   const [image, setImage] = useState<ImagePicker.ImagePickerAsset[]>([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [dataReimburseSend, setDataReimburseSend] = useState<ReimbursementSendType>({
+    title: "",
+    total_amount: "0",
+    description: "",
+    status: "",
+  });
+  
+  // DATA ITEM
+  const [dataCategory, setDataCategory] = useState<{ name: string }[]>([]);
+  const [dataItem, setDataItem] = useState<{ name: string; price: number }[]>([]);
+  const [dataIdCategory, setDataIdCategory] = useState<number[]>([]);
+  const [dataIdReimburse, setDataIdReimburse] = useState(0);
 
   useEffect(()=>{
     setCategoryData(categoryReimburse);
   }, [categoryReimburse])
 
+  useEffect(()=>{
+    const calculate = async ()=>{
+      const total = dataItem.reduce((sum, item) => sum + item.price, 0);
+      setTotalPrice(total);
+    };
+    calculate();
+  }, [dataItem]);
+
+  useEffect(() => {
+    setDataReimburseSend({
+      title: titleReimburse,
+      total_amount: totalPrice.toString(),
+      description: descriptionReimburse,
+      status: 'Pending',
+    });
+  }, [titleReimburse, descriptionReimburse, totalPrice]);
+
+  useEffect(()=>{
+    if(dataIdCategory.length > 0){
+      handleReimburse();
+    }
+  }, [dataIdCategory]);
+
+  useEffect(()=>{
+    if(dataIdReimburse!==0){
+      handleItem();
+    }
+  }, [dataIdReimburse]);
 
   const pickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -48,25 +88,61 @@ const reimburse = () => {
     }
   };
 
+  const handleCategory = async () => {
+    console.error('Data Category to submit:', dataCategory);
+    (dataCategory.map(async (item)=>{
+      const resCategory = await createCategory(item);
+      if(resCategory){
+        setDataIdCategory(prev=>[...prev, resCategory.data.id]);
+        console.log('Category created successfully', resCategory.data);
+        setInfoText('Category created successfully');
+        setPopUpInfo(true);
+        setCategoryData([]);
+        setItemPrice(0);
+      }
+      console.error('ResponseCategory from createCategory:', resCategory);
+    }));
+  }
+
+  const handleReimburse = async () => {
+    try{
+      const resReimburse = await createReimburse(dataReimburseSend);
+      if(resReimburse){
+        setDataIdReimburse(resReimburse.data.id)
+        console.error('Reimburse created successfully', resReimburse.data);
+      }
+    }catch{
+      console.error("error dibagian kirim reimburse");
+    }
+  }
+
+  const handleItem = async () => {
+    try{
+      (dataIdCategory.map(async (item, index)=>{
+        console.error("mengirim id reimburse:", dataIdReimburse,"mengirim id category:", item,"mengirim data item:", dataItem[index].price);
+        const resItem = await createReimburseItem({
+          reimbursement: dataIdReimburse,
+          category: item,
+          item_amount: dataItem[index].price.toString(),
+        })
+        if(resItem){
+          console.error('Item created successfully', resItem.data);
+        }
+      }))
+      setDataItem([]);
+      setTitleReimburse('');
+      setDescriptionReimburse('');
+    }catch{
+      console.error("error dibagian kirim item");
+    }
+  }
+  
   const handleSubmit = async () => {
     setLoading(true);
     try{
-      console.error('Data Category to submit:', dataCategory);
-      (dataCategory.map(async (item)=>{
-        const res = await createCategory(item);
-        if(res){
-          console.log('Category created successfully', res.data);
-          setInfoText('Category created successfully');
-          
-          setPopUpInfo(true);
-          setCategoryData([]);
-          setDataItem([]);
-          setItemPrice(0);
-        }
-        console.error('Response from createCategory:', res);
-      }))
-    } catch {
-      console.error('Error creating category');
+      await handleCategory();
+    } catch(error) {
+      console.error('Error creating category', error);
       setInfoText('Error creating category');
       setPopUpInfo(true);
     } finally {
@@ -221,7 +297,7 @@ const reimburse = () => {
             Total Reimburse Amount
           </Text>
           <Text className='font-bold text-[12px] text-purple-900'>
-            Rp. 1.000.000
+            {formatRupiah(totalPrice)}
           </Text>
         </View>
         <Pressable onPress={() => {setPopUpActive(true)}} className='p-[15px] w-full flex flex-row justify-center items-center border border-b-2 border-purple-800 rounded-lg bg-green-500'

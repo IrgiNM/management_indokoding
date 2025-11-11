@@ -9,6 +9,8 @@ import { BlurView } from 'expo-blur'
 const dataKaryawan = () => {
   const router = useRouter()
   const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [createActive, setCreateActive] = useState(false)
 
   const dataKaryawan = [
@@ -31,6 +33,10 @@ const dataKaryawan = () => {
       reimburse: 'Rp 1.500.000',
     }
   ]
+
+  const handleCreateKaryawan = () => {
+
+  }
 
   return (
     <View className='relative w-full bg-white flex-1 justify-start items-center'>

@@ -1,9 +1,9 @@
-import { ReimbursementType } from "@/types/reimburseDataType";
+import { ReimbursementSendType, ReimbursementType } from "@/types/reimburseDataType";
 import axios from 'axios';
 import { getToken } from './tokenFunction';
 import { loginType } from "@/types/loginType";
 
-export const BASEURL = 'http://192.168.1.4:8000/api/';
+export const BASEURL = 'http://192.168.1.32:8000/api/';
 
 export const api = axios.create({
     baseURL: BASEURL,
@@ -11,7 +11,7 @@ export const api = axios.create({
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer <token>'
+      // 'Authorization': 'Bearer <token>'
     },
 })
 api.interceptors.request.use(
@@ -38,7 +38,7 @@ export const getReimburseUser = async () => {
     throw err;
   }
 }
-export const createReimburse = (data: ReimbursementType) => api.post(`reimbursements/create/`, data);
+export const createReimburse = (data: ReimbursementSendType) => api.post(`reimbursements/create/`, data);
 export const updateReimburse = (id: number) => api.patch(`reimbursements/update/${id}`);
 
 // USER
@@ -47,7 +47,7 @@ export const getUserId = () => api.get('user/me');
 
 // REIMBURSE ITEM
 export const getReimburseItemId = (id: number) => api.get(`item/${id}`);
-export const createReimburseItem = (data: object) => api.post('item/create/', data);
+export const createReimburseItem = (data: object) => api.post('item/create', data);
 
 // CATEGORY
 export const createCategory = (data: object) => api.post('category/create/', data);
