@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getToken } from './tokenFunction';
 import { loginType } from "@/types/loginType";
 
-export const BASEURL = 'http://192.168.1.32:8000/api/';
+export const BASEURL = 'http://192.168.1.9:8000/api/';
 
 export const api = axios.create({
     baseURL: BASEURL,
@@ -28,6 +28,7 @@ api.interceptors.request.use(
 
 // REIMBURSEMENT
 export const getReimburseAll = () => api.get('reimbursements/');
+export const getReimburseThisMonthAll = () => api.get('reimbursements/thisMonth/');
 export const getReimburseUser = async () => {
   try {
     const res = await api.get('reimbursements/user/');
@@ -44,6 +45,8 @@ export const updateReimburse = (id: number) => api.patch(`reimbursements/update/
 // USER
 export const login = (data: loginType) => api.post('login/', data);
 export const getUserId = () => api.get('user/me');
+export const createUser = (data: object) => api.post('user/create', data);
+export const getUserAll = () => api.get('users');
 
 // REIMBURSE ITEM
 export const getReimburseItemId = (id: number) => api.get(`item/${id}`);

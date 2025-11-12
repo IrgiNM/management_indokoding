@@ -12,7 +12,7 @@ import { ReimbursementSendType } from '@/types/reimburseDataType'
 const reimburse = () => {
 
   const [popUpActive, setPopUpActive] = useState(false);
-  const [popUpInfo, setPopUpInfo] = useState(false);
+  const [popUpInfo, setPopUpInfo] = useState(true);
   const [infoText, setInfoText] = useState('');
   const [itemName, setItemName] = useState('');
   const [itemPrice, setItemPrice] = useState(0);
@@ -217,18 +217,22 @@ const reimburse = () => {
                   }} className='bg-purple-100 border-[.5px] border-b-[1px] border-purple-800 rounded-lg py-[5px] px-[10px] mt-2 text-center text-[10px]'>
                     <Image source={require("../../assets/icons/refresh.png")} style={{ width: 12, height: 12 }} tintColor={'purple'}/>
                   </Pressable>
-                  {categoryData.map((item,index)=>{
-                    return (
-                      <Pressable onPress={() => {
-                        setItemName(item);
-                        setCategoryData(prev => prev.filter(col => col !== item));
-                      }} key={index} className='bg-purple-100 border-[.5px] border-b-[1px] border-purple-800 rounded-lg py-[5px] px-[10px] mt-2 text-center text-[10px]'>
-                        <Text className='text-[10px]'>
-                          {item}
-                        </Text>
-                      </Pressable>
-                    )
-                  })}
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} className='w-full'>
+                    <View className='flex-row gap-2'>
+                      {categoryData.map((item,index)=>{
+                        return (
+                          <Pressable onPress={() => {
+                            setItemName(item);
+                            setCategoryData(prev => prev.filter(col => col !== item));
+                          }} key={index} className='bg-purple-100 border-[.5px] border-b-[1px] border-purple-800 rounded-lg py-[5px] px-[10px] mt-2 text-center text-[10px]'>
+                            <Text className='text-[10px]'>
+                              {item}
+                            </Text>
+                          </Pressable>
+                        )
+                      })}
+                    </View>
+                  </ScrollView>
                 </View>
               </View>
 
@@ -345,9 +349,9 @@ const reimburse = () => {
                 {infoText}
               </Text>
               <View className='flex flex-row justify-center items-center gap-3 mt-5 w-full'>
-                <Pressable onPress={() => {setPopUpInfo(false)}} className='w-[50%] border border-b-[2px] border-purple-800 bg-purple-50 rounded-lg py-[10px] flex justify-center items-center'>
+                <Pressable onPress={() => {setPopUpInfo(false)}} className='w-full border border-b-[2px] border-purple-800 bg-purple-50 rounded-lg py-[10px] flex justify-center items-center'>
                   <Text className='font-bold text-[12px]'>
-                    X
+                    Close
                   </Text>
                 </Pressable>
                 

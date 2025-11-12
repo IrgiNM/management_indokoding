@@ -2,7 +2,7 @@ import { ReimbursementType } from "@/types/reimburseDataType";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { getToken } from "./tokenFunction";
-import { getReimburseAll, getReimburseItemId, getReimburseUser } from "./api";
+import { getReimburseAll, getReimburseItemId, getReimburseThisMonthAll, getReimburseUser } from "./api";
 import { ReimbursementItemType } from "@/types/reimburseItemType";
 
 export const dataReimburseMain = () => {
@@ -12,6 +12,7 @@ export const dataReimburseMain = () => {
     const [categoryReimburse, setCategoryReimburse] = useState<string[]>([]);
     const [reimburseId, setReimburseId] = useState<number[]>([]);
     const [dataItem, setDataItem] = useState<ReimbursementItemType[]>([]);
+    const [dataThisMonthAll, setDataThisMonthAll] = useState<ReimbursementType[]>([]);
 
     useEffect(() => {
         const getReimbursementAll = async () => {
@@ -26,6 +27,21 @@ export const dataReimburseMain = () => {
             }
         };
         getReimbursementAll();
+    }, []);
+
+    useEffect(() => {
+        const getReimbursementThisMonthAll = async () => {
+            try {
+                const data = await getReimburseThisMonthAll();
+                if(data.status === 200){
+                    setDataThisMonthAll(data.data);
+                    console.log('Data reimburse this month fetched successfully', data.data);
+                }
+            } catch (error) {
+                console.error('Gagal mengambil reimburse this month:', error);
+            }
+        };
+        getReimbursementThisMonthAll();
     }, []);
 
     // DATA MONTH
@@ -107,7 +123,7 @@ export const dataReimburseMain = () => {
         console.log('Total amount reimburse:', total);
     }, [dataReimburseUser]);
 
-    return {dataReimburseUser, totalAmountReimburse, dataMonth, categoryReimburse};
+    return {dataReimburseUser, totalAmountReimburse, dataMonth, categoryReimburse, dataThisMonthAll};
 }
 
 

@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, FlatList, Pressable, Dimensions } from 'react-native'
-import React, { use, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { Image, ImageBackground } from 'expo-image'
 import { useRouter } from 'expo-router'
 import CardInfo from '@/components/cardInfo'
@@ -17,6 +17,13 @@ const home = () => {
   const { dataReimburseUser, totalAmountReimburse } = dataReimburseMain();
 //   const [dataReimburse, setDataReimburse] = useState<ReimbursementType[]>([]);
   const dataUserLogin = getDataUserLogin();
+  const [role, setRole] = useState<string>('karyawan');
+
+  useEffect(()=>{
+    if(dataUserLogin.is_staff){
+        setRole('admin');
+    }
+  }, [dataUserLogin]);
 
   
 //   const dataUser = getDataUserLogin();
@@ -62,21 +69,21 @@ const home = () => {
         title: "create reimburse",
         icon: require("../../assets/icons/reimburse-active.png"),
         link: () => {router.replace('/reimburse')},
-        role: "all"
+        role: ['karyawan', 'admin']
     },
     {
         id: 1,
         title: "data Reimburse",
         icon: require("../../assets/icons/data-reimburse.png"),
         link: () => {router.replace('../(admin)/historyReimburseKaryawan')},
-        role: "admin"
+        role: ['admin']
     },
     {
         id: 1,
         title: "data karyawan",
         icon: require("../../assets/icons/karyawan.png"),
         link: () => {router.replace('../(admin)/dataKaryawan')},
-        role: "admin"
+        role: ['admin']
     },
   ]
 
@@ -229,16 +236,20 @@ const home = () => {
 
             {/* STATUS ICON */}
             <View className='w-full justify-start items-center gap-5 flex flex-row flex-wrap mt-7 px-[20px]'>
-                {iconMenu.map((item, index) => (
-                    <Pressable key={index} onPress={item.link}className='flex flex-col justify-center items-center'>
-                            <View className='flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-white border-[.5px] border-b-[1px] border-purple-600'>
-                                <Image source={item.icon} style={{ width: 25, height: 25 }}/>
-                            </View>
-                            <Text className='text-[10px] text-center w-[50px] mt-2'>
-                                {item.title}
-                            </Text>
-                    </Pressable>
-                ))}
+                {iconMenu.map((item, index) => {
+                    if(item.role.includes(role)){
+                        return (
+                            <Pressable key={index} onPress={item.link}className='flex flex-col justify-center items-center'>
+                                <View className='flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-white border-[.5px] border-b-[1px] border-purple-600'>
+                                    <Image source={item.icon} style={{ width: 25, height: 25 }}/>
+                                </View>
+                                <Text className='text-[10px] text-center w-[50px] mt-2'>
+                                    {item.title}
+                                </Text>
+                            </Pressable>
+                        )
+                    }
+                })}
             </View>
         </View>
 

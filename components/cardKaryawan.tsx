@@ -2,6 +2,7 @@ import { View, Text, Pressable } from 'react-native'
 import React from 'react'
 import { Image } from 'expo-image'
 import { cardKaryawanType } from '@/types/cardKaryawanType'
+import { formatRupiah } from '@/hooks/formatRupiahFunction'
 
 const CardKaryawan = ({email, reimburse, username, image, link, w}: cardKaryawanType) => {
   return (
@@ -26,7 +27,7 @@ const CardKaryawan = ({email, reimburse, username, image, link, w}: cardKaryawan
       <View className='flex flex-row justify-end items-center pr-[20px]'>
         <View className='flex flex-col justify-start items-end relative right-[5px] mr-3'>
             <Text className='text-[12px] font-extrabold text-[#8F00EE]'>
-                {reimburse}
+                {formatRupiah(reimburse)}
             </Text>
             <Text className='text-[10px] text-[#40006B]'>
                 in this month

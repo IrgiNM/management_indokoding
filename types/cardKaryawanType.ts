@@ -1,10 +1,10 @@
 import { ImageSourcePropType } from "react-native";
 
 export type cardKaryawanType = {
-    id: number,
+    id?: number,
     username: string,
     email: string,
-    reimburse: string,
+    reimburse: number,
     image?: ImageSourcePropType,
     link?: ()=> void,
     w?: string,
