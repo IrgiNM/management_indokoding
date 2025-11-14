@@ -34,7 +34,10 @@ export const createUserNew = async (data: UserSendType) => {
     try {
         const response = await createUser(data);
         if(response.status === 201){
-            return response.data;
+            return 'berhasil membuat user'
+        }
+        if(response.status === 400){
+            return 'User sudah terdaftar, ganti username dan email'
         }
     } catch {
         console.error('gagal membuat user');

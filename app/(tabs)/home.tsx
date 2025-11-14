@@ -1,23 +1,48 @@
-import { View, Text, ScrollView, FlatList, Pressable, Dimensions } from 'react-native'
-import React, { use, useEffect, useState } from 'react'
-import { Image, ImageBackground } from 'expo-image'
-import { useRouter } from 'expo-router'
 import CardInfo from '@/components/cardInfo'
 import { dataReimburseMain } from '@/hooks/dataReimburseFunction'
-import { getDataUserLogin } from '@/hooks/userFunction'
-import { UserType } from '@/types/userType'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
-import { ReimbursementType } from '@/types/reimburseDataType'
+import { getDataUserLogin } from '@/hooks/userFunction'
+import { Image, ImageBackground } from 'expo-image'
+import { useRouter } from 'expo-router'
+import React, { useEffect, useState } from 'react'
+import { Dimensions, FlatList, Pressable, ScrollView, Text, View } from 'react-native'
 const { width } = Dimensions.get('window');
 
 const home = () => {
 
   const router = useRouter();
   const [statusActieve, setStatusActive] = useState(1);
-  const { dataReimburseUser, totalAmountReimburse } = dataReimburseMain();
-//   const [dataReimburse, setDataReimburse] = useState<ReimbursementType[]>([]);
+  const { dataReimburseUser, totalAmountReimburse, dataMonth } = dataReimburseMain();
   const dataUserLogin = getDataUserLogin();
   const [role, setRole] = useState<string>('karyawan');
+  const year = new Date().getFullYear();
+  const month = new Date().toString().slice(4, 7);
+  const date = new Date().toString();
+  const [selectMonthPopUp, setSelectMonthPopUp] = useState(false);
+  const [selectMonth, setSelectMonth] = useState('');
+  const bulanMap: any = {
+    '1': 'Jan',
+    '2': 'Feb',
+    '3': 'Mar',
+    '4': 'Apr',
+    '5': 'May',
+    '6': 'Jun',
+    '7': 'Jul',
+    '8': 'Aug',
+    '9': 'Sep',
+    '10': 'Oct',
+    '11': 'Nov',
+    '12': 'Dec',
+};
+
+  useEffect(()=>{
+    if(dataMonth.length > 0){
+        setSelectMonth(`${bulanMap[dataMonth[0]]} ${year.toString()}`);
+    }else{
+        setSelectMonth(`${month} ${year.toString()}`);
+    }
+  }, [dataMonth])
+
 
   useEffect(()=>{
     if(dataUserLogin.is_staff){
@@ -92,7 +117,7 @@ const home = () => {
     <View className='bg-white flex-1 justify-start items-center'>
 
       {/* HEADER */}
-      <View className='flex flex-row justify-between items-center relative top-30 w-full h-[110px] p-[30px] pt-[55px]'>
+      <View className='flex flex-row justify-between items-center relative z-[997] top-30 w-full h-[110px] p-[30px] pt-[55px]'>
         <View className='flex flex-row justify-start items-center'>
             <View className='w-[40px] h-[40px] rounded-full bg-blue-300 flex justify-center items-center overflow-hidden'>
                 <Image source={require("../../assets/images/profile-bg.jpeg")} style={{ width: 40, height: 40 }}/>
@@ -128,8 +153,12 @@ const home = () => {
                         <Text className="text-[10px] text-white">Total Reimburse</Text>
                         <View className='w-full flex flex-row justify-between items-center'>
                             <Text className="text-[20px] text-white font-bold">{formatRupiah(totalAmountReimburse||0)}</Text>
-                            <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)' }} onPress={() => {}} className="w-[100px] border-[.5px] border-b-[1px] border-white rounded-lg flex flex-row justify-center items-center bg-purple-500">
-                                <Text className="text-[12px] font-bold py-[5px] text-white">Okt 2025</Text>
+                            <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)' }} onPress={() => {
+                                if(dataMonth.length > 0){
+                                    setSelectMonthPopUp(true)
+                                }
+                                }} className="w-[100px] border-[.5px] border-b-[1px] border-white rounded-lg flex flex-row justify-center items-center bg-purple-500">
+                                <Text className="text-[12px] font-bold py-[5px] text-white">{selectMonth}</Text>
                                 <Image
                                 source={require('../../assets/icons/arrow-dropdown.png')}
                                 style={{ width: 7, height: 7, marginLeft: 5 }}
@@ -257,6 +286,24 @@ const home = () => {
         <View className='w-full h-[1000px] bg-white'></View>
 
       </ScrollView>
+
+      {selectMonthPopUp && (
+        <>
+            <View style={{ position: 'absolute', right: 0, top: 0, bottom: 0, left: 0 }} className='z-[998] bg-black opacity-60' />
+            <View style={{ position: 'absolute', right: 50, top: 210, }} className='w-[100px] rounded-lg border border-white justify-center items-center bg-purple-500 z-[999] px-[10px]'>         
+                {dataMonth.map((item, index) => {
+                    return <Pressable onPress={() => {
+                        setSelectMonth(`${bulanMap[item]} ${year.toString()}`);
+                        setSelectMonthPopUp(false);
+                    }} key={index} className='py-3 border border-l-[0px] border-r-[0px] border-purple-400 w-full flex justify-center items-center'>
+                        <Text className='text-white text-[12px] font-bold'>
+                            {bulanMap[item]} {year.toString()}
+                        </Text>
+                    </Pressable>;
+                })}
+            </View>
+        </>
+      )}
     </View>
   )
 }

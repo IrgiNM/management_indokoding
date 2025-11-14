@@ -1,6 +1,5 @@
 import { UserGetAllType, UserGetType } from "@/types/userGetType";
 import { useEffect, useState } from "react";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { getUserAll } from "./api";
 import { dataReimburseMain } from "./dataReimburseFunction";
 import { GetTotalType } from "@/types/getTotalType";

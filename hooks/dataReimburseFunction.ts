@@ -2,11 +2,12 @@ import { ReimbursementType } from "@/types/reimburseDataType";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { getToken } from "./tokenFunction";
-import { getReimburseAll, getReimburseItemId, getReimburseThisMonthAll, getReimburseUser } from "./api";
+import { DeleteReimburseId, getReimburseAll, getReimburseId, getReimburseItemId, getReimburseThisMonthAll, getReimburseUser } from "./api";
 import { ReimbursementItemType } from "@/types/reimburseItemType";
 
 export const dataReimburseMain = () => {
     const [dataReimburseUser, setDataReimburseUser] = useState<ReimbursementType[]>([]);
+    const [dataIdReimburseUser, setDataIdReimburseUser] = useState<number[]>([]);
     const [dataMonth, setDataMonth] = useState<string[]>([]);
     const [totalAmountReimburse, setTotalAmountReimburse] = useState<number>(0);
     const [categoryReimburse, setCategoryReimburse] = useState<string[]>([]);
@@ -29,6 +30,16 @@ export const dataReimburseMain = () => {
         getReimbursementAll();
     }, []);
 
+    useEffect(()=>{
+        const getId = ()=>{
+            {dataReimburseUser.map((item) => {
+                const id = item.id??0;
+                setDataIdReimburseUser(prev => [...prev, id]);
+            })}
+        }
+        getId();
+    }, [dataReimburseUser]);
+
     useEffect(() => {
         const getReimbursementThisMonthAll = async () => {
             try {
@@ -49,7 +60,7 @@ export const dataReimburseMain = () => {
         const months: string[] = [];
         dataReimburseUser.map((item) => {
         const itemISO = item.created_at??'';
-        const itemMonth = itemISO.slice(0,7);
+        const itemMonth = itemISO.slice(5,7);
         months.push(itemMonth);
         });
         const uniqueMonths = [...new Set(months)];
@@ -111,10 +122,11 @@ export const dataReimburseMain = () => {
     // CONSOLE LOG
     useEffect(()=>{
         console.log('data r:', dataReimburseUser);
-        console.log(' reimburse bulan:', dataMonth);
+        // console.error(' reimburse bulan:', dataMonth);
         console.log('data item reimburse:', dataItem);
         console.log('data category:', categoryReimburse);
-    }, [dataMonth, dataReimburseUser, dataItem]);
+        console.log('reimburse id:', dataIdReimburseUser);
+    }, [dataMonth, dataReimburseUser, dataItem, dataIdReimburseUser]);
 
     // TOTAL AMOUNT REIMBURSE
     useEffect(()=>{
@@ -126,4 +138,59 @@ export const dataReimburseMain = () => {
     return {dataReimburseUser, totalAmountReimburse, dataMonth, categoryReimburse, dataThisMonthAll};
 }
 
+export const dataItemId = (id: number)=>{
+    const [dataItemById, setDataItemById] = useState<ReimbursementItemType[]>([]);
+    const [dataReimbursebyId, setDataReimbursebyId] = useState<ReimbursementType>({
+        id: 0,
+        user: 0,
+        user_detail: {
+            username: '',
+            email: '',
+            is_staff: false,
+        },
+        title: '',
+        total_amount: '',
+        created_at: '',
+        updated_at: '',
+        description: '',
+        image: null,
+        status: '',
+    });
+
+    useEffect(()=>{
+        const fetchItem = async() => {
+            const res = await getReimburseItemId(id);
+            if(res.status === 200){
+                setDataItemById(res.data);
+                console.log('Data item by id fetched successfully', res.data);
+            }
+        }
+        fetchItem();
+    }, [id]);
+
+    useEffect(()=>{
+        const fetchReimburseById = async() => {
+            const res = await getReimburseId(id);
+            if(res.status === 200){
+                setDataReimbursebyId(res.data);
+                console.log('Data reimburse by id fetched successfully', res.data);
+            }
+        }
+        fetchReimburseById();
+    }, [id]);
+
+    return {dataItemById, dataReimbursebyId};
+}
+
+export const deleteReimburseById = async (id: number) => {
+    try{
+        const res = await DeleteReimburseId(id);
+        if(res.status === 204){
+            // console.error('Reimburse deleted successfully', res.data);
+            return res.data;
+        }
+    }catch{
+        // console.error('Failed to delete reimburse');
+    }
+}
 

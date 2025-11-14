@@ -4,7 +4,6 @@ import HeaderBack from '@/components/headerBack'
 import { Image } from 'expo-image'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
 import * as ImagePicker from 'expo-image-picker';
-import { PickedImageType } from '@/types/PickerImageType'
 import { dataReimburseMain } from '@/hooks/dataReimburseFunction'
 import { createCategory, createReimburse, createReimburseItem } from '@/hooks/api'
 import { ReimbursementSendType } from '@/types/reimburseDataType'
@@ -12,7 +11,7 @@ import { ReimbursementSendType } from '@/types/reimburseDataType'
 const reimburse = () => {
 
   const [popUpActive, setPopUpActive] = useState(false);
-  const [popUpInfo, setPopUpInfo] = useState(true);
+  const [popUpInfo, setPopUpInfo] = useState(false);
   const [infoText, setInfoText] = useState('');
   const [itemName, setItemName] = useState('');
   const [itemPrice, setItemPrice] = useState(0);
@@ -88,52 +87,74 @@ const reimburse = () => {
     }
   };
 
+  // const handleCategory = async () => {
+  //   // console.error('Data Category to submit:', dataCategory);
+  //   (dataCategory.map(async (item)=>{
+  //     const resCategory = await createCategory(item);
+  //     if(resCategory){
+  //       setDataIdCategory(prev=>[...prev, resCategory.data.id]);
+  //       console.log('Category created successfully', resCategory.data);
+  //       setInfoText('Category created successfully');
+  //       setPopUpInfo(true);
+  //       setCategoryData([]);
+  //       setItemPrice(0);
+  //     }
+  //     // console.error('ResponseCategory from createCategory:', resCategory);
+  //   }));
+  // }
   const handleCategory = async () => {
-    console.error('Data Category to submit:', dataCategory);
-    (dataCategory.map(async (item)=>{
-      const resCategory = await createCategory(item);
-      if(resCategory){
-        setDataIdCategory(prev=>[...prev, resCategory.data.id]);
-        console.log('Category created successfully', resCategory.data);
-        setInfoText('Category created successfully');
-        setPopUpInfo(true);
-        setCategoryData([]);
-        setItemPrice(0);
-      }
-      console.error('ResponseCategory from createCategory:', resCategory);
-    }));
-  }
+    try {
+      const responses = await Promise.all(
+        dataCategory.map(item => createCategory(item))
+      );
+  
+      const ids = responses
+        .filter(r => r)
+        .map(r => r.data.id);
+  
+      setDataIdCategory(ids);
+  
+      setInfoText("Category created successfully");
+      setPopUpInfo(true);
+      setCategoryData([]);
+      setItemPrice(0);
+  
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
 
   const handleReimburse = async () => {
     try{
       const resReimburse = await createReimburse(dataReimburseSend);
       if(resReimburse){
         setDataIdReimburse(resReimburse.data.id)
-        console.error('Reimburse created successfully', resReimburse.data);
+        // console.error('Reimburse created successfully', resReimburse.data);
       }
     }catch{
-      console.error("error dibagian kirim reimburse");
+      // console.error("error dibagian kirim reimburse");
     }
   }
 
   const handleItem = async () => {
     try{
       (dataIdCategory.map(async (item, index)=>{
-        console.error("mengirim id reimburse:", dataIdReimburse,"mengirim id category:", item,"mengirim data item:", dataItem[index].price);
+        // console.error("mengirim id reimburse:", dataIdReimburse,"mengirim id category:", item,"mengirim data item:", dataItem[index].price);
         const resItem = await createReimburseItem({
           reimbursement: dataIdReimburse,
           category: item,
           item_amount: dataItem[index].price.toString(),
         })
         if(resItem){
-          console.error('Item created successfully', resItem.data);
+          // console.error('Item created successfully', resItem.data);
         }
       }))
       setDataItem([]);
       setTitleReimburse('');
       setDescriptionReimburse('');
     }catch{
-      console.error("error dibagian kirim item");
+      // console.error("error dibagian kirim item");
     }
   }
   
@@ -142,7 +163,7 @@ const reimburse = () => {
     try{
       await handleCategory();
     } catch(error) {
-      console.error('Error creating category', error);
+      // console.error('Error creating category', error);
       setInfoText('Error creating category');
       setPopUpInfo(true);
     } finally {
@@ -155,7 +176,7 @@ const reimburse = () => {
       {/* HEADER */}
       <HeaderBack title='Pengajuan Reimburse'/>
 
-      <ScrollView className='w-full pb-[50px] mt-5'>
+      <ScrollView className='w-full pb-[50px]'>
         <View className='w-full p-[15px] pt-[20px] bg-[#dfc1ef]'>
 
           <View className='w-full bg-white rounded-2xl border-[.5px] border-b-[1px] border-purple-600 flex flex-col justify-start items-center p-[20px]'>
@@ -304,7 +325,7 @@ const reimburse = () => {
             {formatRupiah(totalPrice)}
           </Text>
         </View>
-        <Pressable onPress={() => {setPopUpActive(true)}} className='p-[15px] w-full flex flex-row justify-center items-center border border-b-2 border-purple-800 rounded-lg bg-green-500'
+        <Pressable onPress={() => {setPopUpActive(true)}} className='p-[15px] w-full flex flex-row justify-center items-center border border-b-2 border-purple-800 rounded-lg bg-purple-500'
         >
           <Image source={require('../../assets/icons/send.png')} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
           <Text className='ml-2 text-white font-bold'>
@@ -316,8 +337,8 @@ const reimburse = () => {
       {/* POPUP */}
       {popUpActive && (
         <>
-          <View className='absolute w-full z-30 h-full opacity-70 bg-black'/>
-          <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-40'>
+          <View className='absolute w-full z-[999] h-full opacity-70 bg-black'/>
+          <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-[1000]'>
             <View className='w-full bg-white p-[20px] pt-[70px] rounded-lg flex flex-col justify-start items-center'>
               <Text className='text-[12px] w-full text-center'>
                 Are you sure you want to proceed with this reimbursement?
@@ -342,8 +363,8 @@ const reimburse = () => {
       {/* POPUP INFO */}
       {popUpInfo && (
         <>
-          <View className='absolute w-full z-30 h-full opacity-70 bg-black'/>
-          <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-40'>
+          <View className='absolute w-full z-[999] h-full opacity-70 bg-black'/>
+          <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-[1000]'>
             <View className='w-full bg-white p-[20px] pt-[70px] rounded-lg flex flex-col justify-start items-center'>
               <Text className='text-[12px] w-full text-center'>
                 {infoText}
