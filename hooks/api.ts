@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getToken } from './tokenFunction';
 import { loginType } from "@/types/loginType";
 
-export const BASEURL = 'http://192.168.1.31:8000/api/';
+export const BASEURL = 'http://192.168.1.15:8000/api/';
 
 export const api = axios.create({
     baseURL: BASEURL,
@@ -31,6 +31,8 @@ export const getReimburseAll = () => api.get('reimbursements/');
 export const getReimburseId = (id: number) => api.get(`reimbursements/${id}`);
 export const DeleteReimburseId = (id: number) => api.delete(`reimbursements/delete/${id}`);
 export const getReimburseThisMonthAll = () => api.get('reimbursements/thisMonth/');
+export const getReimburseThisYearAll = () => api.get('reimbursements/thisYear/');
+export const getReimburseThisYearAllPerUser = (email: string) => api.get(`reimbursements/thisYear/${email}/`);
 export const getReimburseUser = async () => {
   try {
     const res = await api.get('reimbursements/user/');

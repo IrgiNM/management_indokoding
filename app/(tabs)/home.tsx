@@ -12,12 +12,11 @@ const home = () => {
 
   const router = useRouter();
   const [statusActieve, setStatusActive] = useState(1);
-  const { dataReimburseUser, totalAmountReimburse, dataMonth } = dataReimburseMain();
+  const { dataReimburseUser, totalAmountReimburse, dataMonth, dataThisMonthAll } = dataReimburseMain();
   const dataUserLogin = getDataUserLogin();
   const [role, setRole] = useState<string>('karyawan');
   const year = new Date().getFullYear();
   const month = new Date().toString().slice(4, 7);
-  const date = new Date().toString();
   const [selectMonthPopUp, setSelectMonthPopUp] = useState(false);
   const [selectMonth, setSelectMonth] = useState('');
   const bulanMap: any = {
@@ -33,7 +32,7 @@ const home = () => {
     '10': 'Oct',
     '11': 'Nov',
     '12': 'Dec',
-};
+  };
 
   useEffect(()=>{
     if(dataMonth.length > 0){
@@ -221,7 +220,7 @@ const home = () => {
         </View>
 
         {/* LIST REIMBURSE */}
-        {dataReimburseUser.length > 0 ? (
+        {dataThisMonthAll.length > 0 ? (
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View className='h-[100px] w-full flex flex-row justify-start items-center gap-3 pl-[30px] pr-[30px] bg-[#F1E3FA] mt-5'>
                     {dataReimburseUser.map((item, idx) => (

@@ -1,19 +1,26 @@
 import { ReimbursementType } from "@/types/reimburseDataType";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
-import { getToken } from "./tokenFunction";
-import { DeleteReimburseId, getReimburseAll, getReimburseId, getReimburseItemId, getReimburseThisMonthAll, getReimburseUser } from "./api";
 import { ReimbursementItemType } from "@/types/reimburseItemType";
+import { useEffect, useState } from "react";
+import { DeleteReimburseId, getReimburseId, getReimburseItemId, getReimburseThisMonthAll, getReimburseThisYearAll, getReimburseThisYearAllPerUser, getReimburseUser } from "./api";
+import { dataUserFunction } from "./dataUserFunction";
 
 export const dataReimburseMain = () => {
+    // const { dataAllNewUser } = dataUserFunction()
     const [dataReimburseUser, setDataReimburseUser] = useState<ReimbursementType[]>([]);
     const [dataIdReimburseUser, setDataIdReimburseUser] = useState<number[]>([]);
     const [dataMonth, setDataMonth] = useState<string[]>([]);
+    const [dataMonthAll, setDataMonthAll] = useState<string[]>([]);
+    const [dataMonthYear, setDataMonthYear] = useState<string[]>([]);
     const [totalAmountReimburse, setTotalAmountReimburse] = useState<number>(0);
     const [categoryReimburse, setCategoryReimburse] = useState<string[]>([]);
     const [reimburseId, setReimburseId] = useState<number[]>([]);
     const [dataItem, setDataItem] = useState<ReimbursementItemType[]>([]);
     const [dataThisMonthAll, setDataThisMonthAll] = useState<ReimbursementType[]>([]);
+    const [dataThisYearAll, setDataThisYearAll] = useState<ReimbursementType[]>([]);
+    const [dataReimburseThisYearPerUser, setDataReimburseThisYearPerUser] = useState<{
+        user: string,
+        total_amount: ReimbursementType[]
+    }[]>([]);
 
     useEffect(() => {
         const getReimbursementAll = async () => {
@@ -55,6 +62,38 @@ export const dataReimburseMain = () => {
         getReimbursementThisMonthAll();
     }, []);
 
+    useEffect(() => {
+        const getReimbursementThisYearAll = async () => {
+            try {
+                const data = await getReimburseThisYearAll();
+                if(data.status === 200){
+                    setDataThisYearAll(data.data);
+                    console.log('Data reimburse this year fetched successfully', data.data);
+                }
+            } catch (error) {
+                console.error('Gagal mengambil reimburse this year:', error);
+            }
+        };
+        getReimbursementThisYearAll();
+    }, []);
+
+    // useEffect(()=>{
+    //     const createReimburseThisYearPerUser = async() => {
+    //         {dataAllNewUser.map((user)=>{
+    //             const dataSelect = dataThisYearAll.filter(
+    //               (item) => item.user_detail?.email === user.email
+    //             );
+    //             console.log('dataSelect this year : ', dataSelect);
+    //             const reimbursePerUser = {
+    //                 user: user.email,
+    //                 total_amount: dataSelect,
+    //             }
+    //             setDataReimburseThisYearPerUser(prev => [...prev, reimbursePerUser]);
+    //         })}
+    //     }
+    //     createReimburseThisYearPerUser();
+    // }, []);
+
     // DATA MONTH
     useEffect(() => {
         const months: string[] = [];
@@ -65,6 +104,30 @@ export const dataReimburseMain = () => {
         });
         const uniqueMonths = [...new Set(months)];
         setDataMonth(uniqueMonths);
+    }, [dataReimburseUser]);
+
+    // DATA MONTH
+    useEffect(() => {
+        const months: string[] = [];
+        dataThisYearAll.map((item) => {
+        const itemISO = item.created_at??'';
+        const itemMonth = itemISO.slice(5,7);
+        months.push(itemMonth);
+        });
+        const uniqueMonths = [...new Set(months)];
+        setDataMonthAll(uniqueMonths);
+    }, [dataThisYearAll]);
+
+    // DATA MONTH dan TAHUN
+    useEffect(() => {
+        const months: string[] = [];
+        dataReimburseUser.map((item) => {
+        const itemISO = item.created_at??'';
+        const itemMonth = itemISO.slice(0,7);
+        months.push(itemMonth);
+        });
+        const uniqueMonths = [...new Set(months)];
+        setDataMonthYear(uniqueMonths);
     }, [dataReimburseUser]);
 
     // REIMBURSE ID
@@ -122,7 +185,7 @@ export const dataReimburseMain = () => {
     // CONSOLE LOG
     useEffect(()=>{
         console.log('data r:', dataReimburseUser);
-        // console.error(' reimburse bulan:', dataMonth);
+        console.error(' reimburse bulan:', dataThisYearAll);
         console.log('data item reimburse:', dataItem);
         console.log('data category:', categoryReimburse);
         console.log('reimburse id:', dataIdReimburseUser);
@@ -135,7 +198,7 @@ export const dataReimburseMain = () => {
         console.log('Total amount reimburse:', total);
     }, [dataReimburseUser]);
 
-    return {dataReimburseUser, totalAmountReimburse, dataMonth, categoryReimburse, dataThisMonthAll};
+    return {dataReimburseUser, totalAmountReimburse, dataMonth, dataMonthAll, dataMonthYear, categoryReimburse, dataThisMonthAll, dataThisYearAll};
 }
 
 export const dataItemId = (id: number)=>{
@@ -191,6 +254,20 @@ export const deleteReimburseById = async (id: number) => {
         }
     }catch{
         // console.error('Failed to delete reimburse');
+    }
+}
+
+export const ChangeUserReimburse = async(email: string) => {
+    try{
+        console.error('email di change user reimburse : ', email);
+        const res = await getReimburseThisYearAllPerUser(email);
+        if(res.status === 200){
+            console.error('res di change user reimburse : ', res.data);
+            return res.data;
+        }
+        return [];
+    }catch{
+        console.error('Failed to change user reimburse');
     }
 }
 

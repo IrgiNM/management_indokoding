@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TextInput, Pressable, KeyboardAvoidingView, Platform } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import HeaderBack from '@/components/headerBack'
 import { useRouter } from 'expo-router'
 import CardKaryawan from '@/components/cardKaryawan'
@@ -19,7 +19,6 @@ const dataKaryawan = () => {
   const [error, setError] = useState('')
   const { dataAllNewUser } = dataUserFunction()
   const [popUpInfo, setPopUpInfo] = useState(false);
-  
 
   const dataKaryawan = [
     {
@@ -41,6 +40,10 @@ const dataKaryawan = () => {
       reimburse: 'Rp 1.500.000',
     }
   ]
+
+  useEffect(()=>{
+    console.error('dataAllNewUser : ', dataAllNewUser);
+  })
 
   const handleCreateKaryawan = async () => {
     setLoading(true);
