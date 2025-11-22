@@ -1,12 +1,13 @@
-import { View, Text, ScrollView, TextInput, Pressable, Button } from 'react-native'
-import React, { use, useEffect, useState } from 'react'
 import HeaderBack from '@/components/headerBack'
-import { Image } from 'expo-image'
-import { formatRupiah } from '@/hooks/formatRupiahFunction'
-import * as ImagePicker from 'expo-image-picker';
-import { dataReimburseMain } from '@/hooks/dataReimburseFunction'
 import { createCategory, createReimburse, createReimburseItem } from '@/hooks/api'
+import { dataReimburseMain } from '@/hooks/dataReimburseFunction'
+import { formatRupiah } from '@/hooks/formatRupiahFunction'
 import { ReimbursementSendType } from '@/types/reimburseDataType'
+import { Image } from 'expo-image'
+import * as ImagePicker from 'expo-image-picker'
+import { useRouter } from 'expo-router'
+import React, { useEffect, useState } from 'react'
+import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 
 const reimburse = () => {
 
@@ -18,6 +19,8 @@ const reimburse = () => {
   const { categoryReimburse } = dataReimburseMain();
   const [categoryData, setCategoryData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  
 
   // DATA REIMBURSE
   const [titleReimburse, setTitleReimburse] = useState('');
@@ -87,21 +90,6 @@ const reimburse = () => {
     }
   };
 
-  // const handleCategory = async () => {
-  //   // console.error('Data Category to submit:', dataCategory);
-  //   (dataCategory.map(async (item)=>{
-  //     const resCategory = await createCategory(item);
-  //     if(resCategory){
-  //       setDataIdCategory(prev=>[...prev, resCategory.data.id]);
-  //       console.log('Category created successfully', resCategory.data);
-  //       setInfoText('Category created successfully');
-  //       setPopUpInfo(true);
-  //       setCategoryData([]);
-  //       setItemPrice(0);
-  //     }
-  //     // console.error('ResponseCategory from createCategory:', resCategory);
-  //   }));
-  // }
   const handleCategory = async () => {
     try {
       const responses = await Promise.all(
@@ -130,31 +118,32 @@ const reimburse = () => {
       const resReimburse = await createReimburse(dataReimburseSend);
       if(resReimburse){
         setDataIdReimburse(resReimburse.data.id)
-        // console.error('Reimburse created successfully', resReimburse.data);
+        // // console.error('Reimburse created successfully', resReimburse.data);
       }
     }catch{
-      // console.error("error dibagian kirim reimburse");
+      // // console.error("error dibagian kirim reimburse");
     }
   }
 
   const handleItem = async () => {
     try{
       (dataIdCategory.map(async (item, index)=>{
-        // console.error("mengirim id reimburse:", dataIdReimburse,"mengirim id category:", item,"mengirim data item:", dataItem[index].price);
+        // // console.error("mengirim id reimburse:", dataIdReimburse,"mengirim id category:", item,"mengirim data item:", dataItem[index].price);
         const resItem = await createReimburseItem({
           reimbursement: dataIdReimburse,
           category: item,
           item_amount: dataItem[index].price.toString(),
         })
         if(resItem){
-          // console.error('Item created successfully', resItem.data);
+          // // console.error('Item created successfully', resItem.data);
+          router.push('/home');
         }
       }))
       setDataItem([]);
       setTitleReimburse('');
       setDescriptionReimburse('');
     }catch{
-      // console.error("error dibagian kirim item");
+      // // console.error("error dibagian kirim item");
     }
   }
   
@@ -163,7 +152,7 @@ const reimburse = () => {
     try{
       await handleCategory();
     } catch(error) {
-      // console.error('Error creating category', error);
+      // // console.error('Error creating category', error);
       setInfoText('Error creating category');
       setPopUpInfo(true);
     } finally {

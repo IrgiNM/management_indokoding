@@ -1,11 +1,11 @@
-import { View, Text, Pressable, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { Image } from 'expo-image'
-import { useRouter } from 'expo-router';
 import { userData } from '@/data/userData';
+import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View } from 'react-native';
 // import CookieManager from '@react-native-cookies/cookies';
+import { BASEURL } from '@/hooks/api';
 import { getToken, saveToken } from '@/hooks/tokenFunction';
-import { BASEURL, login } from '@/hooks/api';
 import axios from 'axios';
 
 const Login = () => {
@@ -62,7 +62,7 @@ const Login = () => {
 
   //   } catch (err) {
   //     // --- GAGAL (Server mati / Jaringan / IP salah) ---
-  //     console.error('Error koneksi:', err);
+  //     // console.error('Error koneksi:', err);
   //     setError('Gagal terhubung ke server. Pastikan IP sudah benar.');
   //   } finally {
   //     // 6. Selesai (baik gagal atau sukses, loadingnya dihentikan)

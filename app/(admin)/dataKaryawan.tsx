@@ -1,12 +1,11 @@
-import { View, Text, ScrollView, TextInput, Pressable, KeyboardAvoidingView, Platform } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import HeaderBack from '@/components/headerBack'
-import { useRouter } from 'expo-router'
 import CardKaryawan from '@/components/cardKaryawan'
-import { Image } from 'expo-image'
-import { BlurView } from 'expo-blur'
-import { createUserNew } from '@/hooks/userFunction'
+import HeaderBack from '@/components/headerBack'
 import { dataUserFunction } from '@/hooks/dataUserFunction'
+import { createUserNew } from '@/hooks/userFunction'
+import { Image } from 'expo-image'
+import { useRouter } from 'expo-router'
+import React, { useEffect, useState } from 'react'
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 
 const dataKaryawan = () => {
   const router = useRouter()
@@ -42,7 +41,7 @@ const dataKaryawan = () => {
   ]
 
   useEffect(()=>{
-    console.error('dataAllNewUser : ', dataAllNewUser);
+    // console.error('dataAllNewUser : ', dataAllNewUser);
   })
 
   const handleCreateKaryawan = async () => {
@@ -74,7 +73,7 @@ const dataKaryawan = () => {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, width: '100%', backgroundColor: 'black' }}>
-    <View className='relative w-full h-full bg-white flex-1 justify-start items-center'>
+    <View className='relative w-full h-full bg-blue-50 flex-1 justify-start items-center'>
 
       {/* HEADER */}
       <HeaderBack title='Data Karyawan' type='python' textColor='text-white'/>
@@ -89,7 +88,7 @@ const dataKaryawan = () => {
                 email={item.email} 
                 reimburse={item.total_reimburse} 
                 username={item.username} 
-                link={() => {router.replace('/(admin)/dataKaryawanDetail')}} w='w-full'
+                w='w-full'
               />
 
             )
@@ -99,12 +98,12 @@ const dataKaryawan = () => {
       </ScrollView>
 
       {/* BUTTON ADD KARYAWAN POPUP */}
-      <Pressable onPress={() => {setCreateActive(true)}} className='w-[60px] h-[60px] rounded-lg border-[1px] border-b-[2px] border-blue-600 bg-yellow-100 relative top-[520px] -right-[120px] flex justify-center items-center'>
+      <Pressable onPress={() => {setCreateActive(true)}} className='w-[60px] h-[60px] rounded-lg border-[1px] border-b-[2px] border-blue-600 bg-blue-50 relative top-[520px] -right-[120px] flex justify-center items-center'>
           <Image source={require("../../assets/icons/add-karyawan-3.png")} style={{ width: 30, height: 30 }}/>
       </Pressable>
       {/* BUTTON ADD KARYAWAN POPUP */}
-      <Pressable onPress={() => {router.replace('../(admin)/dataKaryawan')}} className='w-[50px] h-[50px] rounded-full border-[1px] border-b-[2px] border-blue-600 bg-yellow-100 relative top-[400px] -right-[120px] flex justify-center items-center'>
-          <Image source={require("../../assets/icons/refresh.png")} tintColor={'blue'} style={{ width: 20, height: 20 }}/>
+      <Pressable onPress={() => {router.replace('../(admin)/dataKaryawan')}} className='w-[50px] h-[50px] rounded-full border-[1px] border-b-[2px] border-blue-600 bg-yellow-200 relative top-[400px] -right-[120px] flex justify-center items-center'>
+          <Image source={require("../../assets/icons/refresh.png")} tintColor={'#CA5101'} style={{ width: 20, height: 20 }}/>
       </Pressable>
 
       {/* POP UP CREATE KARYAWAN */}

@@ -3,20 +3,27 @@ import React from 'react'
 import { Image } from 'expo-image'
 import { cardKaryawanType } from '@/types/cardKaryawanType'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
+import { useRouter } from 'expo-router'
 
-const CardKaryawan = ({email, reimburse, username, image, link, w}: cardKaryawanType) => {
+const CardKaryawan = ({email, reimburse, username, image, w}: cardKaryawanType) => {
+  const router = useRouter();
   return (
-    <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)' }} onPress={link} className={`${w} h-[60px] bg-white border-[.5px] border-b-[1px] border-blue-800 rounded-lg flex flex-row justify-between items-center shadow-md`}>
+    <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)' }} onPress={()=>{
+      router.push({
+        pathname: "../(admin)/dataKaryawanDetail",
+        params: { email: email },
+      });
+    }} className={`${w} h-[60px] bg-white border-[.5px] border-b-[1px] border-blue-800 rounded-lg flex flex-row justify-between items-center shadow-md`}>
       <View className='flex flex-row justify-start items-center'>
         <View className='w-[40px] h-[40px] rounded-full bg-blue-300 ml-3 flex justify-center items-center overflow-hidden border border-blue-800'>
             {image ? <Image source={image} style={{ width: 40, height: 40 }} className='rounded-full'/> :
             <Text className='text-white font-bold'>
-                {username.charAt(0).toUpperCase()}
+                {username.charAt(0).toUpperCase()}{username.charAt(username.length - 1).toUpperCase()}
             </Text>
             }
         </View>
         <View className='flex flex-col justify-start items-start ml-3'>
-            <Text className='text-[10px] font-bold text-blue-900'>
+            <Text className='text-[10px] font-bold text-[#CA5101]'>
                 {username}
             </Text>
             <Text className='text-[10px] text-blue-900'>

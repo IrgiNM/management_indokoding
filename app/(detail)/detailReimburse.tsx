@@ -1,12 +1,12 @@
-import { View, Text, ScrollView, TextInput, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
 import HeaderBack from '@/components/headerBack'
+import { updateReimburse } from '@/hooks/api'
+import { dataItemId, deleteReimburseById } from '@/hooks/dataReimburseFunction'
+import { formatRupiah } from '@/hooks/formatRupiahFunction'
+import { getDataUserLogin } from '@/hooks/userFunction'
 import { Image } from 'expo-image'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { formatRupiah } from '@/hooks/formatRupiahFunction'
-import { dataItemId, dataReimburseMain, deleteReimburseById } from '@/hooks/dataReimburseFunction'
-import { getDataUserLogin } from '@/hooks/userFunction'
-import { updateReimburse } from '@/hooks/api'
+import React, { useEffect, useState } from 'react'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 
 const detailReimburse = () => {
   const [popUpActive, setPopUpActive] = useState(false);
@@ -36,7 +36,7 @@ const detailReimburse = () => {
   const handleApprove = async ()=>{
     const res = await updateReimburse(Number(id), {status: 'Approved'});
     if(res !== undefined){
-      console.error('Reimbursement approved successfully');
+      // console.error('Reimbursement approved successfully');
       setPopUpActiveAdmin('');
       router.replace('../(tabs)/history');
     }
@@ -45,7 +45,7 @@ const detailReimburse = () => {
   const handleDecline = async ()=>{
     const res = await updateReimburse(Number(id), {status: 'Rejected'});
     if(res !== undefined){
-      console.error('Reimbursement rejected successfully');
+      // console.error('Reimbursement rejected successfully');
       setPopUpActiveAdmin('');
       router.replace('../(tabs)/history');
     }

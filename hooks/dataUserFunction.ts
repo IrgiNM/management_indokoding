@@ -1,8 +1,8 @@
+import { GetTotalType } from "@/types/getTotalType";
 import { UserGetAllType, UserGetType } from "@/types/userGetType";
 import { useEffect, useState } from "react";
 import { getUserAll } from "./api";
 import { dataReimburseMain } from "./dataReimburseFunction";
-import { GetTotalType } from "@/types/getTotalType";
 
 export const dataUserFunction = ()=>{
     const [dataAllUser, setDataAllUser] = useState<UserGetAllType[]>([]);
@@ -15,9 +15,9 @@ export const dataUserFunction = ()=>{
             const res = await getUserAll();
             if(res.status === 200){
                 setDataAllUser(res.data);
-                return // console.error('Data all user fetched successfully', res.data);
+                return // // console.error('Data all user fetched successfully', res.data);
             }
-            // console.error('Failed to fetch all user data:', res);
+            // // console.error('Failed to fetch all user data:', res);
         }
         fetchUser();
     }, []);
@@ -25,14 +25,14 @@ export const dataUserFunction = ()=>{
     useEffect(()=>{
         const newUser = async() => {
             const totalReimburse = async() => {
-                // console.error('dataThisMonthAll : ', dataThisMonthAll);
+                // // console.error('dataThisMonthAll : ', dataThisMonthAll);
                     {dataAllUser.map((user)=>{
                         const dataSelect = dataThisMonthAll.filter(
                           (item) => item.user_detail?.email === user.email
                         );
-                        // console.error('dataSelect : ', dataSelect);
+                        // // console.error('dataSelect : ', dataSelect);
                         const total = dataSelect.reduce((sum, item) => sum + Number(item.total_amount), 0);
-                        // console.error('total : ', total);
+                        // // console.error('total : ', total);
                         const totalReimburseData: GetTotalType = {
                             email: user.email,
                             total_reimburse: total,
@@ -47,7 +47,7 @@ export const dataUserFunction = ()=>{
     }, [dataAllUser]);
 
     useEffect(()=>{
-        // console.error('dataTotalReimburse : ', dataTotalReimburse);
+        // // console.error('dataTotalReimburse : ', dataTotalReimburse);
         const newUserAsync = async() => {
             {dataAllUser.map((item)=>{
                 {dataTotalReimburse.map((price)=>{

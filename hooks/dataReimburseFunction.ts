@@ -1,8 +1,7 @@
 import { ReimbursementType } from "@/types/reimburseDataType";
 import { ReimbursementItemType } from "@/types/reimburseItemType";
 import { useEffect, useState } from "react";
-import { DeleteReimburseId, getReimburseId, getReimburseItemId, getReimburseThisMonthAll, getReimburseThisYearAll, getReimburseThisYearAllPerUser, getReimburseUser } from "./api";
-import { dataUserFunction } from "./dataUserFunction";
+import { DeleteReimburseId, getReimburseId, getReimburseItemId, getReimburseThisMonthAll, getReimburseThisYearAll, getReimburseThisYearAllPerUser, getReimburseUser, getReimburseUserPerMonth } from "./api";
 
 export const dataReimburseMain = () => {
     // const { dataAllNewUser } = dataUserFunction()
@@ -17,10 +16,6 @@ export const dataReimburseMain = () => {
     const [dataItem, setDataItem] = useState<ReimbursementItemType[]>([]);
     const [dataThisMonthAll, setDataThisMonthAll] = useState<ReimbursementType[]>([]);
     const [dataThisYearAll, setDataThisYearAll] = useState<ReimbursementType[]>([]);
-    const [dataReimburseThisYearPerUser, setDataReimburseThisYearPerUser] = useState<{
-        user: string,
-        total_amount: ReimbursementType[]
-    }[]>([]);
 
     useEffect(() => {
         const getReimbursementAll = async () => {
@@ -31,7 +26,7 @@ export const dataReimburseMain = () => {
                     console.log('Data reimburse fetched successfully', data.data);
                 }
             } catch (error) {
-                console.error('Gagal mengambil user ID:', error);
+                // console.error('Gagal mengambil user ID:', error);
             }
         };
         getReimbursementAll();
@@ -56,7 +51,7 @@ export const dataReimburseMain = () => {
                     console.log('Data reimburse this month fetched successfully', data.data);
                 }
             } catch (error) {
-                console.error('Gagal mengambil reimburse this month:', error);
+                // console.error('Gagal mengambil reimburse this month:', error);
             }
         };
         getReimbursementThisMonthAll();
@@ -71,7 +66,7 @@ export const dataReimburseMain = () => {
                     console.log('Data reimburse this year fetched successfully', data.data);
                 }
             } catch (error) {
-                console.error('Gagal mengambil reimburse this year:', error);
+                // console.error('Gagal mengambil reimburse this year:', error);
             }
         };
         getReimbursementThisYearAll();
@@ -151,7 +146,7 @@ export const dataReimburseMain = () => {
                         setDataItem(prev => [...prev, data.data]);
                     }
                 } catch (error) {
-                    console.error('Gagal mengambil reimburse item by id:', error);
+                    // console.error('Gagal mengambil reimburse item by id:', error);
                     console.log('Reimburse ID yang gagal:', reimburseId);
                 }
             }))
@@ -175,7 +170,7 @@ export const dataReimburseMain = () => {
 
                     setCategoryReimburse(uniqueCategories);
                 } catch (error) {
-                    console.error('Gagal memasukkan category:', error);
+                    // console.error('Gagal memasukkan category:', error);
                 }
             }))
         }
@@ -185,7 +180,7 @@ export const dataReimburseMain = () => {
     // CONSOLE LOG
     useEffect(()=>{
         console.log('data r:', dataReimburseUser);
-        console.error(' reimburse bulan:', dataThisYearAll);
+        // // console.error(' reimburse bulan:', dataThisYearAll);
         console.log('data item reimburse:', dataItem);
         console.log('data category:', categoryReimburse);
         console.log('reimburse id:', dataIdReimburseUser);
@@ -249,25 +244,39 @@ export const deleteReimburseById = async (id: number) => {
     try{
         const res = await DeleteReimburseId(id);
         if(res.status === 204){
-            // console.error('Reimburse deleted successfully', res.data);
+            // // console.error('Reimburse deleted successfully', res.data);
             return res.data;
         }
     }catch{
-        // console.error('Failed to delete reimburse');
+        // // console.error('Failed to delete reimburse');
     }
 }
 
 export const ChangeUserReimburse = async(email: string) => {
     try{
-        console.error('email di change user reimburse : ', email);
+        // // console.error('email di change user reimburse : ', email);
         const res = await getReimburseThisYearAllPerUser(email);
         if(res.status === 200){
-            console.error('res di change user reimburse : ', res.data);
+            // console.error('res di change user reimburse : ', res.data);
             return res.data;
         }
         return [];
     }catch{
-        console.error('Failed to change user reimburse');
+        // console.error('Failed to change user reimburse');
     }
+}
+
+export const getReimburseUserHome = async (month:string) => {
+  try{
+      const year = new Date().getFullYear();
+      const res = await getReimburseUserPerMonth(month);
+      if(res.status === 200){
+          console.error('get reimburse per month success : ', res.data);
+          return res.data;
+      }
+      return [];
+  }catch{
+        // console.error('Failed to get reimburse per month');
+  }
 }
 

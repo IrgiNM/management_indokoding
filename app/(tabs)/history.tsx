@@ -1,15 +1,10 @@
-import { View, Text, ScrollView, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { Image } from 'expo-image'
-import HeaderBack from '@/components/headerBack'
-import { cardInfoType } from '@/types/cardInfoType'
 import CardInfo from '@/components/cardInfo'
-import { useRouter } from 'expo-router'
-import { thisMonth } from '@/hooks/todayFunction'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import HeaderBack from '@/components/headerBack'
 import { dataReimburseMain } from '@/hooks/dataReimburseFunction'
-import { ReimbursementType } from '@/types/reimburseDataType'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
+import { Image } from 'expo-image'
+import React, { useEffect, useState } from 'react'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 
 const index = () => {
   const { dataReimburseUser, dataMonth } = dataReimburseMain();
@@ -59,7 +54,7 @@ const index = () => {
   };
 
   useEffect(()=>{
-    console.error('data:' ,dataReimburseUser);
+    // console.error('data:' ,dataReimburseUser);
   }, [])
 
   return (

@@ -7,16 +7,22 @@ import { useRouter } from 'expo-router'
 const HeaderBack = ({ title, subTitle, type, textColor } : headerBackType ) => {
   const router = useRouter();
   return (
-    <View className='flex flex-row justify-start items-center relative z-[998] bg-white top-[0px] w-full h-[120px] px-[30px] pb-[20px] pt-[50px]'>
+    <View style={{ width: '100%' }} className='flex flex-row justify-start items-center relative z-[998] bg-white top-[0px] w-full h-[120px] px-[30px] pb-[20px] pt-[50px]'>
         <Image
          source={
           type === 'python'
             ? require('../assets/images/python-bg.png')
             : require('../assets/images/total-reimburse-bg.png')
           } 
-         style={{ width: 360, height: 120, position: 'absolute', top: 0, left: 0, right: 0, }}  className='absolute -z-1'
+         style={{ width: 420, height: 120, position: 'absolute', top: 0, left: 0, right: 0, }} contentFit="cover" className='absolute -z-1 w-full'
       />
-      <Pressable onPress={() => {router.replace('/(tabs)/home')}} className={`w-[45px] h-[45px] border-[.5px] border-b-[1px] 
+      <Pressable onPress={() => {
+        if (router.canGoBack()) {
+          router.back();
+        } else {
+          router.push('/home');
+        }
+      }} className={`w-[45px] h-[45px] border-[.5px] border-b-[1px] 
         ${
           type === "js" ? "border-[#9A3412] bg-white" :
           type === "python" ? "border-[#ffffff] bg-[#758eff]" :

@@ -1,11 +1,12 @@
 import CardInfo from '@/components/cardInfo'
 import HeaderBack from '@/components/headerBack'
+import { updateReimburse } from '@/hooks/api'
 import { ChangeUserReimburse, dataReimburseMain } from '@/hooks/dataReimburseFunction'
 import { dataUserFunction } from '@/hooks/dataUserFunction'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
-import { cardInfoType } from '@/types/cardInfoType'
 import { ReimbursementType } from '@/types/reimburseDataType'
 import { Image } from 'expo-image'
+import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import { Dimensions, Pressable, ScrollView, Text, View } from 'react-native'
 const { width } = Dimensions.get('window');
@@ -23,6 +24,8 @@ const historyReimburseKaryawan = () => {
   const thisYear = today.slice(0,4);
   const [dataReimburse, setDataReimburse] = useState<ReimbursementType[]>([]);
   const { dataAllNewUser } = dataUserFunction();
+  const [popUpActive, setPopUpActive] = useState('');
+  const router =  useRouter();
   const bulanMap: any = {
     '1': 'Jan',
     '2': 'Feb',
@@ -85,17 +88,17 @@ const historyReimburseKaryawan = () => {
   }, [dataMonthAll]);
 
   useEffect(()=>{
-    console.error('dataThisYearAll:', dataThisYearAll);
+    // // console.error('dataThisYearAll:', dataThisYearAll);
     if(isActive === "All"){
       setDataReimburse(dataThisYearAll);
     }
   }, [dataThisYearAll, isActive]);
 
   useEffect(()=>{
-    console.error('statusActive changed:', statusActive);
-    console.error('dataReimburse changed:', dataReimburse);
-    console.error('thisMonth', thisMonth);
-    console.error('dataMonth', dataMonthAll);
+    // // console.error('statusActive changed:', statusActive);
+    // // console.error('dataReimburse changed:', dataReimburse);
+    // // console.error('thisMonth', thisMonth);
+    // // console.error('dataMonth', dataMonthAll);
   }, [statusActive, dataReimburse]);
 
   const toggleSelect = (id: string) => {
@@ -111,6 +114,38 @@ const historyReimburseKaryawan = () => {
     const res = await ChangeUserReimburse(email);
     if(res){
       setDataReimburse(res);
+    }
+  }
+
+  const handleApproveAll = () => {
+    try{
+      {selectedId.map(async(id, idx)=>{
+        const res = await updateReimburse(Number(id), {status: 'Approved'});
+        if(res !== undefined){
+          // console.error('Reimbursement approved successfully', id, idx);
+          setPopUpActive('');
+          setSelectedId([]);
+        }
+      })}
+      router.replace('../(admin)/historyReimburseKaryawan');
+    }catch{
+      // console.error('Error approving reimbursements');
+    }
+  }
+
+  const handleDeclineAll = () => {
+    try{
+      {selectedId.map(async(id, idx)=>{
+        const res = await updateReimburse(Number(id), {status: 'Rejected'});
+        if(res !== undefined){
+          // console.error('Reimbursement Rejected successfully', id, idx);
+          setPopUpActive('');
+          setSelectedId([]);
+        }
+      })}
+      router.replace('../(admin)/historyReimburseKaryawan');
+    }catch{
+      // console.error('Error Rejecting reimbursements');
     }
   }
 
@@ -153,7 +188,7 @@ const historyReimburseKaryawan = () => {
                     {(isActive === "All" ? (dataReimburse) : (dataReimburse)).map((item, idx) => {
                       const itemISO = item.created_at || '';
                       const itemMonth = itemISO.slice(5,7);
-                      // console.error('itemMonth:', itemMonth, 'thisMonth:', thisMonth);
+                      // // console.error('itemMonth:', itemMonth, 'thisMonth:', thisMonth);
                       if(itemMonth === thisMonth && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive))){
                         return (
                           <View className='w-full flex flex-row justify-start items-center' key={idx}>
@@ -241,15 +276,23 @@ const historyReimburseKaryawan = () => {
         
         {checkActive ? (
           <View className='w-full h-[70px] flex flex-row justify-end items-center gap-[10px] pr-[20px]'>
-            <Pressable onPress={() => setCheckActive(false)} className='h-[40px] border border-b-[2px] border-purple-800 flex flex-row justify-center items-center px-[20px] bg-green-400 rounded-full gap-2'>
+            <Pressable onPress={() => {
+              setPopUpActive('approve')
+              }} className='h-[40px] border border-b-[2px] border-purple-800 flex flex-row justify-center items-center px-[20px] bg-green-400 rounded-full gap-2'>
               <Image source={require("../../assets/icons/s-approve.png")} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
               <Text className='font-bold text-[10px] text-white'>approved</Text>
             </Pressable>
-            <Pressable onPress={() => setCheckActive(false)} className='h-[40px] px-[20px] border border-b-[2px] border-purple-800 flex flex-row justify-center items-center bg-red-400 rounded-full gap-2'>
+
+            <Pressable onPress={() => {
+              setPopUpActive('decline')
+              }} className='h-[40px] px-[20px] border border-b-[2px] border-purple-800 flex flex-row justify-center items-center bg-red-400 rounded-full gap-2'>
               <Image source={require("../../assets/icons/s-decline.png")} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
               <Text className='font-bold text-[10px] text-white'>rejected</Text>
             </Pressable>
-            <Pressable onPress={() => setCheckActive(false)} className='h-[40px] w-[40px] border border-b-[2px] border-purple-800 flex justify-center items-center bg-white rounded-full'>
+
+            <Pressable onPress={() => {
+              setCheckActive(false)
+              }} className='h-[40px] w-[40px] border border-b-[2px] border-purple-800 flex justify-center items-center bg-white rounded-full'>
               <Image source={require("../../assets/icons/s-decline.png")} style={{ width: 10, height: 10 }} tintColor={"#9333EA"}/>
             </Pressable>
           </View>
@@ -279,7 +322,7 @@ const historyReimburseKaryawan = () => {
                       }}
                       className={`w-[50px] h-[50px] flex justify-center items-center rounded-full ${isActive===item.email?"border border-b-[2px] border-purple-600 bg-purple-200":'bg-purple-500'}`}
                     >
-                      <Text className={`text-white text-lg font-bold ${isActive===item.email?"text-purple-700":'text-white'}`}>{item.email.charAt(0).toUpperCase()}</Text>
+                      <Text className={`text-white text-lg font-bold ${isActive===item.email?"text-purple-700":'text-white'}`}>{item.username.charAt(0).toUpperCase()}{item.username.charAt(item.username.length - 1).toUpperCase()}</Text>
                     </Pressable>
                 );
               })}
@@ -287,6 +330,38 @@ const historyReimburseKaryawan = () => {
           </ScrollView>
         </View>
       </View>
+
+      {/* POPUP */}
+      {popUpActive !== '' && (
+        <>
+          <View className='absolute w-full z-[999] h-full opacity-70 bg-black'/>
+          <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-[1000]'>
+            <View className='w-full bg-white p-[20px] pt-[70px] rounded-lg flex flex-col justify-start items-center'>
+              <Text className='text-[12px] w-full text-center'>
+                Are you sure want to {popUpActive} this reimbursement?
+              </Text>
+              <View className='flex flex-row justify-center items-center gap-3 mt-5 w-full'>
+                <Pressable onPress={() => {setPopUpActive('')}} className='w-[50%] border border-b-[2px] border-purple-800 bg-purple-50 rounded-lg py-[10px] flex justify-center items-center'>
+                  <Text className='font-bold text-[12px]'>
+                    No
+                  </Text>
+                </Pressable>
+                <Pressable onPress={() => {
+                  if(popUpActive==='approve'){
+                    handleApproveAll();
+                  } else if(popUpActive==='decline'){
+                    handleDeclineAll();
+                  }
+                  }} className={`w-[50%] border border-b-[2px] border-purple-800 ${popUpActive==='decline'?'bg-[#FF0066]':'bg-[#05c11e]'}  rounded-lg py-[10px] flex justify-center items-center`}>
+                  <Text className='font-bold text-[12px] text-white'>
+                    Yes, {popUpActive}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </>
+      )}
               
       </View>
   )
