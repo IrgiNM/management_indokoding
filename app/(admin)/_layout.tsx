@@ -18,5 +18,9 @@ export default function RootLayout() {
       name="detailReimburseAdmin"
       options={{ headerShown: false }}
     />
+    <Stack.Screen
+      name="dataSalaryKaryawan"
+      options={{ headerShown: false }}
+    />
   </Stack>;
 }

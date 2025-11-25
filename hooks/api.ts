@@ -3,24 +3,26 @@ import { ReimbursementSendType } from "@/types/reimburseDataType";
 import axios from 'axios';
 import { getToken } from './tokenFunction';
 
-export const BASEURL = 'http://192.168.100.88:8000/api/';
+export const BASEURL = 'http://192.168.1.13:8000/api/';
+export const BASEURLIMAGE = 'http://192.168.1.13:8000';
 const year = new Date().getFullYear();
 
 export const api = axios.create({
     baseURL: BASEURL,
     timeout: 10000,
     headers: {
-      'Content-Type': 'application/json',
+    //   'Content-Type': 'application/json',
       'Accept': 'application/json',
       // 'Authorization': 'Bearer <token>'
     },
 })
+
 api.interceptors.request.use(
     async config => {
         const token = await getToken();
         if(token){
             config.headers.Authorization = `Token ${token}`;
-            console.log('Token added to request headers', token);
+            // console.log('Token added to request headers', token);
         }
         return config;
     },
@@ -32,11 +34,16 @@ export const getReimburseAll = () => api.get('reimbursements/');
 export const getReimburseId = (id: number) => api.get(`reimbursements/${id}`);
 export const DeleteReimburseId = (id: number) => api.delete(`reimbursements/delete/${id}`);
 export const getReimburseThisMonthAll = () => api.get('reimbursements/thisMonth/');
+export const getReimburseUserByEmailThisMonth = (email: string) => api.get(`reimbursements/thisMonth/${email}/`);
 export const getReimburseThisYearAll = () => api.get('reimbursements/thisYear/');
 export const getReimburseThisYearAllPerUser = (email: string) => api.get(`reimbursements/thisYear/${email}/`);
 export const getReimburseUser = async () => api.get(`reimbursements/user/?${'year=' + year}`);
 export const getReimburseUserPerMonth = async (month: string) => api.get(`reimbursements/user/?${'year=' + year}&${'month=' + month}`);
-export const createReimburse = (data: ReimbursementSendType) => api.post(`reimbursements/create/`, data);
+export const createReimburse = (data: FormData | ReimbursementSendType) => api.post(`reimbursements/create/`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+});
 export const updateReimburse = (id: number, data: object) => api.patch(`reimbursements/update/${id}`, data);
 
 // USER
@@ -54,4 +61,7 @@ export const createReimburseItem = (data: object) => api.post('item/create', dat
 
 // CATEGORY
 export const createCategory = (data: object) => api.post('category/create/', data);
+
+// FINANCE MANAGEMENT
+export const getFinanceDataByUser = (email: string) => api.get(`finance/user/${email}/`)
 

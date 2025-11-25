@@ -46,8 +46,8 @@ const Login = () => {
   //     // 5. Tentukan hasilnya
   //     if (response.ok) {
   //       // --- BERHASIL! ---
-  //       console.log('Login berhasil, token:', data.token);
-  //       console.log('dataUser : ', data);
+  //       // console.log('Login berhasil, token:', data.token);
+  //       // console.log('dataUser : ', data);
         
   //       // TODO: Nanti kita akan simpan token ini
         
@@ -82,13 +82,13 @@ const Login = () => {
       // const data = await login({username:username, password:password});
       const res = await axios.post(`${BASEURL}login/`,{username:username, password:password});
       if(res){
-        console.log('Login successful:', res);
+        // console.log('Login successful:', res);
         setUsername('');
         setPassword('');
         await saveToken(res.data.token.toString());
-        console.log('Token saved:', res.data.token);
+        // console.log('Token saved:', res.data.token);
         const tokenBaru = await getToken();
-        console.log('Retrieved token:', tokenBaru);
+        // console.log('Retrieved token:', tokenBaru);
         router.replace('/(tabs)/home');
       }
     } catch(error) {
@@ -114,7 +114,9 @@ const Login = () => {
           <Text className='font-bold text-[20px]'>Login to your account</Text>
           <Text className='text-[10px] mb-10'>Welcome back, select method to Login </Text>
 
-          <Pressable onPress={() => {console.log('Pressed!')}}className='p-[10px] w-[270px] flex flex-row justify-center items-center border-[.5px] rounded-lg'
+          <Pressable onPress={() => {
+            // console.log('Pressed!')
+          }}className='p-[10px] w-[270px] flex flex-row justify-center items-center border-[.5px] rounded-lg'
           >
             <Image
                 source={require('../assets/objek/google.png')}

@@ -248,9 +248,6 @@ const dataKaryawanDetail = () => {
               <View className='w-full flex p-4 px-7 border border-b-2 border-blue-800 justify-between items-center flex-row rounded-lg bg-white'>
                 <Text className='text-[12px] font-bold text-blue-900'>Promote to Admin</Text>
                 <Pressable onPress={()=>{
-                  if(dataUser.is_staff){
-                    return;
-                  }
                   setPopUpRole(true)
                   }} className={`w-[50px] h-[30px] rounded-full ${dataUser.is_staff?'justify-end bg-blue-500':'justify-start bg-blue-200'} flex flex-row items-center p-1`}>
                   <View className={`w-[20px] h-[20px] rounded-full bg-white border border-blue-800`}/>
@@ -313,7 +310,10 @@ const dataKaryawanDetail = () => {
         <>
           <View className='absolute w-full z-[999] h-full opacity-70 bg-black'/>
           <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-[1000]'>
-            <View className='w-full bg-white p-[15px] rounded-lg flex flex-col justify-start items-center'>
+            <View className='w-full bg-white pt-[60px] p-[15px] rounded-lg flex flex-col justify-start items-center'>
+              <View className='w-[75px] h-[75px] absolute top-[-25px] border-[7px] border-white rounded-full bg-[#FF0066] flex justify-center items-center'>
+                <Image source={require("../../assets/icons/trash.png")} style={{ width: 25, height: 28 }} tintColor={"#ffffff"} className='mb-5'/>
+              </View>
               <Text className='text-[12px] w-full text-center font-bold'>
                 Are you sure to delete this user?
               </Text>
@@ -325,7 +325,7 @@ const dataKaryawanDetail = () => {
                 </Pressable>
                 <Pressable onPress={() => {
                   handleDelete(dataUser.email);
-                  }} className={`w-[50%] border border-b-[2px] border-blue-800 bg-blue-500 rounded-lg py-[10px] flex justify-center items-center`}>
+                  }} className={`w-[50%] border border-b-[2px] border-blue-800 bg-[#FF0066] rounded-lg py-[10px] flex justify-center items-center`}>
                   <Text className='font-bold text-[12px] text-white'>
                     {loading ? 'Deleting...' : 'Yes'}
                   </Text>
@@ -346,7 +346,7 @@ const dataKaryawanDetail = () => {
                 Are you sure to Promote this user to admin ?
               </Text>
               <View className='flex flex-row justify-center items-center gap-2 mt-3 w-full'>
-                <Pressable onPress={() => {setPopUpDelete('')}} className='w-[50%] border border-b-[2px] border-blue-800 bg-blue-50 rounded-lg py-[10px] flex justify-center items-center'>
+                <Pressable onPress={() => {setPopUpRole(false)}} className='w-[50%] border border-b-[2px] border-blue-800 bg-blue-50 rounded-lg py-[10px] flex justify-center items-center'>
                   <Text className='font-bold text-[12px] text-blue-800'>
                     No
                   </Text>

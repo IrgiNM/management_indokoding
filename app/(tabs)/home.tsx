@@ -5,6 +5,7 @@ import { formatRupiah } from '@/hooks/formatRupiahFunction'
 import { getDataUserLogin } from '@/hooks/userFunction'
 import { ReimbursementType } from '@/types/reimburseDataType'
 import { Image, ImageBackground } from 'expo-image'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import { Dimensions, FlatList, Pressable, ScrollView, Text, View } from 'react-native'
@@ -135,6 +136,7 @@ const home = () => {
     {
         id: 1,
         title: "create reimburse",
+        color: "#F3D1FF",
         icon: require("../../assets/icons/reimburse-active.png"),
         link: () => {router.replace('/reimburse')},
         role: ['karyawan', 'admin']
@@ -142,6 +144,7 @@ const home = () => {
     {
         id: 1,
         title: "data Reimburse",
+        color: "#F3D1FF",
         icon: require("../../assets/icons/data-reimburse.png"),
         link: () => {router.replace('../(admin)/historyReimburseKaryawan')},
         role: ['admin']
@@ -149,8 +152,17 @@ const home = () => {
     {
         id: 1,
         title: "data karyawan",
+        color: "#D1D6FF",
         icon: require("../../assets/icons/karyawan.png"),
         link: () => {router.replace('../(admin)/dataKaryawan')},
+        role: ['admin']
+    },
+    {
+        id: 1,
+        title: "Salary karyawan",
+        color: "#D1D6FF",
+        icon: require("../../assets/icons/salary-karyawan.png"),
+        link: () => {router.replace('../(admin)/dataSalaryKaryawan')},
         role: ['admin']
     },
   ]
@@ -162,11 +174,12 @@ const home = () => {
       {/* HEADER */}
       <View className='flex flex-row justify-between items-center relative z-[997] top-30 w-full h-[110px] p-[30px] pt-[55px]'>
         <View className='flex flex-row justify-start items-center'>
-            <View className='w-[40px] h-[40px] rounded-full bg-blue-300 flex justify-center items-center overflow-hidden'>
-                <Image source={require("../../assets/images/profile-bg.jpeg")} style={{ width: 40, height: 40 }}/>
-                {/* <Text className='text-[20px] font-bold'>
-                    I
-                </Text> */}
+            <View className='flex justify-center items-center w-[40px] h-[40px] overflow-hidden bg-[#00d7f4] rounded-full'>
+              <LinearGradient colors={['#00d7f4', '#009fb4']} className='w-full h-full flex flex-row justify-center items-center'>
+                <Text className='text-[#00495f] font-bold text-[15px]'>
+                    {dataUserLogin.username.charAt(0).toUpperCase()}{dataUserLogin.username.charAt(dataUserLogin.username.length - 1).toUpperCase()}
+                </Text>
+              </LinearGradient>
             </View>
             <View className='flex flex-col justify-start items-start ml-3'>
                 <Text className='font-bold'>Hi,
@@ -239,9 +252,13 @@ const home = () => {
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={({item}) => (
                             <Pressable onPress={item.action} android_ripple={{ color: 'rgba(0,0,0,0.1)' }} className='flex flex-col justify-center items-center relative'>
-                                <Text className='relative z-10 -right-[15px] top-[10px] pt-[3px] w-[20px] h-[20px] rounded-full bg-purple-800 text-white text-[10px] text-center'>
-                                    {item.title==="All" ? dataReimburse.length : item.title==="Pending" ? dataReimburse.filter(i=>i.status==="Pending").length : item.title==="Approved" ? dataReimburse.filter(i=>i.status==="Approved").length : dataReimburse.filter(i=>i.status==="Rejected").length}
-                                </Text>
+                                <View className='w-[20px] h-[20px] rounded-full overflow-hidden bg-purple-50 relative z-10 -right-[15px] top-[10px]'>    
+                                    <LinearGradient colors={['#9000E4', '#7200B4']} className='w-[20px] h-[20px] rounded-full bg-purple-800 flex justify-center items-center'>
+                                        <Text className='text-[10px] text-white'>
+                                            {item.title==="All" ? dataReimburse.length : item.title==="Pending" ? dataReimburse.filter(i=>i.status==="Pending").length : item.title==="Approved" ? dataReimburse.filter(i=>i.status==="Approved").length : dataReimburse.filter(i=>i.status==="Rejected").length}
+                                        </Text>
+                                    </LinearGradient>
+                                </View>
                                 <View className={`${statusActieve === item.id && `border-[.5px] border-b-[1px] ${item.border}`} flex justify-center items-center w-[50px] h-[50px] rounded-full ${item.color}`}>
                                     {item.icon === "null" ? (
                                         <Text className='text-[15px] font-bold text-purple-800'>
@@ -265,37 +282,41 @@ const home = () => {
         </View>
 
         {/* LIST REIMBURSE */}
-        {dataThisMonthAll.length > 0 ? (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View className='h-[100px] w-full flex flex-row justify-start items-center gap-3 pl-[30px] pr-[30px] bg-[#F1E3FA] mt-5'>
-                    {(selectStatus==="Pending"?dataReimburse.filter(i=>i.status==="Pending"):selectStatus==="Approved"?dataReimburse.filter(i=>i.status==="Approved"):selectStatus==="Rejected"?dataReimburse.filter(i=>i.status==="Rejected"):dataReimburse).map((item, idx) => (
-                        <CardInfo 
-                            amount={Number(item.total_amount)} 
-                            date={item.created_at??'null'}
-                            description={item.description}
-                            title={item.title}
-                            status={item.status}
-                            key={idx}
-                            id={item.id??0}
-                            w="w-[300px]"
-                        />
-                    ))}
+        <View className='w-full h-[100px] bg-blue-50 mt-5 p-0' style={{ width: '100%' }}>
+            {dataReimburse.length > 0 ? (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ width: '100%' }}>
+                    <LinearGradient colors={['#E2B7F1', '#D58DFF']} className='h-[100px] w-full flex flex-row justify-start items-center gap-3 pl-[30px] pr-[30px] bg-[#F1E3FA]'>
+                        {(selectStatus==="Pending"?dataReimburse.filter(i=>i.status==="Pending"):selectStatus==="Approved"?dataReimburse.filter(i=>i.status==="Approved"):selectStatus==="Rejected"?dataReimburse.filter(i=>i.status==="Rejected"):dataReimburse).map((item, idx) => (
+                            <CardInfo 
+                                amount={Number(item.total_amount)} 
+                                date={item.created_at??'null'}
+                                description={item.description}
+                                title={item.title}
+                                status={item.status}
+                                key={idx}
+                                id={item.id??0}
+                                w="w-[300px]"
+                            />
+                        ))}
+                    </LinearGradient>
+                </ScrollView>
+            ) : (
+                <View className='w-full h-[100px]'>
+                    <LinearGradient colors={['#E2B7F1', '#D58DFF']} className='h-[100px] w-full flex flex-row justify-center items-center gap-3 bg-[#F1E3FA]'>
+                        <View className='flex flex-row justify-center items-center gap-2 text-[10px] py-3 px-[30px] border-[.5px] rounded-full border-purple-600 bg-purple-100 text-purple-800 font-bold'>
+                            <Image
+                            source={require('../../assets/icons/s-decline.png')}
+                            style={{ width: 7, height: 7 }}
+                            tintColor={'purple'}
+                            />
+                            <Text className='text-[10px] text-purple-800 font-bold'>
+                                Not Reimbursements
+                            </Text>
+                        </View>
+                    </LinearGradient>
                 </View>
-            </ScrollView>
-        ) : (
-            <View className='h-[100px] w-full flex flex-row justify-center items-center gap-3 bg-[#F1E3FA] mt-5'>
-                <View className='flex flex-row justify-center items-center gap-2 text-[10px] py-3 px-[30px] border-[.5px] rounded-full border-purple-600 bg-purple-100 text-purple-800 font-bold'>
-                    <Image
-                    source={require('../../assets/icons/s-decline.png')}
-                    style={{ width: 7, height: 7 }}
-                    tintColor={'purple'}
-                    />
-                    <Text className='text-[10px] text-purple-800 font-bold'>
-                        Not Reimbursements
-                    </Text>
-                </View>
-            </View>
-        )}
+            )}
+        </View>
         
 
         {/* MENU LIST */}
@@ -313,8 +334,10 @@ const home = () => {
                     if(item.role.includes(role)){
                         return (
                             <Pressable key={index} onPress={item.link}className='flex flex-col justify-center items-center'>
-                                <View className='flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-white border-[.5px] border-b-[1px] border-purple-600'>
-                                    <Image source={item.icon} style={{ width: 25, height: 25 }}/>
+                                <View className='flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-white border border-b-[2px] border-purple-600 overflow-hidden'>
+                                    <LinearGradient colors={['#FFFFFF', item.color]} className='h-full w-full flex flex-row justify-center items-center'>
+                                        <Image source={item.icon} style={{ width: 30, height: 30 }}/>
+                                    </LinearGradient>
                                 </View>
                                 <Text className='text-[10px] text-center w-[50px] mt-2'>
                                     {item.title}

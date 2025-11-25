@@ -5,6 +5,7 @@ import { formatRupiah } from '@/hooks/formatRupiahFunction'
 import { ReimbursementSendType } from '@/types/reimburseDataType'
 import { Image } from 'expo-image'
 import * as ImagePicker from 'expo-image-picker'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
@@ -32,6 +33,11 @@ const reimburse = () => {
     total_amount: "0",
     description: "",
     status: "",
+    image: {
+      uri: '',
+      name: '',
+      type: '',
+    }
   });
   
   // DATA ITEM
@@ -61,6 +67,23 @@ const reimburse = () => {
     });
   }, [titleReimburse, descriptionReimburse, totalPrice]);
 
+  useEffect(() => {
+    if (image.length > 0) {
+      const asset = image[0];
+      const filename = asset.uri.split("/").pop() || "photo.jpg";
+      const ext = filename.split(".").pop() || "jpg";
+  
+      setDataReimburseSend(prev => ({
+        ...prev,
+        image: {
+          uri: asset.uri,
+          name: filename,
+          type: `image/${ext}`,
+        }
+      }));
+    }
+  }, [image]);
+
   useEffect(()=>{
     if(dataIdCategory.length > 0){
       handleReimburse();
@@ -86,7 +109,9 @@ const reimburse = () => {
     });
 
     if (!result.canceled) {
-      setImage(prev => [...prev, ...result.assets]);
+      // setImage(prev => [...prev, ...result.assets]);
+      setImage(result.assets); 
+      // console.error("Picked:", result.assets);
     }
   };
 
@@ -108,20 +133,36 @@ const reimburse = () => {
       setItemPrice(0);
   
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
   
 
   const handleReimburse = async () => {
     try{
-      const resReimburse = await createReimburse(dataReimburseSend);
+      const formData = new FormData();
+
+      formData.append("title", dataReimburseSend.title);
+      formData.append("description", dataReimburseSend.description);
+      formData.append("total_amount", dataReimburseSend.total_amount);
+      formData.append("status", dataReimburseSend.status);
+
+      // Hanya tambahkan file kalau ada
+      if (dataReimburseSend.image?.uri) {
+        formData.append("image", {
+          uri: dataReimburseSend.image.uri,
+          name: dataReimburseSend.image.name,
+          type: dataReimburseSend.image.type,
+        } as any);
+      }
+      const resReimburse = await createReimburse(formData);
       if(resReimburse){
         setDataIdReimburse(resReimburse.data.id)
+        setImage([])
         // // console.error('Reimburse created successfully', resReimburse.data);
       }
     }catch{
-      // // console.error("error dibagian kirim reimburse");
+      console.error("error dibagian kirim reimburse");
     }
   }
 
@@ -224,8 +265,10 @@ const reimburse = () => {
                   <Pressable onPress={() => {
                     setItemName('');
                     setCategoryData(categoryReimburse);
-                  }} className='bg-purple-100 border-[.5px] border-b-[1px] border-purple-800 rounded-lg py-[5px] px-[10px] mt-2 text-center text-[10px]'>
-                    <Image source={require("../../assets/icons/refresh.png")} style={{ width: 12, height: 12 }} tintColor={'purple'}/>
+                  }} className='bg-[#9F00BB] border-[.5px] border-b-[1px] overflow-hidden border-purple-800 rounded-lg mt-2 text-center text-[10px]'>
+                    <LinearGradient colors={['#C821E5', '#9F00BB']} className='py-[5px] px-[10px] flex flex-row justify-center items-center'>
+                      <Image source={require("../../assets/icons/refresh.png")} style={{ width: 12, height: 12 }} tintColor={'white'}/>
+                    </LinearGradient>
                   </Pressable>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} className='w-full'>
                     <View className='flex-row gap-2'>
@@ -253,10 +296,12 @@ const reimburse = () => {
                   setItemName('');
                   setItemPrice(0);
                 }
-              }} className='p-[10px] mt-[-1px] w-full flex flex-row justify-center items-center bg-[#692D8A] rounded-b-lg rounded-t-sm'>
-                      <Text className=' font-bold text-[20px] text-green-100'>
-                          +
-                      </Text>
+              }} className='mt-[-1px] w-full flex flex-row justify-center items-center overflow-hidden bg-[#692D8A] rounded-b-lg rounded-t-sm'>
+                <LinearGradient colors={['#C821E5', '#9F00BB']} className='w-full py-3 flex justify-center items-center'>
+                  <Text className=' font-bold text-[20px] text-white'>
+                      +
+                  </Text>
+                </LinearGradient>
               </Pressable>
 
               <View className=' mt-5 '>
@@ -314,21 +359,26 @@ const reimburse = () => {
             {formatRupiah(totalPrice)}
           </Text>
         </View>
-        <Pressable onPress={() => {setPopUpActive(true)}} className='p-[15px] w-full flex flex-row justify-center items-center border border-b-2 border-purple-800 rounded-lg bg-purple-500'
+        <Pressable onPress={() => {setPopUpActive(true)}} className='w-full overflow-hidden flex flex-row justify-center items-center border border-b-2 border-purple-800 rounded-lg bg-purple-500'
         >
-          <Image source={require('../../assets/icons/send.png')} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
-          <Text className='ml-2 text-white font-bold'>
-              create reimbursement
-          </Text>
+          <LinearGradient colors={['#C821E5', '#9F00BB']} className='w-full h-full flex flex-row p-[15px] justify-center items-center'>
+            <Image source={require('../../assets/icons/send.png')} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
+            <Text className='ml-2 text-white font-bold'>
+                create reimbursement
+            </Text>
+          </LinearGradient>
         </Pressable>
       </View>
 
       {/* POPUP */}
       {popUpActive && (
         <>
-          <View className='absolute w-full z-[999] h-full opacity-70 bg-black'/>
+          <View className='absolute w-full z-[999] h-full opacity-80 bg-[#1e0031]'/>
           <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-[1000]'>
-            <View className='w-full bg-white p-[20px] pt-[70px] rounded-lg flex flex-col justify-start items-center'>
+            <View className='w-full bg-white p-[20px] pt-[60px] rounded-lg flex flex-col justify-start items-center'>
+              <View className='w-[75px] h-[75px] absolute top-[-25px] border-[7px] border-white rounded-full bg-purple-600 flex justify-center items-center pr-[9px]'>
+                <Image source={require("../../assets/icons/send.png")} style={{ width: 25, height: 25 }} tintColor={"#ffffff"} className='ml-[-20px]'/>
+              </View>
               <Text className='text-[12px] w-full text-center'>
                 Are you sure you want to proceed with this reimbursement?
               </Text>
@@ -338,7 +388,7 @@ const reimburse = () => {
                     No
                   </Text>
                 </Pressable>
-                <Pressable onPress={() => {handleSubmit(); setPopUpActive(false)}} className='w-[50%] border border-b-[2px] border-purple-800 bg-green-500 rounded-lg py-[10px] flex justify-center items-center'>
+                <Pressable onPress={() => {handleSubmit(); setPopUpActive(false)}} className='w-[50%] bg-purple-500 rounded-lg py-[10px] flex justify-center items-center'>
                   <Text className='font-bold text-[12px] text-white'>
                     {loading ? 'Loading...' : 'Yes'}
                   </Text>
@@ -352,7 +402,7 @@ const reimburse = () => {
       {/* POPUP INFO */}
       {popUpInfo && (
         <>
-          <View className='absolute w-full z-[999] h-full opacity-70 bg-black'/>
+          <View className='absolute w-full z-[999] h-full opacity-80 bg-[#1e0031]'/>
           <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-[1000]'>
             <View className='w-full bg-white p-[20px] pt-[70px] rounded-lg flex flex-col justify-start items-center'>
               <Text className='text-[12px] w-full text-center'>

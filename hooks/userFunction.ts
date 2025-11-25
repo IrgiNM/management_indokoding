@@ -17,7 +17,7 @@ export const getDataUserLogin = (): UserType => {
             const data = await getUserId();
             if(data.status === 200){
                 setDataUserLogin(data.data);
-                console.log('Data user login fetched successfully', data.data);
+                // console.log('Data user login fetched successfully', data.data);
             }else{
                 // console.error('Failed to fetch user login data:', data);
             }
