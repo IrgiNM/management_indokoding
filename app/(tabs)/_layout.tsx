@@ -32,7 +32,7 @@ const _layout = () => {
       >
         <Tabs.Screen
             name='home'
-            options={{ 
+            options={{
                 headerShown: false,
                 tabBarIcon: ({ focused }) => (
                     <TabIcon 

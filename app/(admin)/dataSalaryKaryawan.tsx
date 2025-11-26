@@ -1,5 +1,6 @@
 import HeaderBack from '@/components/headerBack'
 import { updateReimburse } from '@/hooks/api'
+import { dataFinanceKaryawan } from '@/hooks/dataFinanceKaryawan'
 import { ChangeUserReimburse, dataReimburseMain } from '@/hooks/dataReimburseFunction'
 import { dataUserFunction } from '@/hooks/dataUserFunction'
 import { ReimbursementType } from '@/types/reimburseDataType'
@@ -12,19 +13,29 @@ const { width } = Dimensions.get('window');
 
 const historyReimburseKaryawan = () => {
 
-    const [checkActive, setCheckActive] = useState(false);
-    const [statusActive, setStatusActive] = useState('All');
-    const [selectedId, setSelectedId] = useState<string[]>([]);
-    const { dataThisMonthAll, dataMonthYear, dataThisYearAll, dataMonthAll } = dataReimburseMain();
-    // const [dataMonth, setDataMonth] = useState<string[]>([]);
-    const today = new Date().toISOString().split("T")[0];
-    const thisMonth = today.slice(5,7);
-    const thisYear = today.slice(0,4);
-    const [dataReimburse, setDataReimburse] = useState<ReimbursementType[]>([]);
-    const { dataAllNewUser } = dataUserFunction();
-    const [isActive, setIsActive] = useState('');
+  const [checkActive, setCheckActive] = useState(false);
+  const [statusActive, setStatusActive] = useState('All');
+  const [selectedId, setSelectedId] = useState<string[]>([]);
+  const { dataThisMonthAll, dataMonthYear, dataThisYearAll, dataMonthAll } = dataReimburseMain();
+  const today = new Date().toISOString().split("T")[0];
+  const thisMonth = today.slice(5,7);
+  const thisYear = today.slice(0,4);
+  const [dataReimburse, setDataReimburse] = useState<ReimbursementType[]>([]);
+  const { dataAllNewUser } = dataUserFunction();
+  const [isActive, setIsActive] = useState('');
   const [popUpActive, setPopUpActive] = useState('');
   const router =  useRouter();
+  const { dataReimburseUserThisMonth } = dataFinanceKaryawan(isActive);
+
+  const [baseSalary, setBaseSalary] = useState<number>(0);
+  const [spouseAllowance, setSpouseAllowance] = useState<number>(0);
+  const [childAllowance, setChildAllowance] = useState<number>(0);
+  const [bpjsHealthPercentage, setBpjsHealthPercentage] = useState<number>(0);
+  const [bpjsEmploymentPercentage, setBpjsEmploymentPercentage] = useState<number>(0);
+  const [taxAmount, setTaxAmount] = useState<number>(0);
+  const [overtimeHours, setOvertimeHours] = useState<number>(0);
+  const [receivableAmount, setReceivableAmount] = useState<number>(0);
+
   const bulanMap: any = {
     '01': 'Jan',
     '02': 'Feb',
@@ -73,23 +84,12 @@ const historyReimburseKaryawan = () => {
     }
   }, [dataAllNewUser]);
 
-  useEffect(() => {
-    // console.log("data:",dataMonthAll);
-  }, [dataMonthAll]);
-
   useEffect(()=>{
     // // console.error('dataThisYearAll:', dataThisYearAll);
     if(isActive === "All"){
       setDataReimburse(dataThisYearAll);
     }
   }, [dataThisYearAll, isActive]);
-
-  useEffect(()=>{
-    // // console.error('statusActive changed:', statusActive);
-    // // console.error('dataReimburse changed:', dataReimburse);
-    // // console.error('thisMonth', thisMonth);
-    // // console.error('dataMonth', dataMonthAll);
-  }, [statusActive, dataReimburse]);
 
   const userHandle = async(email: string) => {
     setIsActive(email);

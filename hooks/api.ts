@@ -2,9 +2,10 @@ import { loginType } from "@/types/loginType";
 import { ReimbursementSendType } from "@/types/reimburseDataType";
 import axios from 'axios';
 import { getToken } from './tokenFunction';
+import { FinanceManagementSendType } from "@/types/financeDataType";
 
-export const BASEURL = 'http://192.168.1.13:8000/api/';
-export const BASEURLIMAGE = 'http://192.168.1.13:8000';
+export const BASEURL = process.env.EXPO_PUBLIC_API_URL+'/api/';
+export const BASEURLIMAGE = process.env.EXPO_PUBLIC_API_URL;
 const year = new Date().getFullYear();
 
 export const api = axios.create({
@@ -63,5 +64,6 @@ export const createReimburseItem = (data: object) => api.post('item/create', dat
 export const createCategory = (data: object) => api.post('category/create/', data);
 
 // FINANCE MANAGEMENT
-export const getFinanceDataByUser = (email: string) => api.get(`finance/user/${email}/`)
+export const getFinanceDataByUser = (email: string) => api.get(`finance/user/${email}/`);
+export const CreateOrUpdateFinanceDataByUser = (data: FinanceManagementSendType) => api.post(`finance/create-or-update/`, data);
 

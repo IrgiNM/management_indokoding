@@ -1,7 +1,7 @@
-import { FinanceManagementType } from '@/types/financeDataType'
+import { FinanceManagementSendType, FinanceManagementType } from '@/types/financeDataType'
 import { ReimbursementType } from '@/types/reimburseDataType'
 import React, { useEffect, useState } from 'react'
-import { getReimburseUserByEmailThisMonth } from './api';
+import { CreateOrUpdateFinanceDataByUser, getReimburseUserByEmailThisMonth } from './api';
 
 export function dataFinanceKaryawan(email: string) {
     const [dataFinancePerUser, setDataFinancePerUser] = useState<FinanceManagementType[]>([]);
@@ -10,6 +10,7 @@ export function dataFinanceKaryawan(email: string) {
     useEffect(()=>{
         try{
             const fetch = async() => {
+                console.error('liat email', email);
                 const res = await getReimburseUserByEmailThisMonth(email);
                 if(res.status===200){
                     setDataReimburseUserThisMonth(res.data);
@@ -19,7 +20,33 @@ export function dataFinanceKaryawan(email: string) {
         }catch{
 
         }
-    }, [])
+    }, [email])
 
-    return {dataFinancePerUser}
+    useEffect(()=>{
+        console.error('data finance',dataReimburseUserThisMonth)
+    }, [dataReimburseUserThisMonth])
+
+    return {dataFinancePerUser, dataReimburseUserThisMonth}
 }
+
+export const createOrUpdateFinanceUser = async(data: FinanceManagementSendType) => {
+    const [dataFinanceUser, setDataFinanceUser] = useState<FinanceManagementType[]>([])
+
+    useEffect(()=>{
+        const fetch = async() => {
+            try{
+                const res = await CreateOrUpdateFinanceDataByUser(data)
+                if(res.status===200){
+                    setDataFinanceUser(res.data);
+                }
+            }catch{
+                console.error('gagal membuat/mengupdate finance data user');
+            }
+        }
+        fetch()
+    }, [data])
+
+    return {dataFinanceUser}
+}
+
+

@@ -18,59 +18,8 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorText, setErrorText] = useState('');
 
-  // const handleLogin = async () => {
-  //   // 1. Cek apakah sedang loading, kalau iya, jangan lakukan apa-apa
-  //   if (isLoading) return;
-
-  //   // 2. Mulai proses login
-  //   setIsLoading(true);
-  //   setError(null); // Bersihkan error lama
-
-  //   // 3. Kirim data ke backend (ini bagian "ajaib"-nya)
-  //   try {
-  //     const response = await fetch(`${API_BASE_URL}/api/login/`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       // Ubah data state kita jadi string JSON
-  //       body: JSON.stringify({
-  //         username: username,
-  //         password: password,
-  //       }),
-  //     });
-
-  //     // 4. Baca jawaban dari backend
-  //     const data = await response.json();
-
-  //     // 5. Tentukan hasilnya
-  //     if (response.ok) {
-  //       // --- BERHASIL! ---
-  //       // console.log('Login berhasil, token:', data.token);
-  //       // console.log('dataUser : ', data);
-        
-  //       // TODO: Nanti kita akan simpan token ini
-        
-  //       // Pindahkan user ke halaman home
-  //       router.replace('/(tabs)/home'); 
-
-  //     } else {
-  //       // --- GAGAL (Username/password salah) ---
-  //       // 'non_field_errors' adalah pesan error default dari Django
-  //       setError(data.non_field_errors[0] || 'Username atau password salah.');
-  //     }
-
-  //   } catch (err) {
-  //     // --- GAGAL (Server mati / Jaringan / IP salah) ---
-  //     // console.error('Error koneksi:', err);
-  //     setError('Gagal terhubung ke server. Pastikan IP sudah benar.');
-  //   } finally {
-  //     // 6. Selesai (baik gagal atau sukses, loadingnya dihentikan)
-  //     setIsLoading(false); 
-  //   }
-  // };
-
   const handleLogin = async () => {
+    console.log('username : ',username, 'password :', password)
     setIsLoading(true);
     setErrorText('');
     if(!username || !password){
@@ -79,10 +28,12 @@ const Login = () => {
       return;
     }
     try {
+      console.log('1')
       // const data = await login({username:username, password:password});
       const res = await axios.post(`${BASEURL}login/`,{username:username, password:password});
+      console.log('2')
       if(res){
-        // console.log('Login successful:', res);
+        console.log('Login successful:', res);
         setUsername('');
         setPassword('');
         await saveToken(res.data.token.toString());

@@ -2,6 +2,7 @@ import CardInfo from '@/components/cardInfo'
 import { getReimburseUserPerMonth } from '@/hooks/api'
 import { dataReimburseMain, getReimburseUserHome } from '@/hooks/dataReimburseFunction'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
+import { getToken } from '@/hooks/tokenFunction'
 import { getDataUserLogin } from '@/hooks/userFunction'
 import { ReimbursementType } from '@/types/reimburseDataType'
 import { Image, ImageBackground } from 'expo-image'
@@ -15,7 +16,7 @@ const home = () => {
 
   const router = useRouter();
   const [statusActieve, setStatusActive] = useState(1);
-  const { dataReimburseUser, totalAmountReimburse, dataMonth, dataThisMonthAll, } = dataReimburseMain();
+  const { dataMonth } = dataReimburseMain();
   const [dataReimburse, setDataReimburse] = useState<ReimbursementType[]>([]);
   const dataUserLogin = getDataUserLogin();
   const [role, setRole] = useState<string>('karyawan');
@@ -42,6 +43,16 @@ const home = () => {
     '11': 'Nov',
     '12': 'Dec',
   };
+
+  useEffect(()=>{
+    const checkLogin = async ()=>{
+      const res = await getToken();
+      if(!res){
+        router.replace('../login');
+      }
+    }
+    checkLogin();
+  }, []);
 
   useEffect(()=>{
     const total = dataReimburse.reduce((sum, item) => sum + Number(item.total_amount || 0), 0);
