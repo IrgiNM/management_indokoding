@@ -18,7 +18,7 @@ export function dataFinanceKaryawan(email: string) {
             }
             fetch();
         }catch{
-
+            console.error('gagal menagmbil data reimburse user')
         }
     }, [email])
 

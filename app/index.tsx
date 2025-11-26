@@ -1,24 +1,41 @@
+import { getUserId } from '@/hooks/api';
 import { getToken } from '@/hooks/tokenFunction';
 import { useRouter } from 'expo-router';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, View } from 'react-native';
 
 const index = () => {
   const router = useRouter();
-  useEffect(()=>{
-    const checkLogin = async ()=>{
-      if(await getToken()){
-        return router.replace('/(tabs)/home');
-      }else{
-        return router.replace('/login');
+  const [loading, setLoading] = useState(false);
+
+  const cekToken = async() => {
+    setLoading(true)
+    try{
+      const token = await getToken();
+      if(token){
+        const data = await getUserId();
+        if(data){
+          return router.replace('/(tabs)/home');
+        }else{
+          return router.replace('/login');
+        }
       }
+    }catch{
+      console.error('gagal login')
+    }finally{
+      setLoading(false)
     }
-    checkLogin();
+  }
+
+  useEffect(()=>{
+    cekToken();
   }, []);
 
   return (
-    <View>
-        <Text></Text>
+    <View className='flex-1 justify-center items-center'>
+        <Text className='font-bold text-[10px] text-black'>
+          {loading&&'loading...'}
+        </Text>
     </View>
   )
 }

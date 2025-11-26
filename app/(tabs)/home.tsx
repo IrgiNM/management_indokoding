@@ -188,7 +188,7 @@ const home = () => {
             <View className='flex justify-center items-center w-[40px] h-[40px] overflow-hidden bg-[#00d7f4] rounded-full'>
               <LinearGradient colors={['#00d7f4', '#009fb4']} className='w-full h-full flex flex-row justify-center items-center'>
                 <Text className='text-[#00495f] font-bold text-[15px]'>
-                    {dataUserLogin.username.charAt(0).toUpperCase()}{dataUserLogin.username.charAt(dataUserLogin.username.length - 1).toUpperCase()}
+                    {dataUserLogin.username.charAt(0).toUpperCase()}{dataUserLogin.username.charAt(dataUserLogin.username.length??5 - 1).toUpperCase()}
                 </Text>
               </LinearGradient>
             </View>
@@ -266,7 +266,7 @@ const home = () => {
                                 <View className='w-[20px] h-[20px] rounded-full overflow-hidden bg-purple-50 relative z-10 -right-[15px] top-[10px]'>    
                                     <LinearGradient colors={['#9000E4', '#7200B4']} className='w-[20px] h-[20px] rounded-full bg-purple-800 flex justify-center items-center'>
                                         <Text className='text-[10px] text-white'>
-                                            {item.title==="All" ? dataReimburse.length : item.title==="Pending" ? dataReimburse.filter(i=>i.status==="Pending").length : item.title==="Approved" ? dataReimburse.filter(i=>i.status==="Approved").length : dataReimburse.filter(i=>i.status==="Rejected").length}
+                                            {item.title==="All" ? dataReimburse?.length??0 : item.title==="Pending" ? dataReimburse?.filter(i=>i.status==="Pending").length??0 : item.title==="Approved" ? dataReimburse?.filter(i=>i.status==="Approved").length??0 : dataReimburse?.filter(i=>i.status==="Rejected").length??0}
                                         </Text>
                                     </LinearGradient>
                                 </View>
