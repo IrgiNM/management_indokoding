@@ -16,6 +16,8 @@ export const dataReimburseMain = () => {
     const [dataItem, setDataItem] = useState<ReimbursementItemType[]>([]);
     const [dataThisMonthAll, setDataThisMonthAll] = useState<ReimbursementType[]>([]);
     const [dataThisYearAll, setDataThisYearAll] = useState<ReimbursementType[]>([]);
+    const monthNumber = new Date().toISOString().slice(5, 7);
+
 
     useEffect(() => {
         const getReimbursementAll = async () => {
@@ -72,34 +74,16 @@ export const dataReimburseMain = () => {
         getReimbursementThisYearAll();
     }, []);
 
-    // useEffect(()=>{
-    //     const createReimburseThisYearPerUser = async() => {
-    //         {dataAllNewUser.map((user)=>{
-    //             const dataSelect = dataThisYearAll.filter(
-    //               (item) => item.user_detail?.email === user.email
-    //             );
-    //             // console.log('dataSelect this year : ', dataSelect);
-    //             const reimbursePerUser = {
-    //                 user: user.email,
-    //                 total_amount: dataSelect,
-    //             }
-    //             setDataReimburseThisYearPerUser(prev => [...prev, reimbursePerUser]);
-    //         })}
-    //     }
-    //     createReimburseThisYearPerUser();
-    // }, []);
-
     // DATA MONTH
     useEffect(() => {
-        const months: string[] = [];
-        dataReimburseUser.map((item) => {
-        const itemISO = item.created_at??'';
-        const itemMonth = itemISO.slice(5,7);
-        months.push(itemMonth);
-        });
-        const uniqueMonths = [...new Set(months)];
+        const months = dataReimburseUser.map(item =>
+            (item.created_at ?? '').slice(5, 7)
+        );
+        const all = [...months, monthNumber];
+        const uniqueMonths = [...new Set(all)];
+        uniqueMonths.sort((a, b) => Number(b) - Number(a));
         setDataMonth(uniqueMonths);
-    }, [dataReimburseUser]);
+    }, [dataReimburseUser, monthNumber]);
 
     // DATA MONTH
     useEffect(() => {
@@ -184,6 +168,7 @@ export const dataReimburseMain = () => {
         // console.log('data item reimburse:', dataItem);
         // console.log('data category:', categoryReimburse);
         // console.log('reimburse id:', dataIdReimburseUser);
+        // console.error('data month:', dataMonth);
     }, [dataMonth, dataReimburseUser, dataItem, dataIdReimburseUser]);
 
     // TOTAL AMOUNT REIMBURSE

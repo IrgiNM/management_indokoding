@@ -49,15 +49,6 @@ const Login = () => {
     }
   }
 
-  useEffect(()=>{
-    const checkLogin = async ()=>{
-      if(await getToken()){
-        router.replace('/(tabs)/home');
-      }
-    }
-    checkLogin();
-  }, []);
-
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, width: '100%', backgroundColor: 'black' }}>
       {/* <View className='flex-1 w-full bg-black'> */}

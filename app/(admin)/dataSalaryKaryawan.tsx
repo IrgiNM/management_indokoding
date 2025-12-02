@@ -12,7 +12,6 @@ import { Dimensions, Pressable, ScrollView, Text, View } from 'react-native'
 const { width } = Dimensions.get('window');
 
 const historyReimburseKaryawan = () => {
-
   const [checkActive, setCheckActive] = useState(false);
   const [statusActive, setStatusActive] = useState('All');
   const [selectedId, setSelectedId] = useState<string[]>([]);

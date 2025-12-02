@@ -23,7 +23,7 @@ export function dataFinanceKaryawan(email: string) {
     }, [email])
 
     useEffect(()=>{
-        console.error('data finance',dataReimburseUserThisMonth)
+        console.error('data rembuse',dataReimburseUserThisMonth)
     }, [dataReimburseUserThisMonth])
 
     return {dataFinancePerUser, dataReimburseUserThisMonth}
