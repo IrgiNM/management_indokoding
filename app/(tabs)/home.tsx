@@ -188,7 +188,7 @@ const home = () => {
             <View className='flex justify-center items-center w-[40px] h-[40px] overflow-hidden bg-[#00d7f4] rounded-full'>
               <LinearGradient colors={['#00d7f4', '#009fb4']} className='w-full h-full flex flex-row justify-center items-center'>
                 <Text className='text-[#00495f] font-bold text-[15px]'>
-                    {dataUserLogin.username.charAt(0).toUpperCase()}{dataUserLogin.username.charAt(dataUserLogin.username.length??5 - 1).toUpperCase()}
+                    {dataUserLogin.username.charAt(0).toUpperCase()}{dataUserLogin.username.charAt(dataUserLogin.username.length - 1).toUpperCase()}
                 </Text>
               </LinearGradient>
             </View>
@@ -200,9 +200,14 @@ const home = () => {
                 </Text>
             </View>
         </View>
-        <View className='w-[45px] h-[45px] rounded-xl bg-purple-50 border-[.5px] border-purple-600 border-b-[1px] flex justify-center items-center'>
-            <Image source={require("../../assets/icons/notif.png")} tintColor={"#7300BF"} style={{ width: 22, height: 22 }}/>
-            <View className='w-[12px] h-[12px] bg-red-500 absolute -top-1 -right-1 rounded-full'/>
+        <View className='flex flex-row justify-center items-center gap-3'>
+            <Pressable onPress={() => {}} className='w-[45px] h-[45px] rounded-xl bg-purple-50 border-[.5px] border-purple-600 border-b-[1px] flex justify-center items-center'>
+                <Image source={require("../../assets/icons/notif.png")} tintColor={"#7300BF"} style={{ width: 22, height: 22 }}/>
+                <View className='w-[12px] h-[12px] bg-red-500 absolute -top-1 -right-1 rounded-full'/>
+            </Pressable>
+            <Pressable onPress={() => {router.replace('/(admin)/dataSiteSettings')}} className='w-[45px] h-[45px] rounded-xl bg-[#ecf8f9] border-[.5px] border-[#008091] border-b-[1px] flex justify-center items-center'>
+                <Image source={require("../../assets/icons/setting.png")} tintColor={"#008091"} style={{ width: 23, height: 22 }}/>
+            </Pressable>
         </View>
       </View>
 

@@ -3,6 +3,7 @@ import { ReimbursementSendType } from "@/types/reimburseDataType";
 import axios from 'axios';
 import { getToken } from './tokenFunction';
 import { FinanceManagementSendType } from "@/types/financeDataType";
+import { siteSettingSendType } from "@/types/siteSettingType";
 
 export const BASEURL = process.env.EXPO_PUBLIC_API_URL+'/api/';
 export const BASEURLIMAGE = process.env.EXPO_PUBLIC_API_URL;
@@ -67,3 +68,10 @@ export const createCategory = (data: object) => api.post('category/create/', dat
 export const getFinanceDataByUser = (email: string) => api.get(`finance/user/${email}/`);
 export const CreateOrUpdateFinanceDataByUser = (data: FinanceManagementSendType) => api.post(`finance/create-or-update/`, data);
 
+// SITE SETTING
+export const createSiteSetting = (data: siteSettingSendType) => api.post('setting/create/', data);
+export const updateSiteSetting = (data: siteSettingSendType) => api.patch(`setting/update/`, data);
+export const deleteSiteSetting = (data: {category: string, key: string}) => api.delete(`setting/delete/`, {data});
+export const getSiteSettingByCategoryAndKey = (category: string, key: string) => api.get(`settings/${category}/${key}/`);
+export const getSiteSettingsByCategory = (category: string) => api.get(`settings/${category}/`);
+export const getAllSiteSettings = () => api.get('settings/');
