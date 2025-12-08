@@ -18,7 +18,7 @@ export function dataSiteSettingFunction() {
                     setDataSettings(res.data);
                 }
             }catch{
-                console.error('gagal fetch site settings');
+                // console.error('gagal fetch site settings');
             }
         }
         fetch();
@@ -34,8 +34,8 @@ export function dataSiteSettingFunction() {
     }, [dataSettings])
 
     useEffect(()=>{
-        console.error('data setting: ', dataSettings);
-        console.error('data all category settings: ', dataAllCategorySettings);
+        // console.error('data setting: ', dataSettings);
+        // console.error('data all category settings: ', dataAllCategorySettings);
     }, [dataAllCategorySettings, dataSettings])
 
     return {dataSettings, dataAllCategorySettings}
@@ -48,12 +48,13 @@ export const fetchDataSettingPerCategory = async(category: string) => {
     try{
         const res = await getSiteSettingsByCategory(category);
         if(res){
+            // console.log('data setting per category: ', res.data);
             return res.data;
         }else{
             return [];
         }
     }catch{
-        console.error('gagal fetch site settings per category');
+        // console.error('gagal fetch site settings per category');
         return [];
     }
 }
@@ -70,7 +71,7 @@ export const fetchDataSettingByCategoryAndKey = async(category: string, key: str
             return [];
         }
     }catch{
-        console.error('gagal fetch site settings per category and key');
+        // console.error('gagal fetch site settings per category and key');
         return [];
     }
 }
@@ -87,7 +88,7 @@ export const updateSettingFunction = async(category: string, key: string, value:
             return false
         }
     }catch{
-        console.error('gagal update setting');
+        // console.error('gagal update setting');
     }
 }
 
@@ -103,7 +104,7 @@ export const createSettingFunction = async(category: string, key: string, value:
             return false
         }
     }catch{
-        console.error('gagal create setting');
+        // console.error('gagal create setting');
     }
 }
 // ----------------------------------------------------
@@ -118,6 +119,6 @@ export const deleteSettingFunction = async(category: string, key: string) => {
             return false
         }
     }catch{
-        console.error('gagal delete setting');
+        // console.error('gagal delete setting');
     }
 }

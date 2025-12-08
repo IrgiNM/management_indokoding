@@ -124,7 +124,7 @@ const dataSiteSettings = () => {
               </View>
               {categoryData==='create new'&&(
                 <TextInput
-                  className='p-[10px] pl-[20px] text-[#006381] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg'
+                  className='p-[10px] pl-[20px] text-[#006381] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
                   placeholder='new category'
                   value={categoryDataNew}
                   onChangeText={setCategoryDataNew}
@@ -165,7 +165,7 @@ const dataSiteSettings = () => {
                 </ScrollView>
               )}
               <TextInput
-                className='p-[10px] pl-[20px] text-[#006381] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg'
+                className='p-[10px] pl-[20px] text-[#006381] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
                 placeholder='new key'
                 value={keyData}
                 onChangeText={setKeyData}
@@ -208,7 +208,7 @@ const dataSiteSettings = () => {
                 </View>
               ):detectType(value)==="string"?(
                 <TextInput
-                  className='p-[10px] pl-[20px] text-[#006381] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg'
+                  className='p-[10px] pl-[20px] text-[#006381] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
                   placeholder='new value'
                   value={value}
                   onChangeText={setValue}
@@ -223,7 +223,7 @@ const dataSiteSettings = () => {
                     <Text className='font-bold text-[25px] text-white mb-1'>-</Text>
                   </Pressable>
                   <TextInput
-                    className='p-[10px] pl-[20px] text-[#006381] flex-1 flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg'
+                    className='p-[10px] pl-[20px] text-[#006381] flex-1 flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
                     placeholder='new value'
                     value={value}
                     onChangeText={setValue}

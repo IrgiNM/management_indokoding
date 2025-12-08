@@ -1,14 +1,15 @@
 export type FinanceManagementType = {
     id?: number;
     user: number;
-    base_salary: number;
+    base_salary: string;
     spouse_allowance: number;
     child_allowance: number;
-    bpjs_health_percentage: number;
-    bpjs_employment_percentage: number;
-    tax_amount: number;
-    overtime_hours: number;
-    receivable_amount: number;
+    enable_bpjs_health: boolean;
+    enable_bpjs_employment: boolean;
+    bpjs_health_rate_percentage: number;
+    bpjs_employment_rate_percentage: number;
+    enable_tax: boolean;
+    tax_rate_percentage: number;
     created_at?: string;
     updated_at?: string;
 }

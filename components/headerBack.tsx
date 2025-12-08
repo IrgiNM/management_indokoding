@@ -30,7 +30,7 @@ const HeaderBack = ({ title, subTitle, type, textColor } : headerBackType ) => {
         ${
           type === "django" ? "border-[#004344] bg-[#00b1c8]" :
           type === "setting" ? "border-[#004344] bg-[#00b1c8]" :
-          type === "python" ? "border-[#ffffff] bg-[#758eff]" :
+          type === "python" ? "border-[#002583] bg-[#5088FF]" :
           "border-[#9333EA] bg-purple-50"
         } rounded-xl flex justify-center items-center`}>
           <Image source={require("../assets/objek/arrow-back.png")} style={{ width: 13, height: 17, }} tintColor={
