@@ -49,7 +49,7 @@ export function dataFinanceKaryawan(email: string) {
 export const createFinanceUser = async(data: FinanceManagementSendType) => {
     try{
         const res = await CreateFinanceDataByUser(data)
-        if(res.status===200){
+        if(res.status===201){
             return true
         }else{
             return false

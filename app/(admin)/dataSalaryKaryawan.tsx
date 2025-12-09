@@ -1,10 +1,11 @@
 import HeaderBack from '@/components/headerBack'
 import { updateReimburse } from '@/hooks/api'
-import { dataFinanceKaryawan } from '@/hooks/dataFinanceKaryawan'
+import { createFinanceUser, dataFinanceKaryawan, UpdateFinanceUser } from '@/hooks/dataFinanceKaryawan'
 import { ChangeUserReimburse, dataReimburseMain } from '@/hooks/dataReimburseFunction'
 import { fetchDataSettingPerCategory } from '@/hooks/dataSiteSettingFunction'
 import { dataUserFunction } from '@/hooks/dataUserFunction'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
+import { FinanceManagementSendType } from '@/types/financeDataType'
 import { ReimbursementType } from '@/types/reimburseDataType'
 import { siteSettingType } from '@/types/siteSettingType'
 import { Image } from 'expo-image'
@@ -18,9 +19,10 @@ const historyReimburseKaryawan = () => {
   const router =  useRouter();
   const { dataAllNewUser } = dataUserFunction();
   const [isActive, setIsActive] = useState('');
-  const [isEnableButton, setIsEnableButton] = useState(false);
+  const [Username, setUsername] = useState('');
   const [buttonEdit, setButtonEdit] = useState(false);
   const { dataReimburseUserThisMonth, dataFinancePerUser } = dataFinanceKaryawan(isActive);
+  const [popUpSendUpdate, setPopUpSendUpdate] = useState(false);
   const [popUpEdit, setPopUpEdit] = useState(false);
   const [popUpEditSalary, setPopUpEditSalary] = useState(false);
   const [popUpEditTax, setPopUpEditTax] = useState(false);
@@ -31,37 +33,46 @@ const historyReimburseKaryawan = () => {
   const [dataSetting, setDataSetting] = useState<siteSettingType[]>([]);
 
   // SALARY DATA
+  const [dataSalaryAll, setDataSalaryAll] = useState<FinanceManagementSendType>({
+    email: '',
+    base_salary: 0,
+    spouse_allowance: 0,
+    child_allowance: 0,
+    enable_bpjs_health: false,
+    enable_bpjs_employment: false,
+    bpjs_health_rate_percentage: 0,
+    bpjs_employment_rate_percentage: 0,
+    enable_tax: false,
+    tax_rate_percentage: 0,
+  });
   const [baseSalary, setBaseSalary] = useState<number>(0);
   const [spouseAmount, setSpouseAmount] = useState<number>(0);
   const [childAmount, setChildAmount] = useState<number>(0);
-  const [bpjsHealthPercentage, setBpjsHealthPercentage] = useState<number>(0);
-  const [bpjsEmploymentPercentage, setBpjsEmploymentPercentage] = useState<number>(0);
   const [taxAmount, setTaxAmount] = useState<number>(0);
-  const [overtimeHours, setOvertimeHours] = useState<number>(0);
-  const [receivableAmount, setReceivableAmount] = useState<number>(0);
-
-  // NILAI
-  const baseSalaryValue = Number(dataFinancePerUser?.base_salary ?? 0);
-  const totalReimburseAmount = dataReimburseUserThisMonth.reduce((sum, item) => sum + Number(item.total_amount), 0);
-  const spouseAmountValue = Number(dataSetting?.find(item => item.key==="spouse_amount")?.value??0);
-  const childAmountValue = Number(dataSetting?.find(item => item.key==="child_amount")?.value??0);
-  const spouseAllowanceValue = dataFinancePerUser?.spouse_allowance ?? 0;
-  const childAllowanceValue = dataFinancePerUser?.child_allowance ?? 0;
-  const taxValue = Number(dataFinancePerUser?.tax_rate_percentage ?? 0);
-  const bpjsHealthAllowance = Number(dataFinancePerUser?.enable_bpjs_health ?? false);
-  const bpjsEmploymentAllowance = Number(dataFinancePerUser?.enable_bpjs_employment ?? false);
-  const bpjsHealth = Number(dataSetting?.find(item => item.key==="bpjs_health_percentage")?.value??0);
-  const bpjsEmployment = Number(dataSetting?.find(item => item.key==="bpjs_employment_percentage")?.value??0);
   
-  const totalSpouseAmount = spouseAllowanceValue * spouseAmountValue;
-  const totalChildAmount = childAllowanceValue * childAmountValue;
-  const salaryPokok = baseSalaryValue + totalSpouseAmount + totalChildAmount + totalReimburseAmount;
-  const bpjsHealthAmount = (bpjsHealth/100) * baseSalaryValue;
-  const bpjsEmploymentAmount = (bpjsEmployment/100) * baseSalaryValue;
-  const potongGaji = taxValue + (bpjsHealthAllowance?bpjsHealthAmount:0) + (bpjsEmploymentAllowance?bpjsEmploymentAmount:0);
+  // CREATE NEW DATA SALARY
+  const [dataSalaryAllCreate, setDataSalaryAllCreate] = useState<FinanceManagementSendType>({
+    email: '',
+    base_salary: 0,
+    spouse_allowance: 0,
+    child_allowance: 0,
+    enable_bpjs_health: false,
+    enable_bpjs_employment: false,
+    bpjs_health_rate_percentage: 0,
+    bpjs_employment_rate_percentage: 0,
+    enable_tax: false,
+    tax_rate_percentage: 0,
+  });
+  const [baseSalaryCreate, setBaseSalaryCreate] = useState<number>(0);
+  const [spouseAllowanceCreate, setSpouseAllowanceCreate] = useState(false);
+  const [childAllowanceCreate, setChildAllowanceCreate] = useState(false);
+  const [spouseAmountCreate, setSpouseAmountCreate] = useState<number>(0);
+  const [childAmountCreate, setChildAmountCreate] = useState<number>(0);
+  const [taxAllowanceCreate, setTaxAllowanceCreate] = useState(false);
+  const [taxAmountCreate, setTaxAmountCreate] = useState<number>(0);
+  const [healthAllowanceCreate, setHealthAllowanceCreate] = useState(false);
+  const [employmentAllowanceCreate, setEmploymentAllowanceCreate] = useState(false);
 
-  const totalSalary = salaryPokok - potongGaji;
-  
   // ENABLED ALLOWANCE
   const [spouseAllowance, setSpouseAllowance] = useState(false);
   const [childAllowance, setChildAllowance] = useState(false);
@@ -69,9 +80,34 @@ const historyReimburseKaryawan = () => {
   const [healthAllowance, setHealthAllowance] = useState(false);
   const [employAllowance, setEmployAllowance] = useState(false);
 
+  // NILAI
+  const baseSalaryValue = Number(dataFinancePerUser?.base_salary ?? 0);
+  const totalReimburseValue = Number((dataReimburseUserThisMonth.filter(item=>item.status==="Approved")).reduce((sum,item)=>sum + Number(item.total_amount),0) ?? 0);
+  const spouseAmountFromSetting = Number(dataSetting?.find(item => item.key==="spouse_amount")?.value??0);
+  const childAmountFromSetting = Number(dataSetting?.find(item => item.key==="child_amount")?.value??0);
+  const spouseAllowanceValue = dataFinancePerUser?.spouse_allowance ?? 0;
+  const childAllowanceValue = dataFinancePerUser?.child_allowance ?? 0;
+  const taxValue = Number(dataFinancePerUser?.tax_rate_percentage ?? 0);
+  const taxEnable = dataFinancePerUser?.enable_tax ?? false;
+  const bpjsHealthAllowance = dataFinancePerUser?.enable_bpjs_health ?? false;
+  const bpjsEmploymentAllowance = dataFinancePerUser?.enable_bpjs_employment ?? false;
+  const bpjsHealth = Number(dataSetting?.find(item => item.key==="bpjs_health_percentage")?.value??0);
+  const bpjsEmployment = Number(dataSetting?.find(item => item.key==="bpjs_employment_percentage")?.value??0);
+  
+  const totalSpouseAmount = (spouseAllowance?spouseAmount:0) * spouseAmountFromSetting;
+  const totalChildAmount = (childAllowance?childAmount:0) * childAmountFromSetting;
+  const salaryPokok = baseSalary + totalSpouseAmount + totalChildAmount + totalReimburseValue;
+  const bpjsHealthAmount = ((healthAllowance?bpjsHealth:0)/100) * baseSalaryValue;
+  const bpjsEmploymentAmount = ((employAllowance?bpjsEmployment:0)/100) * baseSalaryValue;
+  const potongGaji = (taxAllowance?taxAmount:0) + (healthAllowance?bpjsHealthAmount:0) + (employAllowance?bpjsEmploymentAmount:0);
+
+  const totalSalary = salaryPokok - potongGaji;
+  
+
   useEffect(()=>{
     if (dataAllNewUser && dataAllNewUser.length > 0) {
       setIsActive(dataAllNewUser[0].email);
+      setUsername(dataAllNewUser[0].username);
     }
   }, [dataAllNewUser]);
 
@@ -97,11 +133,106 @@ const historyReimburseKaryawan = () => {
     }
   }, [dataFinancePerUser])
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const result: FinanceManagementSendType = {
+      email: isActive,
+      base_salary: baseSalaryValue ?? 0,
+      spouse_allowance: spouseAllowanceValue ?? 0,
+      child_allowance: childAllowanceValue ?? 0,
+      enable_bpjs_health: bpjsHealthAllowance ?? false,
+      enable_bpjs_employment: bpjsEmploymentAllowance ?? false,
+      bpjs_health_rate_percentage: bpjsHealth ?? 0,
+      bpjs_employment_rate_percentage: bpjsEmployment ?? 0,
+      enable_tax: taxEnable ?? false,
+      tax_rate_percentage: taxValue ?? 0,
+    };
+
+    setDataSalaryAll(result);
+    };
+
+    const setData = async() => {
+      if(dataFinancePerUser){
+        setBaseSalary(baseSalaryValue ?? 0);
+        setSpouseAmount(spouseAllowanceValue ?? 0);
+        setChildAmount(childAllowanceValue ?? 0);
+        setTaxAmount(taxValue ?? 0);
+      }
+    }
+  
+    fetchData();
+    setData();
+  }, [isActive,dataSetting,dataFinancePerUser]);
+
+
+  const setAllSendData = async() => {
+    const newData: FinanceManagementSendType = {
+      email: isActive,
+      base_salary: baseSalary,
+      spouse_allowance: spouseAllowance?spouseAmount:0,
+      child_allowance: childAllowance?childAmount:0,
+      enable_bpjs_health: healthAllowance,
+      enable_bpjs_employment: employAllowance,
+      bpjs_health_rate_percentage: healthAllowance?bpjsHealth:0,
+      bpjs_employment_rate_percentage: employAllowance?bpjsEmployment:0,
+      enable_tax: taxAllowance,
+      tax_rate_percentage: taxAllowance?taxAmount:0,
+    } 
+    setDataSalaryAll(newData);
+    return newData;
+  }
+  
+  const setAllSendDataCreate = async() => {
+    const newData: FinanceManagementSendType = {
+      email: isActive,
+      is_active: true,
+      base_salary: baseSalaryCreate,
+      spouse_allowance: spouseAllowanceCreate?spouseAmountCreate:0,
+      child_allowance: childAllowanceCreate?childAmountCreate:0,
+      enable_bpjs_health: healthAllowanceCreate,
+      enable_bpjs_employment: employmentAllowanceCreate,
+      bpjs_health_rate_percentage: healthAllowanceCreate?bpjsHealth:0,
+      bpjs_employment_rate_percentage: employmentAllowanceCreate?bpjsEmployment:0,
+      enable_tax: taxAllowanceCreate,
+      tax_rate_percentage: taxAllowanceCreate?taxAmountCreate:0,
+    } 
+    setDataSalaryAllCreate(newData);
+    return newData;
+  }
+
+  const handleUpdate = async() => {
+    setLoading(true);
+    const newData = await setAllSendData();
+    console.error('data send update finance', newData)
+    const res = await UpdateFinanceUser(newData);
+    setLoading(false);
+    if(res){
+      setPopUpEdit(false);
+      setPopUpSendUpdate(false)
+    }else{
+      setError('gagal mengupdate data salary karyawan')
+    }
+  }
+
+  const handleCreate = async() => {
+    setLoading(true);
+    const newData = await setAllSendDataCreate();
+    console.error('data send create finance', newData)
+    const res = await createFinanceUser(newData);
+    setLoading(false);
+    if(res){
+      setPopUpEdit(false);
+    }else{
+      setError('gagal create data salary karyawan')
+    }
+  }
+  
+
   
   return (
     <View className='w-full bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
-      <HeaderBack title='Data Salary Karyawan' type='python'/>
+      <HeaderBack title={`Data Salary ${Username}`} type='python'/>
 
       <View className='w-full flex-1 bg-[#4d84f0]'>
         <LinearGradient colors={['#5088FF', '#001749']} className='w-full h-full p-4 px-[20px] flex-1 flex-col justify-start items-center'>
@@ -136,9 +267,11 @@ const historyReimburseKaryawan = () => {
               <View className='w-full flex flex-row justify-between items-center mb-1'>
                 <Text className='text-[10px]'>Base Salary</Text>
                 <View className='flex flex-row justify-center items-center gap-2'>
-                  <Text className='text-[12px] font-semibold text-blue-700 p-2 px-3 border-[.5px] border-b-[1px] border-blue-600 rounded-lg'>+ {formatRupiah(baseSalaryValue)}</Text>
+                  <Text className='text-[12px] font-semibold text-blue-700 p-2 px-3 border-[.5px] border-b-[1px] border-blue-600 rounded-lg'>+ {formatRupiah(baseSalary)}</Text>
                   {buttonEdit&&(
-                    <Pressable onPress={()=>{setPopUpEditSalary(true)}} className="w-[25px] h-[25px] bg-[#ffeed9] rounded-md border-[.5px] border-b-[1px] border-[#913800] flex justify-center items-center">
+                    <Pressable onPress={()=>{
+                      setPopUpEditSalary(true)
+                    }} className="w-[25px] h-[25px] bg-[#ffeed9] rounded-md border-[.5px] border-b-[1px] border-[#913800] flex justify-center items-center">
                         <Image source={require("../../assets/icons/edit.png")} tintColor={"#913800"} style={{ width: 12, height: 12 }}/>
                     </Pressable>
                   )}
@@ -146,12 +279,12 @@ const historyReimburseKaryawan = () => {
               </View>
 
               {/* REIMBURSE */}
-              {(dataReimburseUserThisMonth.length>0)&&(
+              {((dataReimburseUserThisMonth.filter(item=>item.status==="Approved")).length>0)&&(
                 <>
                   <View className='w-full flex flex-row justify-between items-center mb-1'>
                     <Text className='text-[10px]'>total reimburse</Text>
                     <View className='flex flex-row justify-center items-center gap-2'>
-                      <Text className='text-[12px] font-semibold text-blue-700 p-2 px-3 border-[.5px] border-b-[1px] border-blue-600 rounded-lg'>+ {formatRupiah(0)}</Text>
+                      <Text className='text-[12px] font-semibold text-blue-700 p-2 px-3 border-[.5px] border-b-[1px] border-blue-600 rounded-lg'>+ {formatRupiah(totalReimburseValue)}</Text>
                       {buttonEdit&&(
                         <View className="w-[25px] h-[25px] opacity-0"></View>
                       )}
@@ -161,14 +294,14 @@ const historyReimburseKaryawan = () => {
               )}
 
               {/* TUNJANGAN ISTRI */}
-              {(dataFinancePerUser?.spouse_allowance??0)>0&&(
+              {spouseAllowance&&(
                 <>
                   <View className='w-full flex flex-row justify-between items-center mb-1'>
                     <Text className='text-[10px]'>tunjangan istri</Text>
                     <View className='flex flex-row justify-center items-center gap-2'>
-                      <Text className='text-[12px] p-2 px-3 border-[.5px] rounded-lg  opacity-30'>{spouseAllowanceValue}</Text>
+                      <Text className='text-[12px] p-2 px-3 border-[.5px] rounded-lg  opacity-30'>{spouseAmount}</Text>
                       <Text className='text-[12px]  opacity-30'>x</Text>
-                      <Text className='text-[12px] p-2 px-3 border-[.5px] rounded-lg  opacity-30'>{formatRupiah(spouseAmountValue)}</Text>
+                      <Text className='text-[12px] p-2 px-3 border-[.5px] rounded-lg  opacity-30'>{formatRupiah(spouseAmountFromSetting)}</Text>
                       {buttonEdit&&(
                         <Pressable onPress={()=>{setPopUpEditSpouse(true)}} className="w-[25px] h-[25px] bg-[#ffeed9] rounded-md border-[.5px] border-b-[1px] border-[#913800] flex justify-center items-center">
                             <Image source={require("../../assets/icons/edit.png")} tintColor={"#913800"} style={{ width: 12, height: 12 }}/>
@@ -189,14 +322,14 @@ const historyReimburseKaryawan = () => {
               )}
 
               {/* TUNJANGAN ANAK */}
-              {(dataFinancePerUser?.child_allowance??0)>0&&(
+              {childAllowance&&(
                 <>
                   <View className='w-full flex flex-row justify-between items-center mb-1'>
                     <Text className='text-[10px]'>tunjangan anak</Text>
                     <View className='flex flex-row justify-center items-center gap-2'>
-                      <Text className='text-[12px] p-2 px-3 border-[.5px] rounded-lg  opacity-30'>{childAllowanceValue}</Text>
+                      <Text className='text-[12px] p-2 px-3 border-[.5px] rounded-lg  opacity-30'>{childAmount}</Text>
                       <Text className='text-[12px]  opacity-30'>x</Text>
-                      <Text className='text-[12px] p-2 px-3 border-[.5px] rounded-lg  opacity-30'>{formatRupiah(childAmountValue)}</Text>
+                      <Text className='text-[12px] p-2 px-3 border-[.5px] rounded-lg  opacity-30'>{formatRupiah(childAmountFromSetting)}</Text>
                       {buttonEdit&&(
                         <Pressable onPress={()=>{setPopUpEditChild(true)}} className="w-[25px] h-[25px] bg-[#ffeed9] rounded-md border-[.5px] border-b-[1px] border-[#913800] flex justify-center items-center">
                             <Image source={require("../../assets/icons/edit.png")} tintColor={"#913800"} style={{ width: 12, height: 12 }}/>
@@ -230,12 +363,12 @@ const historyReimburseKaryawan = () => {
               </View>
               
               {/* PAJAK */}
-              {(dataFinancePerUser?.enable_tax??false)&&(
+              {taxAllowance&&(
                 <>
                   <View className='w-full flex flex-row justify-between items-center mb-1'>
                     <Text className='text-[10px]'>pajak</Text>
                     <View className='flex flex-row justify-center items-center gap-2'>
-                      <Text className='text-[12px] font-semibold text-blue-700 p-2 px-3 border-[.5px] border-b-[1px] border-blue-600 rounded-lg'>- {formatRupiah(taxValue)}</Text>
+                      <Text className='text-[12px] font-semibold text-blue-700 p-2 px-3 border-[.5px] border-b-[1px] border-blue-600 rounded-lg'>- {formatRupiah(taxAmount)}</Text>
                       {buttonEdit&&(
                         <Pressable onPress={()=>{setPopUpEditTax(true)}} className="w-[25px] h-[25px] bg-[#ffeed9] rounded-md border-[.5px] border-b-[1px] border-[#913800] flex justify-center items-center">
                             <Image source={require("../../assets/icons/edit.png")} tintColor={"#913800"} style={{ width: 12, height: 12 }}/>
@@ -247,7 +380,7 @@ const historyReimburseKaryawan = () => {
               )}
 
               {/* BPJS HEALTH */}
-              {(dataFinancePerUser?.enable_bpjs_health??false)&&(
+              {healthAllowance&&(
                 <>
                   <View className='w-full flex flex-row justify-between items-center mb-1'>
                     <Text className='text-[10px]'>bpjs kesehatan</Text>
@@ -256,7 +389,7 @@ const historyReimburseKaryawan = () => {
                       <Text className='text-[12px]  opacity-30'>x</Text>
                       <Text className='text-[12px] p-2 px-3 border-[.5px] rounded-lg  opacity-30'>{formatRupiah(baseSalaryValue)}</Text>
                       {buttonEdit&&(
-                        <Pressable onPress={()=>{}} className="w-[25px] h-[25px] bg-[#ecf8f9] rounded-md border-[.5px] border-b-[1px] border-[#008091] flex justify-center items-center">
+                        <Pressable onPress={()=>{router.replace("/(admin)/dataSiteSettings")}} className="w-[25px] h-[25px] bg-[#ecf8f9] rounded-md border-[.5px] border-b-[1px] border-[#008091] flex justify-center items-center">
                           <Image source={require("../../assets/icons/setting.png")} tintColor={"#008091"} style={{ width: 12, height: 12 }}/>
                       </Pressable>
                       )}
@@ -275,7 +408,7 @@ const historyReimburseKaryawan = () => {
               )}
 
               {/* BPJS EMPLOYMENT */}
-              {(dataFinancePerUser?.enable_bpjs_employment??false)&&(
+              {employAllowance&&(
                 <>
                   <View className='w-full flex flex-row justify-between items-center mb-1'>
                     <Text className='text-[10px]'>bpjs employment</Text>
@@ -284,7 +417,7 @@ const historyReimburseKaryawan = () => {
                       <Text className='text-[12px]  opacity-30'>x</Text>
                       <Text className='text-[12px] p-2 px-3 border-[.5px] rounded-lg  opacity-30'>{formatRupiah(baseSalaryValue)}</Text>
                       {buttonEdit&&(
-                        <Pressable onPress={()=>{}} className="w-[25px] h-[25px] bg-[#ecf8f9] rounded-md border-[.5px] border-b-[1px] border-[#008091] flex justify-center items-center">
+                        <Pressable onPress={()=>{router.replace("/(admin)/dataSiteSettings")}} className="w-[25px] h-[25px] bg-[#ecf8f9] rounded-md border-[.5px] border-b-[1px] border-[#008091] flex justify-center items-center">
                             <Image source={require("../../assets/icons/setting.png")} tintColor={"#008091"} style={{ width: 12, height: 12 }}/>
                         </Pressable>
                       )}
@@ -305,10 +438,10 @@ const historyReimburseKaryawan = () => {
 
             </View>
           </ScrollView>
+
         </View>
         
         {buttonEdit&&(
-
           <View className='relative top-[-20px] z-[998] w-full overflow-hidden h-[100px] p-3 rounded-lg bg-white flex flex-col justify-start items-center mt-2'>
             <View className='flex flex-row justify-center items-center gap-2'>
               <Text className='text-[10px] font-bold'>enableButton button</Text>
@@ -340,15 +473,18 @@ const historyReimburseKaryawan = () => {
                 </Pressable>
                 <Text className='text-[10px]'>spouse</Text>
               </View>
+
               <View className='flex flex-col justify-center items-center gap-1'>
                 <Pressable onPress={()=>{setChildAllowance(!childAllowance)}} className={`w-[40px] rounded-full flex flex-row ${childAllowance===true?"justify-end bg-blue-600":"justify-start bg-[#dbdeef]"} p-1 items-center`}>
                     <View className='w-[15px] h-[15px] bg-white rounded-full'/>
                 </Pressable>
                 <Text className='text-[10px]'>child</Text>
               </View>
+
             </View>
           </View>
         )}
+
         </LinearGradient>
       </View>
 
@@ -356,10 +492,10 @@ const historyReimburseKaryawan = () => {
       <View className='w-full h-[200px] flex flex-col justify-end absolute bottom-0 z-[999]' style={{ position: 'absolute', bottom: 0 }}>
         <View className='bg-white w-full h-[140px] flex-row items-start px-[30px] pt-[20px] rounded-t-3xl gap-[10px] border-[.5px] border-blue-600'>
           {buttonEdit?(
-            <Pressable onPress={()=>{}} className='w-full rounded-lg overflow-hidden'>
+            <Pressable onPress={()=>{setPopUpSendUpdate(true)}} className='w-full rounded-lg overflow-hidden'>
               <LinearGradient colors={['#5088FF', '#1A63FF']} className='w-full p-5 gap-2 flex flex-row justify-center items-center'>
                 <Text className='text-white text-[12px] font-bold'>
-                  {loading?"Saving...":"Save"}
+                  Save
                 </Text>
                 <Image source={require("../../assets/icons/send.png")} tintColor={"#FFFFFF"} style={{ width: 12, height: 12 }}/>
               </LinearGradient>
@@ -376,6 +512,7 @@ const historyReimburseKaryawan = () => {
                         key={index}
                         onPress={() => {
                           setIsActive(item.email);
+                          setUsername(item.username);
                         }}
                         className={`w-[50px] h-[50px] flex justify-center items-center overflow-hidden rounded-full`}
                       >
@@ -390,7 +527,6 @@ const historyReimburseKaryawan = () => {
           )}
         </View>
       </View> 
-
 
       {/* POPUP EDIT*/}
       {popUpEdit && (
@@ -408,71 +544,74 @@ const historyReimburseKaryawan = () => {
               <View className='w-full flex flex-col gap-1'>
                 <View className='flex flex-row justify-between items-center px-2'>
                   <Text className='text-[10px] font-bold'>Base salary</Text>
-                  <Pressable onPress={() => {}} className='w-[35px] rounded-full flex flex-row justify-end bg-[#cfd2e5] p-1 items-center'>
-                    <View className='w-[10px] h-[10px] bg-white rounded-full'/>
-                  </Pressable>
                 </View>
                 <TextInput
                   className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                   placeholder='new base salary'
-                  value={baseSalary.toString()}
+                  value={baseSalaryCreate.toString()}
                   keyboardType='numeric'
-                  onChangeText={(text) => setBaseSalary(Number(text))}
+                  onChangeText={(text) => setBaseSalaryCreate(Number(text))}
                 />
               </View>
 
               <View className='w-full flex flex-col gap-1'>
                 <View className='flex flex-row justify-between items-center px-2'>
                   <Text className='text-[10px] font-bold'>tunjangan istri</Text>
-                  <Pressable onPress={() => {}} className='w-[35px] rounded-full flex flex-row justify-end bg-[#cfd2e5] p-1 items-center'>
+                  <Pressable onPress={() => {setSpouseAllowanceCreate(!spouseAllowanceCreate)}} className={`w-[35px] rounded-full flex flex-row ${spouseAllowanceCreate?"justify-end bg-blue-600":"justify-start bg-[#cfd2e5]"} p-1 items-center`}>
                     <View className='w-[10px] h-[10px] bg-white rounded-full'/>
                   </Pressable>
                 </View>
-                <TextInput
-                  className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
-                  placeholder='ada berapa istri'
-                  value={baseSalary.toString()}
-                  keyboardType='numeric'
-                  onChangeText={(text) => setBaseSalary(Number(text))}
-                />
+                {spouseAllowanceCreate&&(
+                  <TextInput
+                    className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                    placeholder='ada berapa istri'
+                    value={spouseAmountCreate.toString()}
+                    keyboardType='numeric'
+                    onChangeText={(text) => setSpouseAmountCreate(Number(text))}
+                  />
+                )}
               </View>
 
               <View className='w-full flex flex-col gap-1'>
                 <View className='flex flex-row justify-between items-center px-2'>
                   <Text className='text-[10px] font-bold'>tunjangan anak</Text>
-                  <Pressable onPress={() => {}} className='w-[35px] rounded-full flex flex-row justify-end bg-[#cfd2e5] p-1 items-center'>
+                  <Pressable onPress={() => {setChildAllowanceCreate(!childAllowanceCreate)}} className={`w-[35px] rounded-full flex flex-row ${childAllowanceCreate?"justify-end bg-blue-600":"justify-start bg-[#cfd2e5]"} p-1 items-center`}>
                     <View className='w-[10px] h-[10px] bg-white rounded-full'/>
                   </Pressable>
                 </View>
-                <TextInput
-                  className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
-                  placeholder='ada berapa anak'
-                  value={baseSalary.toString()}
-                  keyboardType='numeric'
-                  onChangeText={(text) => setBaseSalary(Number(text))}
-                />
+                {childAllowanceCreate&&(
+                  <TextInput
+                    className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                    placeholder='ada berapa anak'
+                    value={childAmountCreate.toString()}
+                    keyboardType='numeric'
+                    onChangeText={(text) => setChildAmountCreate(Number(text))}
+                  />
+                )}
               </View>
 
               <View className='w-full flex flex-col gap-1'>
                 <View className='flex flex-row justify-between items-center px-2'>
                   <Text className='text-[10px] font-bold'>pajak</Text>
-                  <Pressable onPress={() => {}} className='w-[35px] rounded-full flex flex-row justify-end bg-[#cfd2e5] p-1 items-center'>
+                  <Pressable onPress={() => {setTaxAllowanceCreate(!taxAllowanceCreate)}} className={`w-[35px] rounded-full flex flex-row ${taxAllowanceCreate?"justify-end bg-blue-600":"justify-start bg-[#cfd2e5]"} p-1 items-center`}>
                     <View className='w-[10px] h-[10px] bg-white rounded-full'/>
                   </Pressable>
                 </View>
-                <TextInput
-                  className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
-                  placeholder='ada berapa anak'
-                  value={baseSalary.toString()}
-                  keyboardType='numeric'
-                  onChangeText={(text) => setBaseSalary(Number(text))}
-                />
+                {taxAllowanceCreate&&(
+                  <TextInput
+                    className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                    placeholder='ada berapa anak'
+                    value={taxAmountCreate.toString()}
+                    keyboardType='numeric'
+                    onChangeText={(text) => setTaxAmountCreate(Number(text))}
+                  />
+                )}
               </View>
 
               <View className='w-full flex flex-col gap-1'>
                 <View className='flex flex-row justify-between items-center px-2'>
                   <Text className='text-[10px] font-bold'>bpjs kesehatan</Text>
-                  <Pressable onPress={() => {}} className='w-[35px] rounded-full flex flex-row justify-end bg-[#cfd2e5] p-1 items-center'>
+                  <Pressable onPress={() => {setHealthAllowanceCreate(!healthAllowanceCreate)}} className={`w-[35px] rounded-full flex flex-row ${healthAllowanceCreate?"justify-end bg-blue-600":"justify-start bg-[#cfd2e5]"} p-1 items-center`}>
                     <View className='w-[10px] h-[10px] bg-white rounded-full'/>
                   </Pressable>
                 </View>
@@ -481,7 +620,7 @@ const historyReimburseKaryawan = () => {
               <View className='w-full flex flex-col gap-1'>
                 <View className='flex flex-row justify-between items-center px-2'>
                   <Text className='text-[10px] font-bold'>bpjs ketenagakerjaan</Text>
-                  <Pressable onPress={() => {}} className='w-[35px] rounded-full flex flex-row justify-end bg-[#cfd2e5] p-1 items-center'>
+                  <Pressable onPress={() => {setEmploymentAllowanceCreate(!employmentAllowanceCreate)}} className={`w-[35px] rounded-full flex flex-row ${employmentAllowanceCreate?"justify-end bg-blue-600":"justify-start bg-[#cfd2e5]"} p-1 items-center`}>
                     <View className='w-[10px] h-[10px] bg-white rounded-full'/>
                   </Pressable>
                 </View>
@@ -500,9 +639,10 @@ const historyReimburseKaryawan = () => {
                 </Pressable>
                 <Pressable onPress={() => { 
                     setError('');
+                    handleCreate();
                   }} className={`bg-[#4575e6] rounded-lg py-[10px] flex-1 justify-center items-center`}>
                   <Text className='font-bold text-[12px] text-[#ffffff]'>
-                    {loading ? 'Creating...' : 'Create'}
+                    {loading?'Creating...':'Create'}
                   </Text>
                 </Pressable>
               </View>
@@ -510,7 +650,6 @@ const historyReimburseKaryawan = () => {
           </View>
         </>
       )}
-
 
       {/* POPUP EDIT BASE SALARY*/}
       {popUpEditSalary && (
@@ -526,9 +665,6 @@ const historyReimburseKaryawan = () => {
               </View>
 
               <View className='w-full flex flex-col gap-1'>
-                <View className='flex flex-row justify-between items-center px-2'>
-                  <Text className='text-[10px] font-bold'>Base salary</Text>
-                </View>
                 <TextInput
                   className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                   placeholder='new base salary'
@@ -537,23 +673,10 @@ const historyReimburseKaryawan = () => {
                   onChangeText={(text) => setBaseSalary(Number(text))}
                 />
               </View>
-
-              {error !== '' && (
-                <Text className={`w-full border-[.5px] rounded-lg p-3 ${error === 'berhasil membuat user' ? 'border-green-600 text-green-500' : 'border-red-600 text-red-500'} text-center mt-2`}>
-                  {error}
-                </Text>
-              )}
               <View className='flex flex-row justify-center items-center gap-2 mt-3 w-full'>
                 <Pressable onPress={() => {setPopUpEditSalary(false)}} className='border border-b-[2px] border-[#003681] bg-blue-50 rounded-lg py-[8px] flex-1 justify-center items-center'>
                   <Text className='font-bold text-[12px] text-[#003681]'>
-                    Cancel
-                  </Text>
-                </Pressable>
-                <Pressable onPress={() => { 
-                    setError('');
-                  }} className={`bg-[#4575e6] rounded-lg py-[10px] flex-1 justify-center items-center`}>
-                  <Text className='font-bold text-[12px] text-[#ffffff]'>
-                    {loading ? 'Saving...' : 'Save'}
+                    Save
                   </Text>
                 </Pressable>
               </View>
@@ -561,7 +684,6 @@ const historyReimburseKaryawan = () => {
           </View>
         </>
       )}
-
 
       {/* POPUP EDIT PAJAK*/}
       {popUpEditTax && (
@@ -585,23 +707,10 @@ const historyReimburseKaryawan = () => {
                   onChangeText={(text) => setTaxAmount(Number(text))}
                 />
               </View>
-
-              {error !== '' && (
-                <Text className={`w-full border-[.5px] rounded-lg p-3 ${error === 'berhasil membuat user' ? 'border-green-600 text-green-500' : 'border-red-600 text-red-500'} text-center mt-2`}>
-                  {error}
-                </Text>
-              )}
               <View className='flex flex-row justify-center items-center gap-2 mt-3 w-full'>
                 <Pressable onPress={() => {setPopUpEditTax(false)}} className='border border-b-[2px] border-[#003681] bg-blue-50 rounded-lg py-[8px] flex-1 justify-center items-center'>
                   <Text className='font-bold text-[12px] text-[#003681]'>
-                    Cancel
-                  </Text>
-                </Pressable>
-                <Pressable onPress={() => { 
-                    setError('');
-                  }} className={`bg-[#4575e6] rounded-lg py-[10px] flex-1 justify-center items-center`}>
-                  <Text className='font-bold text-[12px] text-[#ffffff]'>
-                    {loading ? 'Saving...' : 'Save'}
+                    Save
                   </Text>
                 </Pressable>
               </View>
@@ -609,7 +718,6 @@ const historyReimburseKaryawan = () => {
           </View>
         </>
       )}
-
 
       {/* POPUP EDIT TUNJANGAN ISTRI*/}
       {popUpEditSpouse && (
@@ -643,23 +751,10 @@ const historyReimburseKaryawan = () => {
                   <Text className='font-bold text-[25px] text-white mb-1'>+</Text>
                 </Pressable>
               </View>
-
-              {error !== '' && (
-                <Text className={`w-full border-[.5px] rounded-lg p-3 ${error === 'berhasil membuat user' ? 'border-green-600 text-green-500' : 'border-red-600 text-red-500'} text-center mt-2`}>
-                  {error}
-                </Text>
-              )}
               <View className='flex flex-row justify-center items-center gap-2 mt-3 w-full'>
                 <Pressable onPress={() => {setPopUpEditSpouse(false)}} className='border border-b-[2px] border-[#003681] bg-blue-50 rounded-lg py-[8px] flex-1 justify-center items-center'>
                   <Text className='font-bold text-[12px] text-[#003681]'>
-                    Cancel
-                  </Text>
-                </Pressable>
-                <Pressable onPress={() => { 
-                    setError('');
-                  }} className={`bg-[#4575e6] rounded-lg py-[10px] flex-1 justify-center items-center`}>
-                  <Text className='font-bold text-[12px] text-[#ffffff]'>
-                    {loading ? 'Saving...' : 'Save'}
+                    Save
                   </Text>
                 </Pressable>
               </View>
@@ -667,7 +762,6 @@ const historyReimburseKaryawan = () => {
           </View>
         </>
       )}
-
 
       {/* POPUP EDIT TUNJANGAN ANAK*/}
       {popUpEditChild && (
@@ -701,23 +795,10 @@ const historyReimburseKaryawan = () => {
                   <Text className='font-bold text-[25px] text-white mb-1'>+</Text>
                 </Pressable>
               </View>
-
-              {error !== '' && (
-                <Text className={`w-full border-[.5px] rounded-lg p-3 ${error === 'berhasil membuat user' ? 'border-green-600 text-green-500' : 'border-red-600 text-red-500'} text-center mt-2`}>
-                  {error}
-                </Text>
-              )}
               <View className='flex flex-row justify-center items-center gap-2 mt-3 w-full'>
                 <Pressable onPress={() => {setPopUpEditChild(false)}} className='border border-b-[2px] border-[#003681] bg-blue-50 rounded-lg py-[8px] flex-1 justify-center items-center'>
                   <Text className='font-bold text-[12px] text-[#003681]'>
-                    Cancel
-                  </Text>
-                </Pressable>
-                <Pressable onPress={() => { 
-                    setError('');
-                  }} className={`bg-[#4575e6] rounded-lg py-[10px] flex-1 justify-center items-center`}>
-                  <Text className='font-bold text-[12px] text-[#ffffff]'>
-                    {loading ? 'Saving...' : 'Save'}
+                    Save
                   </Text>
                 </Pressable>
               </View>
@@ -726,6 +807,34 @@ const historyReimburseKaryawan = () => {
         </>
       )}
 
+      {/* POPUP Update */}
+      {popUpSendUpdate && (
+        <>
+          <View className='absolute w-full z-[999] h-full opacity-80 bg-[#001431]'/>
+          <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-[1000]'>
+            <View className='w-full bg-white p-[20px] pt-[60px] rounded-lg flex flex-col justify-start items-center'>
+              <View className='w-[75px] h-[75px] absolute top-[-25px] border-[7px] border-white rounded-full bg-blue-600 flex justify-center items-center pr-[9px]'>
+                <Image source={require("../../assets/icons/send.png")} style={{ width: 25, height: 25 }} tintColor={"#ffffff"} className='ml-[-20px]'/>
+              </View>
+              <Text className='text-[12px] w-full text-center'>
+                Are you sure you want to saved new data salary?
+              </Text>
+              <View className='flex flex-row justify-center items-center gap-3 mt-5 w-full'>
+                <Pressable onPress={() => {setPopUpSendUpdate(false)}} className='w-[50%] border border-b-[2px] border-blue-800 bg-blue-50 rounded-lg py-[8px] flex justify-center items-center'>
+                  <Text className='font-bold text-[12px]'>
+                    No
+                  </Text>
+                </Pressable>
+                <Pressable onPress={() => {handleUpdate()}} className='w-[50%] bg-blue-500 rounded-lg py-[10px] flex justify-center items-center'>
+                  <Text className='font-bold text-[12px] text-white'>
+                    {loading ? 'Loading...' : 'Yes'}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </>
+      )}
 
     </View>
   )

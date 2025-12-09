@@ -14,15 +14,15 @@ export type FinanceManagementType = {
     updated_at?: string;
 }
 export type FinanceManagementSendType = {
-    email: string; // user ID dari backend
+    email: string;
+    is_active?: boolean;
     base_salary?: number;
     spouse_allowance?: number;
     child_allowance?: number;
-    bpjs_health_percentage?: number;
-    bpjs_employment_percentage?: number;
-    tax_amount?: number;
-    overtime_hours?: number;
-    receivable_amount?: number;
-    created_at?: string;
-    updated_at?: string;
+    enable_bpjs_health: boolean;
+    enable_bpjs_employment: boolean;
+    bpjs_health_rate_percentage?: number;
+    bpjs_employment_rate_percentage?: number;
+    enable_tax: boolean;
+    tax_rate_percentage: number;
 }

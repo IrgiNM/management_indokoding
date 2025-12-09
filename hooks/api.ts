@@ -67,7 +67,7 @@ export const createCategory = (data: object) => api.post('category/create/', dat
 // FINANCE MANAGEMENT
 export const getFinanceDataByUser = (email: string) => api.get(`finance/user/${email}/`);
 export const CreateFinanceDataByUser = (data: FinanceManagementSendType) => api.post(`finance/create/`, data);
-export const UpdateFinanceDataByUser = (data: FinanceManagementSendType) => api.post(`finance/update/`, data);
+export const UpdateFinanceDataByUser = (data: FinanceManagementSendType) => api.patch(`finance/update/`, data);
 
 // SITE SETTING
 export const createSiteSetting = (data: siteSettingSendType) => api.post('setting/create/', data);
