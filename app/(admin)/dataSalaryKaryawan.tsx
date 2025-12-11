@@ -546,7 +546,7 @@ const historyReimburseKaryawan = () => {
                   <Text className='text-[10px] font-bold'>Base salary</Text>
                 </View>
                 <TextInput
-                  className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                  className='text-black p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                   placeholder='new base salary'
                   value={baseSalaryCreate.toString()}
                   keyboardType='numeric'
@@ -563,7 +563,7 @@ const historyReimburseKaryawan = () => {
                 </View>
                 {spouseAllowanceCreate&&(
                   <TextInput
-                    className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                    className='text-black p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                     placeholder='ada berapa istri'
                     value={spouseAmountCreate.toString()}
                     keyboardType='numeric'
@@ -581,7 +581,7 @@ const historyReimburseKaryawan = () => {
                 </View>
                 {childAllowanceCreate&&(
                   <TextInput
-                    className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                    className='text-black p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                     placeholder='ada berapa anak'
                     value={childAmountCreate.toString()}
                     keyboardType='numeric'
@@ -599,7 +599,7 @@ const historyReimburseKaryawan = () => {
                 </View>
                 {taxAllowanceCreate&&(
                   <TextInput
-                    className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                    className='text-black p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                     placeholder='ada berapa anak'
                     value={taxAmountCreate.toString()}
                     keyboardType='numeric'
@@ -666,7 +666,7 @@ const historyReimburseKaryawan = () => {
 
               <View className='w-full flex flex-col gap-1'>
                 <TextInput
-                  className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                  className='text-black p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                   placeholder='new base salary'
                   value={baseSalary.toString()}
                   keyboardType='numeric'
@@ -700,7 +700,7 @@ const historyReimburseKaryawan = () => {
 
               <View className='w-full flex flex-col gap-1'>
                 <TextInput
-                  className='p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                  className='text-black p-[8px] pl-[20px] text-[12px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                   placeholder='new base Tax'
                   value={taxAmount.toString()}
                   keyboardType='numeric'
@@ -739,7 +739,7 @@ const historyReimburseKaryawan = () => {
                   <Text className='font-bold text-[25px] text-white mb-1'>-</Text>
                 </Pressable>
                 <TextInput
-                  className='p-[10px] pl-[20px] text-[#006381] flex-1 flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
+                  className='text-black p-[10px] pl-[20px] flex-1 flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
                   placeholder='new value'
                   value={spouseAmount.toString()}
                   onChangeText={(text) => setSpouseAmount(Number(text))}
@@ -783,7 +783,7 @@ const historyReimburseKaryawan = () => {
                   <Text className='font-bold text-[25px] text-white mb-1'>-</Text>
                 </Pressable>
                 <TextInput
-                  className='p-[10px] pl-[20px] text-[#006381] flex-1 flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
+                  className='p-[10px] pl-[20px] text-black flex-1 flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
                   placeholder='new value'
                   value={childAmount.toString()}
                   onChangeText={(text) => setChildAmount(Number(text))}

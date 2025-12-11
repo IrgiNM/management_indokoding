@@ -282,7 +282,7 @@ const dataKaryawanDetail = () => {
                 Change Salary
               </Text>
               <TextInput
-                className='flex w-full p-[10px] pl-[15px] text-[12px] flex-row justify-center items-center border-[1px] border-blue-800 rounded-lg mt-4'
+                className='text-black flex w-full p-[10px] pl-[15px] text-[12px] flex-row justify-center items-center border-[1px] border-blue-800 rounded-lg mt-4'
                 placeholder='Add Price'
                 keyboardType='numeric'
                 onChangeText={(text) => setSalary(Number(text))}
@@ -374,25 +374,25 @@ const dataKaryawanDetail = () => {
                 Change User
               </Text>
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Username'
                 value={username}
                 onChangeText={setUsername}
               />
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Email'
                 value={emailNew}
                 onChangeText={setEmailNew}
               />
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Password'
                 value={password}
                 onChangeText={setPassword}
               />
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Confirm Password'
                 value={passwordConfirm}
                 onChangeText={setPasswordConfirm}

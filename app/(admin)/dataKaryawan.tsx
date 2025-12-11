@@ -100,14 +100,14 @@ const dataKaryawan = () => {
 
       {/* BUTTON ADD KARYAWAN POPUP */}
       <Pressable onPress={() => {setCreateActive(true)}} className='w-[60px] h-[60px] rounded-lg border-[1px] border-b-[2px] border-blue-600 bg-blue-50 overflow-hidden relative top-[520px] -right-[120px] flex justify-center items-center'>
-        <LinearGradient colors={['#CFE9FF', '#7EC3FF']} className='w-full h-full flex justify-center items-center'> 
+        <LinearGradient colors={['#FFFFFF', '#7EC3FF']} className='w-full h-full flex justify-center items-center'> 
           <Image source={require("../../assets/icons/add-karyawan-3.png")} style={{ width: 30, height: 30 }}/>
         </LinearGradient>
       </Pressable>
 
       {/* BUTTON REFRESH */}
       <Pressable onPress={() => {router.replace('../(admin)/dataKaryawan')}} className='w-[50px] h-[50px] rounded-full border-[1px] border-b-[2px] border-[#873600] overflow-hidden bg-yellow-200 relative top-[400px] -right-[120px] flex justify-center items-center'>
-        <LinearGradient colors={['#FFEDB3', '#FFD23F']} className='w-full h-full flex justify-center items-center'>
+        <LinearGradient colors={['#FFFFFF', '#FFD23F']} className='w-full h-full flex justify-center items-center'>
           <Image source={require("../../assets/icons/refresh.png")} tintColor={'#CA5101'} style={{ width: 20, height: 20 }}/>
         </LinearGradient>
       </Pressable>
@@ -121,28 +121,30 @@ const dataKaryawan = () => {
           <View className='absolute z-[1000] bottom-[0px] w-full h-[500px] bg-white flex justify-start gap-3 items-center px-[30px] pt-[30px] rounded-t-3xl'>
               <Text className='w-full font-bold mb-5 text-blue-800'>Create Karyawan</Text>
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Username'
                 value={username}
                 onChangeText={setUsername}
               />
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Email'
                 value={email}
                 onChangeText={setEmail}
               />
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Password'
                 value={password}
                 onChangeText={setPassword}
+                secureTextEntry
               />
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Confirm Password'
                 value={passwordConfirm}
                 onChangeText={setPasswordConfirm}
+                secureTextEntry
               />
               {error !== '' && (
                 <Text className={`w-full border-[.5px] rounded-lg p-3 ${error === 'berhasil membuat user' ? 'border-green-600 text-green-500' : 'border-red-600 text-red-500'} text-center mt-2`}>

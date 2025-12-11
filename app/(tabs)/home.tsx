@@ -1,15 +1,16 @@
+import BottomBar from '@/components/bottomBar'
 import CardInfo from '@/components/cardInfo'
-import { getReimburseUserPerMonth } from '@/hooks/api'
+import { iconHomeBar } from '@/data/iconHomeBarData'
+import { iconMenu } from '@/data/iconMenuData'
 import { dataReimburseMain, getReimburseUserHome } from '@/hooks/dataReimburseFunction'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
-import { getToken } from '@/hooks/tokenFunction'
 import { getDataUserLogin } from '@/hooks/userFunction'
 import { ReimbursementType } from '@/types/reimburseDataType'
 import { Image, ImageBackground } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
-import { Dimensions, FlatList, Pressable, ScrollView, Text, View } from 'react-native'
+import { Dimensions, Pressable, ScrollView, Text, View } from 'react-native'
 const { width } = Dimensions.get('window');
 
 const home = () => {
@@ -22,11 +23,10 @@ const home = () => {
   const [role, setRole] = useState<string>('karyawan');
   const year = new Date().getFullYear();
   const month = new Date().toString().slice(4, 7);
-  const yearMonth = new Date().toISOString().slice(0,7);
   const monthNumber = new Date().toISOString().slice(5, 7);
   const [selectMonthPopUp, setSelectMonthPopUp] = useState(false);
   const [selectMonth, setSelectMonth] = useState('');
-  const [monthTotalPrice, setMonthTotalPrice] = useState('');
+  const [monthTotalPrice, setMonthTotalPrice] = useState(monthNumber);
   const [totalPrice, setTotalPrice] = useState(0);
   const [selectStatus, setSelectStatus] = useState('All');
   const bulanMap: any = {
@@ -45,33 +45,17 @@ const home = () => {
   };
 
   useEffect(()=>{
-    const checkLogin = async ()=>{
-      const res = await getToken();
-      if(!res){
-        router.replace('../login');
-      }
-    }
-    checkLogin();
-  }, []);
-
-  useEffect(()=>{
     const total = dataReimburse.reduce((sum, item) => sum + Number(item.total_amount || 0), 0);
     setTotalPrice(total);
   }, [dataReimburse])
 
   useEffect(()=>{
-    if(dataMonth.length > 0){
+    if((dataMonth?.length??0) > 0){
         setSelectMonth(`${bulanMap[dataMonth[0]]} ${year.toString()}`);
     }else{
         setSelectMonth(`${month} ${year.toString()}`);
-        // console.error('select month default : ', selectMonth);
     }
   }, [dataMonth])
-
-  useEffect(()=>{
-    setMonthTotalPrice(monthNumber);
-    // console.error('set month total price : ', monthTotalPrice);
-  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,22 +63,16 @@ const home = () => {
         const res = await getReimburseUserHome(monthTotalPrice);
         setDataReimburse(res);
       } catch (err) {
-        // console.error(err);
       }
     };
-  
     fetchData();
   }, [monthTotalPrice]);
 
   useEffect(()=>{
-    // console.error('bulan tahun : ', yearMonth, 'bulan:', month);
     if(dataUserLogin.is_staff){
         setRole('admin');
     }
   }, [dataUserLogin]);
-
-  
-//   const dataUser = getDataUserLogin();
 
   const iconStatus = [
     {
@@ -143,52 +121,17 @@ const home = () => {
     },
   ]
 
-  const iconMenu = [
-    {
-        id: 1,
-        title: "create reimburse",
-        color: "#F3D1FF",
-        icon: require("../../assets/icons/reimburse-active.png"),
-        link: () => {router.replace('/reimburse')},
-        role: ['karyawan', 'admin']
-    },
-    {
-        id: 1,
-        title: "data Reimburse",
-        color: "#F3D1FF",
-        icon: require("../../assets/icons/data-reimburse.png"),
-        link: () => {router.replace('../(admin)/historyReimburseKaryawan')},
-        role: ['admin']
-    },
-    {
-        id: 1,
-        title: "data karyawan",
-        color: "#D1D6FF",
-        icon: require("../../assets/icons/karyawan.png"),
-        link: () => {router.replace('../(admin)/dataKaryawan')},
-        role: ['admin']
-    },
-    {
-        id: 1,
-        title: "Salary karyawan",
-        color: "#D1D6FF",
-        icon: require("../../assets/icons/salary-karyawan.png"),
-        link: () => {router.replace('../(admin)/dataSalaryKaryawan')},
-        role: ['admin']
-    },
-  ]
-
 
   return (
     <View className='bg-white flex-1 justify-start items-center'>
 
       {/* HEADER */}
       <View className='flex flex-row justify-between items-center relative z-[997] top-30 w-full h-[110px] p-[30px] pt-[55px]'>
-        <View className='flex flex-row justify-start items-center'>
+        <Pressable onPress={() => {router.replace('/profile')}} className='flex flex-row justify-start items-center'>
             <View className='flex justify-center items-center w-[40px] h-[40px] overflow-hidden bg-[#00d7f4] rounded-full'>
               <LinearGradient colors={['#00d7f4', '#009fb4']} className='w-full h-full flex flex-row justify-center items-center'>
                 <Text className='text-[#00495f] font-bold text-[15px]'>
-                    {dataUserLogin.username.charAt(0).toUpperCase()}{dataUserLogin.username.charAt(dataUserLogin.username.length - 1).toUpperCase()}
+                    {dataUserLogin.username.charAt(0).toUpperCase()}{dataUserLogin.username.charAt((dataUserLogin?.username.length??0) - 1).toUpperCase()}
                 </Text>
               </LinearGradient>
             </View>
@@ -199,7 +142,7 @@ const home = () => {
                     {dataUserLogin?.username}
                 </Text>
             </View>
-        </View>
+        </Pressable>
         <View className='flex flex-row justify-center items-center gap-3'>
             <Pressable onPress={() => {}} className='w-[45px] h-[45px] rounded-xl bg-purple-50 border-[.5px] border-purple-600 border-b-[1px] flex justify-center items-center'>
                 <Image source={require("../../assets/icons/notif.png")} tintColor={"#7300BF"} style={{ width: 22, height: 22 }}/>
@@ -227,7 +170,7 @@ const home = () => {
                                 formatRupiah(totalPrice||0)
                             }</Text>
                             <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)' }} onPress={() => {
-                                if(dataMonth.length > 0){
+                                if((dataMonth?.length??0) > 0){
                                     setSelectMonthPopUp(true)
                                 }
                                 }} className="w-[100px] border-[.5px] border-b-[1px] border-white rounded-lg flex flex-row justify-center items-center bg-purple-500">
@@ -259,38 +202,31 @@ const home = () => {
                 </View>
 
                 {/* STATUS ICON */}
-                <View className='w-full justify-evenly items-center gap-5 mt-0'>
-                    <FlatList
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{ gap: 20 }}
-                        data={iconStatus}
-                        keyExtractor={(item) => item.id.toString()}
-                        renderItem={({item}) => (
-                            <Pressable onPress={item.action} android_ripple={{ color: 'rgba(0,0,0,0.1)' }} className='flex flex-col justify-center items-center relative'>
-                                <View className='w-[20px] h-[20px] rounded-full overflow-hidden bg-purple-50 relative z-10 -right-[15px] top-[10px]'>    
-                                    <LinearGradient colors={['#9000E4', '#7200B4']} className='w-[20px] h-[20px] rounded-full bg-purple-800 flex justify-center items-center'>
-                                        <Text className='text-[10px] text-white'>
-                                            {item.title==="All" ? dataReimburse?.length??0 : item.title==="Pending" ? dataReimburse?.filter(i=>i.status==="Pending").length??0 : item.title==="Approved" ? dataReimburse?.filter(i=>i.status==="Approved").length??0 : dataReimburse?.filter(i=>i.status==="Rejected").length??0}
-                                        </Text>
-                                    </LinearGradient>
+                <View className='w-full flex flex-row justify-center items-center gap-5 mt-0'>
+                    {iconStatus.map((item,index)=>(
+                        <Pressable key={index} onPress={item.action} android_ripple={{ color: 'rgba(0,0,0,0.1)' }} className='flex flex-col justify-center items-center relative'>
+                            <View className='w-[20px] h-[20px] rounded-full overflow-hidden bg-purple-50 relative z-10 -right-[15px] top-[10px]'>    
+                                <View className='w-[20px] h-[20px] rounded-full bg-purple-800 flex justify-center items-center'>
+                                    <Text className='text-[10px] text-white'>
+                                        {item.title==="All" ? (dataReimburse?.length??0) : item.title==="Pending" ? (dataReimburse?.filter(i=>i.status==="Pending").length??0) : item.title==="Approved" ? (dataReimburse?.filter(i=>i.status==="Approved").length??0) : (dataReimburse?.filter(i=>i.status==="Rejected").length??0)}
+                                    </Text>
                                 </View>
-                                <View className={`${statusActieve === item.id && `border-[.5px] border-b-[1px] ${item.border}`} flex justify-center items-center w-[50px] h-[50px] rounded-full ${item.color}`}>
-                                    {item.icon === "null" ? (
-                                        <Text className='text-[15px] font-bold text-purple-800'>
-                                            All
-                                        </Text>
-                                    ):
-                                    (
-                                        <Image source={item.icon} style={{ width: 25, height: 25 }}/>
-                                    )}
-                                </View>
-                                <Text className='text-[10px] mt-2 text-[#40006B]'>
-                                    {item.title}
-                                </Text>
-                            </Pressable>
-                        )}
-                    />
+                            </View>
+                            <View className={`${statusActieve === item.id && `border-[.5px] border-b-[1px] ${item.border}`} flex justify-center items-center w-[50px] h-[50px] rounded-full ${item.color}`}>
+                                {item.icon === "null" ? (
+                                    <Text className='text-[15px] font-bold text-purple-800'>
+                                        All
+                                    </Text>
+                                ):
+                                (
+                                    <Image source={item.icon} style={{ width: 25, height: 25 }}/>
+                                )}
+                            </View>
+                            <Text className='text-[10px] mt-2 text-[#40006B]'>
+                                {item.title}
+                            </Text>
+                        </Pressable>
+                    ))}
                     
                 </View>
             </View>
@@ -299,9 +235,9 @@ const home = () => {
 
         {/* LIST REIMBURSE */}
         <View className='w-full h-[100px] bg-blue-50 mt-5 p-0' style={{ width: '100%' }}>
-            {dataReimburse.length > 0 ? (
+            {((selectStatus==="All"?dataReimburse:(dataReimburse.filter(item=>item.status===selectStatus))).length??0) > 0 ? (
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ width: '100%' }}>
-                    <LinearGradient colors={['#E2B7F1', '#D58DFF']} className='h-[100px] w-full flex flex-row justify-start items-center gap-3 pl-[30px] pr-[30px] bg-[#F1E3FA]'>
+                    <LinearGradient colors={['#E2B7F1', '#A950FF']} className='h-[100px] w-full flex flex-row justify-start items-center gap-3 pl-[30px] pr-[30px] bg-[#F1E3FA]'>
                         {(selectStatus==="Pending"?dataReimburse.filter(i=>i.status==="Pending"):selectStatus==="Approved"?dataReimburse.filter(i=>i.status==="Approved"):selectStatus==="Rejected"?dataReimburse.filter(i=>i.status==="Rejected"):dataReimburse).map((item, idx) => (
                             <CardInfo 
                                 amount={Number(item.total_amount)} 
@@ -318,8 +254,8 @@ const home = () => {
                 </ScrollView>
             ) : (
                 <View className='w-full h-[100px]'>
-                    <LinearGradient colors={['#E2B7F1', '#D58DFF']} className='h-[100px] w-full flex flex-row justify-center items-center gap-3 bg-[#F1E3FA]'>
-                        <View className='flex flex-row justify-center items-center gap-2 text-[10px] py-3 px-[30px] border-[.5px] rounded-full border-purple-600 bg-purple-100 text-purple-800 font-bold'>
+                    <LinearGradient colors={['#E2B7F1', '#A950FF']} className='h-[100px] w-full flex flex-row justify-center items-center gap-3 bg-[#F1E3FA]'>
+                        <View className='flex flex-row justify-center items-center gap-2 text-[10px] py-3 px-[30px] border-[.5px] rounded-full border-purple-600 bg-purple-200 text-purple-800 font-bold'>
                             <Image
                             source={require('../../assets/icons/s-decline.png')}
                             style={{ width: 7, height: 7 }}
@@ -369,6 +305,7 @@ const home = () => {
         <View className='w-full h-[1000px] bg-white'></View>
 
       </ScrollView>
+
 
       {selectMonthPopUp && (
         <>

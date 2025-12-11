@@ -74,13 +74,13 @@ const Login = () => {
         <View className='w-[270px] h-[1px] bg-black my-5 opacity-20'/>
           
             <TextInput
-            className='p-[10px] pl-[20px] w-[270px] flex flex-row justify-center items-center border-[.5px] rounded-lg'
+            className='text-black p-[10px] pl-[20px] w-[270px] flex flex-row justify-center items-center border-[.5px] rounded-lg'
             placeholder='Username'
             value={username}
             onChangeText={setUsername}
             />
             <TextInput
-            className='p-[10px] pl-[20px] w-[270px] flex flex-row justify-center items-center border-[.5px] rounded-lg mt-5'
+            className='text-black p-[10px] pl-[20px] w-[270px] flex flex-row justify-center items-center border-[.5px] rounded-lg mt-5'
             placeholder='Password'
             value={password}
             onChangeText={setPassword}

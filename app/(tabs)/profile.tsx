@@ -181,13 +181,13 @@ const profile = () => {
                 </Text>
               </View>
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Username'
                 value={username}
                 onChangeText={setUsername}
               />
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Email'
                 value={emailNew}
                 onChangeText={setEmailNew}
@@ -230,13 +230,13 @@ const profile = () => {
                 </Text>
               </View>
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Password'
                 value={password}
                 onChangeText={setPassword}
               />
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Confirm Password'
                 value={passwordConfirm}
                 onChangeText={setPasswordConfirm}

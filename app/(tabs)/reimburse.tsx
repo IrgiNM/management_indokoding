@@ -206,151 +206,151 @@ const reimburse = () => {
       {/* HEADER */}
       <HeaderBack title='Pengajuan Reimburse'/>
 
-      <ScrollView className='w-full pb-[50px]'>
-        <View className='w-full p-[15px] pt-[20px] bg-[#dfc1ef]'>
+      <ScrollView className='w-full pb-0'>
+        <View className='w-full bg-[#dfc1ef] pb-0'>
+          <LinearGradient colors={['#A950FF', '#2D1347']} className='w-full h-full px-[20px] pt-[0px] pb-[220px] flex-1 flex-col justify-start items-center'>
+            <View className='w-full bg-white rounded-lg flex flex-col justify-start items-center p-[20px]'>
 
-          <View className='w-full bg-white rounded-2xl border-[.5px] border-b-[1px] border-purple-600 flex flex-col justify-start items-center p-[20px]'>
-
-            <View className='w-full flex-col justify-start'>
-              <View className=' w-full flex justify-start'>
-                <Text className='font-bold text-[12px]'>Title:</Text>
-                <TextInput 
-                  className='p-[10px] text-[12px] pl-[15px] w-full flex flex-row justify-center items-center border-[1px] border-purple-800  rounded-lg mt-2' 
-                  placeholder='Add New Title'
-                  value={titleReimburse}
-                  onChangeText={setTitleReimburse}
-                />
-              </View>
-
-              <View className='p-[15px] mt-5 w-full border border-purple-500 bg-white rounded-t-lg'>
-                <View className='w-full'>
-                  <Text className='font-bold text-[12px]'>List Reimburse:</Text>
-                  <View className='flex flex-col justify-center items-center p-[20px] border-[1px] border-purple-100 mt-2 rounded-lg gap-1'>
-                    {dataItem.length > 0 ? dataItem.map((item,index)=>{
-                      return (
-                        <View key={index} className='w-full flex flex-row justify-between items-center'>
-                          <View className='flex-row justify-between w-[80%] '>
-                            <Text className='text-purple-900 text-[12px]'>{item.name}</Text>
-                            <Text className='font-bold text-purple-800 text-[12px]'>{formatRupiah(item.price)}</Text>
-                          </View>
-                          <Pressable onPress={() => {setDataItem(prev => prev.filter(col => col.name !== item.name));
-                            }} className='w-[20px] h-[20px] flex flex-row justify-center items-center border border-b-2 border-[#88003B] rounded-lg bg-[#FF0066]'
-                          >
-                            <Image source={require('../../assets/icons/s-decline.png')} style={{ width: 8, height: 8 }} tintColor={"#ffffff"}/>
-                          </Pressable>
-                        </View>
-                      )
-                    }):
-                      <Text className='text-purple-300 text-[12px]'>No items added yet.</Text>
-                    }
-                  </View>
-                  
-                </View>
-                <View className='flex-row justify-between gap-3 w-full mt-2'>
-                  <TextInput
-                        className='flex-1 p-[10px] pl-[15px] text-[12px] flex-row justify-center items-center border-[1px] border-purple-800 rounded-lg mt-2'
-                        placeholder='Add New Category'
-                        value={itemName}
-                        onChangeText={setItemName}
-                        />
-                  <TextInput
-                        className='flex-3 p-[10px] pl-[15px] text-[12px] flex-row justify-center items-center border-[1px] border-purple-800 rounded-lg mt-2'
-                        placeholder='Add Price'
-                        keyboardType='numeric'
-                        onChangeText={(text) => setItemPrice(Number(text))}
-                        />
+              <View className='w-full flex-col justify-start'>
+                <View className=' w-full flex justify-start'>
+                  <Text className='font-bold text-[12px]'>Title:</Text>
+                  <TextInput 
+                    className='text-black p-[10px] text-[12px] pl-[15px] w-full flex flex-row justify-center items-center border-[1px] border-purple-800  rounded-lg mt-2' 
+                    placeholder='Add New Title'
+                    value={titleReimburse}
+                    onChangeText={setTitleReimburse}
+                  />
                 </View>
 
-                <View className='w-full flex-row gap-2 mt-2'>
-                  <Pressable onPress={() => {
-                    setItemName('');
-                    setCategoryData(categoryReimburse);
-                  }} className='bg-[#9F00BB] border-[.5px] border-b-[1px] overflow-hidden border-purple-800 rounded-lg mt-2 text-center text-[10px]'>
-                    <LinearGradient colors={['#C821E5', '#9F00BB']} className='py-[5px] px-[10px] flex flex-row justify-center items-center'>
-                      <Image source={require("../../assets/icons/refresh.png")} style={{ width: 12, height: 12 }} tintColor={'white'}/>
-                    </LinearGradient>
-                  </Pressable>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} className='w-full'>
-                    <View className='flex-row gap-2'>
-                      {categoryData.map((item,index)=>{
+                <View className='p-[15px] mt-5 w-full border border-purple-500 bg-white rounded-t-lg'>
+                  <View className='w-full'>
+                    <Text className='font-bold text-[12px]'>List Reimburse:</Text>
+                    <View className='flex flex-col justify-center items-center p-[20px] border-[1px] border-purple-100 mt-2 rounded-lg gap-1'>
+                      {dataItem.length > 0 ? dataItem.map((item,index)=>{
                         return (
-                          <Pressable onPress={() => {
-                            setItemName(item);
-                            setCategoryData(prev => prev.filter(col => col !== item));
-                          }} key={index} className='bg-purple-100 border-[.5px] border-b-[1px] border-purple-800 rounded-lg py-[5px] px-[10px] mt-2 text-center text-[10px]'>
-                            <Text className='text-[10px]'>
-                              {item}
-                            </Text>
-                          </Pressable>
+                          <View key={index} className='w-full flex flex-row justify-between items-center'>
+                            <View className='flex-row justify-between w-[80%] '>
+                              <Text className='text-purple-900 text-[12px]'>{item.name}</Text>
+                              <Text className='font-bold text-purple-800 text-[12px]'>{formatRupiah(item.price)}</Text>
+                            </View>
+                            <Pressable onPress={() => {setDataItem(prev => prev.filter(col => col.name !== item.name));
+                              }} className='w-[20px] h-[20px] flex flex-row justify-center items-center border border-b-2 border-[#88003B] rounded-lg bg-[#FF0066]'
+                            >
+                              <Image source={require('../../assets/icons/s-decline.png')} style={{ width: 8, height: 8 }} tintColor={"#ffffff"}/>
+                            </Pressable>
+                          </View>
                         )
-                      })}
+                      }):
+                        <Text className='text-purple-300 text-[12px]'>No items added yet.</Text>
+                      }
                     </View>
-                  </ScrollView>
-                </View>
-              </View>
+                    
+                  </View>
+                  <View className='flex-row justify-between gap-3 w-full mt-2'>
+                    <TextInput
+                          className='text-black flex-1 p-[10px] pl-[15px] text-[12px] flex-row justify-center items-center border-[1px] border-purple-800 rounded-lg mt-2'
+                          placeholder='Add New Category'
+                          value={itemName}
+                          onChangeText={setItemName}
+                          />
+                    <TextInput
+                          className='text-black flex-3 p-[10px] pl-[15px] text-[12px] flex-row justify-center items-center border-[1px] border-purple-800 rounded-lg mt-2'
+                          placeholder='Add Price'
+                          keyboardType='numeric'
+                          onChangeText={(text) => setItemPrice(Number(text))}
+                          />
+                  </View>
 
-              <Pressable onPress={()=>{
-                if(itemName && itemPrice){
-                  setDataItem([...dataItem, { name: itemName, price: itemPrice }]);
-                  setDataCategory([...dataCategory, { name: itemName }]);
-                  setItemName('');
-                  setItemPrice(0);
-                }
-              }} className='mt-[-1px] w-full flex flex-row justify-center items-center overflow-hidden bg-[#692D8A] rounded-b-lg rounded-t-sm'>
-                <LinearGradient colors={['#C821E5', '#9F00BB']} className='w-full py-3 flex justify-center items-center'>
-                  <Text className=' font-bold text-[20px] text-white'>
-                      +
-                  </Text>
-                </LinearGradient>
-              </Pressable>
-
-              <View className=' mt-5 '>
-                <Text className='font-bold text-[12px]'>Description:</Text>
-                <TextInput
-                  className='text-[12px] p-[10px] pl-[20px] pb-[50px] w-full flex flex-row justify-center items-center border-[1px] border-purple-800 rounded-lg mt-2'
-                  placeholder='Add New Description'
-                  multiline={true}            // biar bisa banyak baris
-                  numberOfLines={4}           // tinggi awal
-                  textAlignVertical='top'     // teks mulai dari atas
-                  value={descriptionReimburse}
-                  onChangeText={setDescriptionReimburse}
-                />
-              </View>
-
-              <View className=' mt-5 '>
-                <Text className='font-bold text-[12px]'>Image:</Text>
-                <View className='flex-row items-center gap-5 mt-2 w-full overflow-hidden'>
-                  <Pressable onPress={()=>{pickImage()}} className=' h-[60px] border-[1px] border-b-[2px] border-purple-600 bg-purple-50 w-[130px] rounded-lg flex justify-center items-center'>
-                    <Image source={require("../../assets/icons/add-image.png")} style={{ width: 20, height: 20 }} tintColor={'purple'}/>
-                  </Pressable>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} className='w-full'>
-                    <View className='flex-row gap-3 w-full'>
-                      {image && (
-                        (image.map((item, index)=>{
+                  <View className='w-full flex-row gap-2 mt-2'>
+                    <Pressable onPress={() => {
+                      setItemName('');
+                      setCategoryData(categoryReimburse);
+                    }} className='bg-[#9F00BB] border-[.5px] border-b-[1px] overflow-hidden border-purple-800 rounded-lg mt-2 text-center text-[10px]'>
+                      <LinearGradient colors={['#A950FF', '#8111E6']} className='py-[5px] px-[10px] flex flex-row justify-center items-center'>
+                        <Image source={require("../../assets/icons/refresh.png")} style={{ width: 12, height: 12 }} tintColor={'white'}/>
+                      </LinearGradient>
+                    </Pressable>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} className='w-full'>
+                      <View className='flex-row gap-2'>
+                        {categoryData.map((item,index)=>{
                           return (
-                            <Image
-                              key={index}
-                              source={{ uri: item.uri }}
-                              style={{ width: 130, height: 60, borderRadius: 8 }}
-                              resizeMode="cover"
-                            />
+                            <Pressable onPress={() => {
+                              setItemName(item);
+                              setCategoryData(prev => prev.filter(col => col !== item));
+                            }} key={index} className='bg-purple-100 border-[.5px] border-b-[1px] border-purple-800 rounded-lg py-[5px] px-[10px] mt-2 text-center text-[10px]'>
+                              <Text className='text-[10px]'>
+                                {item}
+                              </Text>
+                            </Pressable>
                           )
-                        }))
-                      )}
-                    </View>
-                  </ScrollView>
+                        })}
+                      </View>
+                    </ScrollView>
+                  </View>
                 </View>
+
+                <Pressable onPress={()=>{
+                  if(itemName && itemPrice){
+                    setDataItem([...dataItem, { name: itemName, price: itemPrice }]);
+                    setDataCategory([...dataCategory, { name: itemName }]);
+                    setItemName('');
+                    setItemPrice(0);
+                  }
+                }} className='mt-[-1px] w-full flex flex-row justify-center items-center overflow-hidden bg-[#692D8A] rounded-b-lg rounded-t-sm'>
+                  <LinearGradient colors={['#A950FF', '#8111E6']} className='w-full py-3 flex justify-center items-center'>
+                    <Text className=' font-bold text-[20px] text-white'>
+                        +
+                    </Text>
+                  </LinearGradient>
+                </Pressable>
+
+                <View className=' mt-5 '>
+                  <Text className='font-bold text-[12px]'>Description:</Text>
+                  <TextInput
+                    className='text-black text-[12px] p-[10px] pl-[20px] pb-[50px] w-full flex flex-row justify-center items-center border-[1px] border-purple-800 rounded-lg mt-2'
+                    placeholder='Add New Description'
+                    multiline={true}            // biar bisa banyak baris
+                    numberOfLines={4}           // tinggi awal
+                    textAlignVertical='top'     // teks mulai dari atas
+                    value={descriptionReimburse}
+                    onChangeText={setDescriptionReimburse}
+                  />
+                </View>
+
+                <View className=' mt-5 '>
+                  <Text className='font-bold text-[12px]'>Image:</Text>
+                  <View className='flex-row items-center gap-5 mt-2 w-full overflow-hidden'>
+                    <Pressable onPress={()=>{pickImage()}} className=' h-[60px] border-[1px] border-b-[2px] border-purple-600 bg-purple-50 w-[130px] rounded-lg flex justify-center items-center'>
+                      <Image source={require("../../assets/icons/add-image.png")} style={{ width: 20, height: 20 }} tintColor={'purple'}/>
+                    </Pressable>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} className='w-full'>
+                      <View className='flex-row gap-3 w-full'>
+                        {image && (
+                          (image.map((item, index)=>{
+                            return (
+                              <Image
+                                key={index}
+                                source={{ uri: item.uri }}
+                                style={{ width: 130, height: 60, borderRadius: 8 }}
+                                resizeMode="cover"
+                              />
+                            )
+                          }))
+                        )}
+                      </View>
+                    </ScrollView>
+                  </View>
+                </View>
+
+
               </View>
-
-
             </View>
-          </View>
-              <View className='w-full h-[200px]'/>
+          </LinearGradient>
         </View>
       </ScrollView>
 
       {/* BUTTON CANCEL */}
-      <View className='absolute z-20 bottom-[0px] w-full h-[170px] border border-purple-800 bg-white flex justify-start gap-3 items-center px-[30px] pt-[20px] rounded-t-3xl'>
+      <View className='absolute z-20 bottom-[0px] w-full h-[150px] border border-purple-800 bg-white flex justify-start gap-3 items-center px-[30px] pt-[20px] rounded-t-3xl'>
         <View className='w-full flex flex-row justify-between items-center'>
           <Text className='text-[12px] text-purple-900'>
             Total Reimburse Amount
@@ -359,9 +359,9 @@ const reimburse = () => {
             {formatRupiah(totalPrice)}
           </Text>
         </View>
-        <Pressable onPress={() => {setPopUpActive(true)}} className='w-full overflow-hidden flex flex-row justify-center items-center border border-b-2 border-purple-800 rounded-lg bg-purple-500'
+        <Pressable onPress={() => {setPopUpActive(true)}} className='w-full overflow-hidden flex flex-row justify-center items-center rounded-lg bg-[#8111E6]'
         >
-          <LinearGradient colors={['#C821E5', '#9F00BB']} className='w-full h-full flex flex-row p-[15px] justify-center items-center'>
+          <LinearGradient colors={['#A950FF', '#8111E6']} className='w-full h-full flex flex-row p-[15px] justify-center items-center'>
             <Image source={require('../../assets/icons/send.png')} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
             <Text className='ml-2 text-white font-bold'>
                 create reimbursement

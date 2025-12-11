@@ -70,35 +70,35 @@ const detailReimburse = () => {
 
   return (
     <LinearGradient
-    colors={['#E2B7F1', '#CE7AFF']}
+    colors={['#A950FF','#A950FF', '#2D1347']}
     className="flex-1 justify-center items-center">
       {/* HEADER */}
       <HeaderBack title='Reimbursement History' subTitle='Detail'/>
 
       {/* STATUS */}
-      <View className='w-full flex justify-center items-center mt-1 pt-7 px-[20px]'>
-        <View className={`border border-b-[0px] flex flex-row justify-center gap-2 rounded-t-lg w-full h-[35px] items-center ${
-          firstData.status === "Approved" ? "bg-[#cdffe3] border-[#00883D]" :
-          firstData.status === "Pending" ? "bg-[#fffbcd] border-[#885600]" :
-          firstData.status === "Rejected" ? "bg-[#ffcee1] border-[#88003B]" :
+      <View className='w-full flex justify-center items-center px-[20px]'>
+        <View className={`flex flex-row justify-center gap-2 rounded-t-lg w-full h-[35px] items-center ${
+          firstData.status === "Approved" ? "bg-purple-200 border-[#00883D]" :
+          firstData.status === "Pending" ? "bg-purple-200 border-[#885600]" :
+          firstData.status === "Rejected" ? "bg-purple-200 border-[#88003B]" :
           "bg-[#f5ebff]" 
         }`}>
           <Image source={
             firstData.status === "Approved" ? require('../../assets/icons/approve-icon.png') :
             firstData.status === "Pending" ? require('../../assets/icons/pending-time.png') :
             firstData.status === "Rejected" ? require('../../assets/icons/decline-icon.png') :
-            require('../../assets/icons/home-active.png')
+            require('../../assets/icons/pending-time.png')
           } style={{ width: 12, height: 12 }} tintColor=
           {
-            firstData.status === "Approved" ? "#00883D" :
-            firstData.status === "Pending" ? "#885600" :
-            firstData.status === "Rejected" ? "#88003B" :
+            firstData.status === "Approved" ? "#9333EA" :
+            firstData.status === "Pending" ? "#9333EA" :
+            firstData.status === "Rejected" ? "#9333EA" :
             "border-[#9333EA] bg-purple-50" 
           }/>
           <Text className={`font-bold text-[10px] ${
-            firstData.status === "Approved" ? "text-[#00883D]" :
-            firstData.status === "Pending" ? "text-[#885600]" :
-            firstData.status === "Rejected" ? "text-[#88003B]" :
+            firstData.status === "Approved" ? "text-[#9333EA]" :
+            firstData.status === "Pending" ? "text-[#9333EA]" :
+            firstData.status === "Rejected" ? "text-[#9333EA]" :
             "" 
           }`}>
             {firstData.status}
@@ -108,11 +108,11 @@ const detailReimburse = () => {
 
       {/* ISI REIMBURSE */}
       <ScrollView className='w-full px-[20px]'>
-        <View className='w-full px-[30px] flex justify-start items-center bg-white flex-col gap-3 border border-t-0 border-purple-800'>
+        <View className='w-full px-[30px] flex justify-start items-center bg-white flex-col gap-3'>
 
           {/* TITLE */}
           <View className='mt-2 w-full'>
-            <LinearGradient colors={['#CE7AFF', '#A833EC']} className='rounded-lg w-full text-[12px] border border-b-2 border-purple-800 h-[40px] text-center pt-[10px] overflow-hidden text-purple-900 bg-purple-100 mt-2 font-bold'>
+            <LinearGradient colors={['#A950FF', '#8111E6']} className='rounded-lg w-full text-[12px] border border-b-2 border-purple-800 h-[40px] text-center pt-[10px] overflow-hidden text-purple-900 bg-purple-100 mt-2 font-bold'>
                 <Text className='text-white text-[12px] font-bold w-full text-center'>
                   {firstData.title}
                 </Text>
@@ -185,16 +185,16 @@ const detailReimburse = () => {
       (
         <View className='absolute z-20 bottom-[0px] w-full h-[160px] border border-purple-800 bg-white flex flex-col justify-start gap-3 items-start px-[20px] pt-[20px] rounded-t-3xl'>
           <View className='w-full flex flex-row justify-between gap-2 items-center'>
-            <Pressable onPress={() => {setPopUpActiveAdmin('decline')}} className='border border-b-2 border-purple-800 w-full flex-1 flex-row justify-center items-center rounded-lg bg-[#FF0066] overflow-hidden'
+            <Pressable onPress={() => {setPopUpActiveAdmin('decline')}} className='w-full flex-1 flex-row justify-center items-center rounded-lg bg-[#FF0066] overflow-hidden'
             >
-              <LinearGradient colors={['#FF0066', '#D90057']} className='p-[15px] w-full flex flex-row justify-center items-center gap-2'>
+              <LinearGradient colors={['#FF0066', '#D90057']} className='p-[10px] w-full flex flex-row justify-center items-center gap-2'>
                 <Image source={require("../../assets/icons/s-decline.png")} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
                 <Text className='font-bold text-[12px] text-white ml-1'>rejected</Text>
               </LinearGradient>
             </Pressable>
-            <Pressable onPress={() => {setPopUpActiveAdmin('approve')}} className='border border-b-2 border-purple-800 overflow-hidden w-full flex-1 flex-row justify-center items-center rounded-lg bg-[#0fcb73]'
+            <Pressable onPress={() => {setPopUpActiveAdmin('approve')}} className='overflow-hidden w-full flex-1 flex-row justify-center items-center rounded-lg bg-[#0fcb73]'
             >
-              <LinearGradient colors={['#00F080', '#00AC5C']} className='p-[15px] w-full flex flex-row justify-center items-center gap-2'>
+              <LinearGradient colors={['#00F080', '#00AC5C']} className='p-[10px] w-full flex flex-row justify-center items-center gap-2'>
                 <Image source={require("../../assets/icons/s-approve.png")} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
                 <Text className='font-bold text-[12px] text-white ml-1'>approved</Text>
               </LinearGradient>
@@ -202,7 +202,7 @@ const detailReimburse = () => {
           </View>
           <Pressable onPress={() => {setPopUpActive(true)}} className='p-[10px] w-full flex flex-row justify-center items-center border border-b-2 border-purple-800 rounded-lg bg-purple-50'
           >
-            <Text className='text-purple-800 font-bold'>
+            <Text className='text-purple-800 font-bold text-[12px]'>
                 delete
             </Text>
           </Pressable>
@@ -263,7 +263,7 @@ const detailReimburse = () => {
           <View className='absolute w-full z-[999] h-full opacity-80 bg-[#1e0031]'/>
           <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-[1000]'>
             <View className='w-full bg-white p-[20px] pt-[60px] rounded-lg flex flex-col justify-start items-center'>
-              <View className={`w-[75px] h-[75px] absolute top-[-25px] border-[7px] border-white rounded-full ${popUpActiveAdmin==='approve'?'bg-[#00AC5C]':'bg-[#FF0066]'} bg-[#FF0066] flex justify-center items-center`}>
+              <View className={`w-[75px] h-[75px] absolute top-[-25px] border-[7px] border-white rounded-full ${popUpActiveAdmin==='approve'?'bg-[#00AC5C]':'bg-[#FF0066]'} flex justify-center items-center`}>
                 {popUpActiveAdmin==='approve'?(
                   <Image source={require("../../assets/icons/s-approve.png")} style={{ width: 28, height: 25 }} tintColor={"#ffffff"} className='mb-5'/>
                 ):(

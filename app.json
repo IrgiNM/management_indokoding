@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "management_indokoding",
+    "name": "indokoding app",
     "slug": "management_indokoding",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icon-app.png",
     "scheme": "managementindokoding",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,29 +13,30 @@
       "bundleIdentifier": "com.indokoding.management",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "icon": "./assets/images/icon-app.png"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#FFFFFF",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.irginm.management_indokoding"
+      "package": "com.irginm.management_indokoding",
+      "icon": "./assets/images/icon-app.png"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/icon-app.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",

@@ -31,13 +31,13 @@ const HeaderBack = ({ title, subTitle, type, textColor } : headerBackType ) => {
           type === "django" ? "border-[#004344] bg-[#00b1c8]" :
           type === "setting" ? "border-[#004344] bg-[#00b1c8]" :
           type === "python" ? "border-[#002583] bg-[#5088FF]" :
-          "border-[#9333EA] bg-purple-50"
+          "border-[#54079d] bg-[#B456FF]"
         } rounded-xl flex justify-center items-center`}>
           <Image source={require("../assets/objek/arrow-back.png")} style={{ width: 13, height: 17, }} tintColor={
             type === "django" ? "#FFFFFF" :
             type === "setting" ? "#FFFFFF" :
             type === "python" ? "#FFFFFF" :
-            "#9333EA"
+            "#6615b1"
           }/>
       </Pressable>
       <Text className={`text-[15px] font-bold ml-5 h-[45px] pt-[12px] text-white`}>{title}</Text>

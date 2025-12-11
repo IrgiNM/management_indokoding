@@ -3,6 +3,7 @@ import HeaderBack from '@/components/headerBack';
 import { detectType } from '@/hooks/cekTypeFunction';
 import { createSettingFunction, dataSiteSettingFunction, deleteSettingFunction, updateSettingFunction } from '@/hooks/dataSiteSettingFunction';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
@@ -22,7 +23,6 @@ const dataSiteSettings = () => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false);
   const [selectMonthPopUp, setSelectMonthPopUp] = useState(false);
-  const [selectMonth, setSelectMonth] = useState('');
 
   const handleUpdate = async(category: string, key: string, value: string) => {
     setLoading(true)
@@ -58,6 +58,27 @@ const dataSiteSettings = () => {
     <View className='w-full bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
       <HeaderBack title='Data Salary Karyawan' type='setting'/>    
+
+      {dataSettings.length===0&&(
+        <View className='w-full h-full pt-[140px] px-4 bg-[#ecf8f9] flex flex-col justify-start items-center'>
+          <View className='w-[140px] h-[140px] flex justify-center items-center rounded-full bg-[#cdf6f8] opacity-50'>
+            <Image source={require("../../assets/icons/no-setting.png")} style={{ width: 70, height: 70 }} tintColor={"#006381"}/>
+          </View>
+          <Text className='text-[20px] font-bold text-[#006d7b]'>
+            No Setting
+          </Text>
+          <Text className='text-[12px] text-[#006d7b] w-[160px] text-center mb-8'>
+            there is no setting yet. please add a new setting.
+          </Text>
+          <Pressable onPress={()=>{
+              setPopUpEdit(true)
+              setValue('choose')
+              setPopUpTitle("Create")
+            }} className="w-[100px] bg-[#ecf8f9] rounded-full overflow-hidden flex justify-center items-center border border-b-2 border-[#008091] py-2">
+                <Text className='font-bold text-[12px] text-[#006d7b]'>+ setting</Text>
+          </Pressable>
+        </View>
+      )}
 
       <ScrollView className='w-full pb-[100px]'>
         <View className='w-full pb-[100px] bg-white flex flex-col justify-start items-center gap-6'>
@@ -124,7 +145,7 @@ const dataSiteSettings = () => {
               </View>
               {categoryData==='create new'&&(
                 <TextInput
-                  className='p-[10px] pl-[20px] text-[#006381] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
+                  className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
                   placeholder='new category'
                   value={categoryDataNew}
                   onChangeText={setCategoryDataNew}
@@ -165,7 +186,7 @@ const dataSiteSettings = () => {
                 </ScrollView>
               )}
               <TextInput
-                className='p-[10px] pl-[20px] text-[#006381] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
                 placeholder='new key'
                 value={keyData}
                 onChangeText={setKeyData}
@@ -208,7 +229,7 @@ const dataSiteSettings = () => {
                 </View>
               ):detectType(value)==="string"?(
                 <TextInput
-                  className='p-[10px] pl-[20px] text-[#006381] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
+                  className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
                   placeholder='new value'
                   value={value}
                   onChangeText={setValue}
@@ -223,7 +244,7 @@ const dataSiteSettings = () => {
                     <Text className='font-bold text-[25px] text-white mb-1'>-</Text>
                   </Pressable>
                   <TextInput
-                    className='p-[10px] pl-[20px] text-[#006381] flex-1 flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
+                    className='p-[10px] pl-[20px] text-black flex-1 flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
                     placeholder='new value'
                     value={value}
                     onChangeText={setValue}
