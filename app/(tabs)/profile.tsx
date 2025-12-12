@@ -11,9 +11,10 @@ import { ReimbursementType } from '@/types/reimburseDataType'
 import { updateUser } from '@/hooks/api'
 import { LinearGradient } from 'expo-linear-gradient'
 
-const profile = () => {
+const Profile = () => {
   const router = useRouter();
   const dataUserLogin = getDataUserLogin();
+  const displayName = dataUserLogin.username ? dataUserLogin.username.replace(/_/g, ' ') : '';
   const [totalReimburse, setTotalReimburse] = useState(0);
   const [dataReimburse, setDataReimburse] = useState<ReimbursementType[]>([]);
   const monthNumber = new Date().toISOString().slice(5, 7);
@@ -102,7 +103,7 @@ const profile = () => {
           <View className='absolute flex justify-center items-center bottom-[-50px] w-[120px] h-[120px] overflow-hidden border-[10px] border-white bg-[#00d7f4] rounded-full'>
             <LinearGradient colors={['#00d7f4', '#009fb4']} className='w-full h-full flex flex-row justify-center items-center'>
               <Text className='text-[#00495f] font-bold text-[40px]'>
-                  {dataUserLogin.username.charAt(0).toUpperCase()}{dataUserLogin.username.charAt(dataUserLogin.username.length - 1).toUpperCase()}
+                  {displayName.charAt(0).toUpperCase()}{displayName.charAt(displayName.length - 1).toUpperCase()}
               </Text>
             </LinearGradient>
           </View>
@@ -111,7 +112,7 @@ const profile = () => {
 
       <View className='w-full px-[30px] flex justify-start items-center mt-[50px]'>
         <Text className='font-bold text-center text-2xl text-[#00495f]'>
-          {dataUserLogin.username}
+          {displayName}
         </Text>
         <Text className='text-[#00495f] mb-6'>
           {dataUserLogin.email}
@@ -303,4 +304,4 @@ const profile = () => {
   )
 }
 
-export default profile
+export default Profile
