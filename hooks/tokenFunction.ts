@@ -22,8 +22,8 @@ export async function logoutUser() {
     try {
       await SecureStore.deleteItemAsync('token');
       router.replace('/login');
-      console.log('Berhasil logout, semua data login dihapus');
+      // console.log('Berhasil logout, semua data login dihapus');
     } catch (error) {
-      console.error('Gagal logout:', error);
+      // console.error('Gagal logout:', error);
     }
   }

@@ -1,9 +1,7 @@
-import { userData } from "@/data/userData";
-import { getToken } from "./tokenFunction";
+import { UserSendType } from "@/types/userSendType";
 import { UserType } from "@/types/userType";
 import { useEffect, useState } from "react";
 import { createUser, getUserId } from "./api";
-import { UserSendType } from "@/types/userSendType";
 
 export const getDataUserLogin = (): UserType => {
     const [dataUserLogin, setDataUserLogin] = useState<UserType>({
@@ -19,9 +17,9 @@ export const getDataUserLogin = (): UserType => {
             const data = await getUserId();
             if(data.status === 200){
                 setDataUserLogin(data.data);
-                console.log('Data user login fetched successfully', data.data);
+                // console.log('Data user login fetched successfully', data.data);
             }else{
-                console.error('Failed to fetch user login data:', data);
+                // console.error('Failed to fetch user login data:', data);
             }
         };
         fetchDataUserLogin();
@@ -40,7 +38,7 @@ export const createUserNew = async (data: UserSendType) => {
             return 'User sudah terdaftar, ganti username dan email'
         }
     } catch {
-        console.error('gagal membuat user');
+        // console.error('gagal membuat user');
         return null;
     }
 }

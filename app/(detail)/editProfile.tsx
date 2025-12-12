@@ -27,14 +27,14 @@ const editProfil = () => {
           <Text className='font-bold'>
             Username :
           </Text>
-          <TextInput placeholder='Edit Username' className='  py-[15px] px-[15px] w-full  bg-gray-100 rounded-lg border-[1px] border-blue-800 mt-[10px]  '/>
+          <TextInput placeholder='Edit Username' className='text-black py-[15px] px-[15px] w-full  bg-gray-100 rounded-lg border-[1px] border-blue-800 mt-[10px]  '/>
         </View>
 
         <View className=''>
           <Text className='font-bold'>
             Email :
           </Text>
-          <TextInput placeholder='Edit Email' className='  py-[15px] px-[15px] w-full  bg-gray-100 rounded-lg border-[1px] border-blue-800 mt-[10px]  '/>
+          <TextInput placeholder='Edit Email' className='text-black py-[15px] px-[15px] w-full  bg-gray-100 rounded-lg border-[1px] border-blue-800 mt-[10px]  '/>
         </View>
       </View> 
 

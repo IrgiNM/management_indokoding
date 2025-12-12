@@ -1,15 +1,10 @@
-import { View, Text, ScrollView, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { Image } from 'expo-image'
-import HeaderBack from '@/components/headerBack'
-import { cardInfoType } from '@/types/cardInfoType'
 import CardInfo from '@/components/cardInfo'
-import { useRouter } from 'expo-router'
-import { thisMonth } from '@/hooks/todayFunction'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import HeaderBack from '@/components/headerBack'
 import { dataReimburseMain } from '@/hooks/dataReimburseFunction'
-import { ReimbursementType } from '@/types/reimburseDataType'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
+import { Image } from 'expo-image'
+import React, { useEffect, useState } from 'react'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 
 const index = () => {
   const { dataReimburseUser, dataMonth } = dataReimburseMain();
@@ -44,22 +39,22 @@ const index = () => {
     },
   ]
   const bulanMap: any = {
-    '1': 'Jan',
-    '2': 'Feb',
-    '3': 'Mar',
-    '4': 'Apr',
-    '5': 'May',
-    '6': 'Jun',
-    '7': 'Jul',
-    '8': 'Aug',
-    '9': 'Sep',
+    '01': 'Jan',
+    '02': 'Feb',
+    '03': 'Mar',
+    '04': 'Apr',
+    '05': 'May',
+    '06': 'Jun',
+    '07': 'Jul',
+    '08': 'Aug',
+    '09': 'Sep',
     '10': 'Oct',
     '11': 'Nov',
     '12': 'Dec',
   };
 
   useEffect(()=>{
-    console.error('data:' ,dataReimburseUser);
+    // console.error('data:' ,dataReimburseUser);
   }, [])
 
   return (

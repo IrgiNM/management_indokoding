@@ -49,10 +49,10 @@ const CardInfo = ({id, amount, date, description, title, type, status, w, longPr
         </View>
         <View className='flex flex-col justify-start items-start ml-3'>
             <Text className='text-[10px] font-bold'>
-                {title.slice(0, 20)}...
+                {title.slice(0, 20)}{title.length>19&&'...'}
             </Text>
             <Text className='text-[10px] '>
-                {description.slice(0, 30)}...
+                {description.slice(0, 30)}{title.length>29&&'...'}
             </Text>
         </View>
       </View>

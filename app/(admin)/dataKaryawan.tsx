@@ -1,12 +1,12 @@
-import { View, Text, ScrollView, TextInput, Pressable, KeyboardAvoidingView, Platform } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import HeaderBack from '@/components/headerBack'
-import { useRouter } from 'expo-router'
 import CardKaryawan from '@/components/cardKaryawan'
-import { Image } from 'expo-image'
-import { BlurView } from 'expo-blur'
-import { createUserNew } from '@/hooks/userFunction'
+import HeaderBack from '@/components/headerBack'
 import { dataUserFunction } from '@/hooks/dataUserFunction'
+import { createUserNew } from '@/hooks/userFunction'
+import { Image } from 'expo-image'
+import { LinearGradient } from 'expo-linear-gradient'
+import { useRouter } from 'expo-router'
+import React, { useEffect, useState } from 'react'
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 
 const dataKaryawan = () => {
   const router = useRouter()
@@ -42,7 +42,7 @@ const dataKaryawan = () => {
   ]
 
   useEffect(()=>{
-    console.error('dataAllNewUser : ', dataAllNewUser);
+    // console.error('dataAllNewUser : ', dataAllNewUser);
   })
 
   const handleCreateKaryawan = async () => {
@@ -74,85 +74,99 @@ const dataKaryawan = () => {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, width: '100%', backgroundColor: 'black' }}>
-    <View className='relative w-full h-full bg-white flex-1 justify-start items-center'>
+    <View className='relative w-full h-full bg-blue-50 flex-1 justify-start items-center'>
 
       {/* HEADER */}
       <HeaderBack title='Data Karyawan' type='python' textColor='text-white'/>
 
       {/* HISTORY LIST */}
-      <ScrollView className='absolute inset-0 w-full border border-b-1 h-full pb-[50px]'>
-        <View className='w-full border-b-1 flex justify-start items-center flex-col gap-3 mt-[140px] px-[20px]'>
-          {dataAllNewUser.map((item,index)=>{
-            return(
-              <CardKaryawan 
-                key={index} 
-                email={item.email} 
-                reimburse={item.total_reimburse} 
-                username={item.username} 
-                link={() => {router.replace('/(admin)/dataKaryawanDetail')}} w='w-full'
-              />
-
-            )
-          })}
-          <View className='w-full h-[300px]'/>
+      <ScrollView className='absolute inset-0 w-full h-full'>
+        <View className='w-full border-b-1 flex justify-start items-center flex-col gap-3 mt-[106px] pb-[50px]'>
+          <LinearGradient colors={['#5088FF', '#001749']} className='w-full h-full p-4 px-[20px] flex-1 flex-col justify-start items-center gap-2'>
+            {dataAllNewUser.map((item,index)=>{
+              return(
+                <CardKaryawan 
+                  key={index} 
+                  email={item.email} 
+                  reimburse={item.total_reimburse} 
+                  username={item.username} 
+                  w='w-full'
+                />
+              )
+            })}
+            <View className='w-full h-[300px]'/>
+          </LinearGradient>
         </View>
       </ScrollView>
 
-      {/* BUTTON ADD KARYAWAN POPUP */}
-      <Pressable onPress={() => {setCreateActive(true)}} className='w-[60px] h-[60px] rounded-lg border-[1px] border-b-[2px] border-blue-600 bg-yellow-100 relative top-[520px] -right-[120px] flex justify-center items-center'>
-          <Image source={require("../../assets/icons/add-karyawan-3.png")} style={{ width: 30, height: 30 }}/>
-      </Pressable>
-      {/* BUTTON ADD KARYAWAN POPUP */}
-      <Pressable onPress={() => {router.replace('../(admin)/dataKaryawan')}} className='w-[50px] h-[50px] rounded-full border-[1px] border-b-[2px] border-blue-600 bg-yellow-100 relative top-[400px] -right-[120px] flex justify-center items-center'>
-          <Image source={require("../../assets/icons/refresh.png")} tintColor={'blue'} style={{ width: 20, height: 20 }}/>
-      </Pressable>
+      {/* BOTTOM BAR */}
+      <View className='w-full h-[150px] flex flex-col justify-end absolute bottom-0 z-[999]' style={{ position: 'absolute', bottom: 0 }}>
+        <View className='bg-white w-full h-[130px] flex-row items-start px-[30px] pt-[20px] rounded-t-3xl gap-[10px] border-[.5px] border-blue-600'>
+          <Pressable onPress={() => {setCreateActive(true)}} className='flex-1 overflow-hidden bg-blue-200 rounded-md'>
+            <LinearGradient colors={['#5088FF', '#1A63FF']} className='w-full p-4 flex justify-center items-center'>
+              <Text className='text-white font-bold text-[12px]'>Create New</Text>
+            </LinearGradient>
+          </Pressable>
+          <Pressable onPress={() => {router.replace('../(admin)/dataKaryawan')}} className='w-[44px] h-[44px] bg-blue-50 border border-b-2 border-[#873600] overflow-hidden rounded-md'>
+            <LinearGradient colors={['#FFFFFF', '#FFD23F']} className='w-full h-full flex justify-center items-center'>
+              <Image source={require("../../assets/icons/refresh.png")} tintColor={'#CA5101'} style={{ width: 20, height: 20 }}/>
+            </LinearGradient>
+          </Pressable>
+              
+        </View>
+      </View> 
 
       {/* POP UP CREATE KARYAWAN */}
       {createActive && (
         <>
           {/* EFEK BLUR */}
-          <View className='absolute z-10 w-full h-full blur bg-black opacity-70'/>
+          <View className='absolute w-full h-full blur opacity-80 bg-[#000331] z-[999]'/>
           {/* FORM ADD KARYAWAN */}
-          <View className='absolute z-20 bottom-[0px] w-full h-[500px] bg-white flex justify-start gap-3 items-center px-[30px] pt-[30px] rounded-t-3xl'>
-              <Text className='w-full font-bold mb-5'>Create Karyawan</Text>
+          <View className='absolute z-[1000] bottom-[0px] w-full h-[500px] bg-white flex justify-start gap-3 items-center px-[30px] pt-[30px] rounded-t-3xl'>
+              <Text className='w-full font-bold mb-5 text-blue-800'>Create Karyawan</Text>
+              <Text>Username :</Text>
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Username'
                 value={username}
                 onChangeText={setUsername}
               />
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Email'
                 value={email}
                 onChangeText={setEmail}
               />
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Password'
                 value={password}
                 onChangeText={setPassword}
+                secureTextEntry
               />
               <TextInput
-                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
                 placeholder='Confirm Password'
                 value={passwordConfirm}
                 onChangeText={setPasswordConfirm}
+                secureTextEntry
               />
               {error !== '' && (
                 <Text className={`w-full border-[.5px] rounded-lg p-3 ${error === 'berhasil membuat user' ? 'border-green-600 text-green-500' : 'border-red-600 text-red-500'} text-center mt-2`}>
                   {error}
                 </Text>
               )}
-              <Pressable onPress={() => {handleCreateKaryawan()}} className='p-[15px] w-full flex flex-row justify-center items-center bg-black rounded-lg mt-10'
+              <Pressable onPress={() => {handleCreateKaryawan()}} className='w-full overflow-hidden flex flex-row justify-center items-center bg-[#5088FF] rounded-lg mt-10'
               >
-                <Text className='ml-2 font-bold text-white'>
-                  {loading ? 'Creating...' : '+ Create'}
-                </Text>
+                <LinearGradient colors={['#5088FF', '#1A63FF']} className='w-full p-[15px] flex justify-center items-center'>
+                  <Text className='ml-2 font-bold text-white'>
+                    {loading ? 'Creating...' : '+ Create'}
+                  </Text>
+                </LinearGradient>
               </Pressable>
-              <Pressable onPress={() => {setCreateActive(false)}} className='p-[15px] w-full flex flex-row justify-center items-center border border-b-2 rounded-lg'
+              <Pressable onPress={() => {setCreateActive(false)}} className='p-[15px] w-full flex flex-row justify-center items-center border border-b-2 border-blue-800 rounded-lg'
               >
-                <Text className='ml-2 font-bold'>
+                <Text className='ml-2 font-bold text-blue-800'>
                     cancel
                 </Text>
               </Pressable>
@@ -160,28 +174,7 @@ const dataKaryawan = () => {
         </>
       )}
 
-      {/* POPUP INFO */}
-      {popUpInfo && (
-        <>
-          <View className='absolute w-full z-30 h-full opacity-70 bg-black'/>
-          <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-40'>
-            <View className='w-full bg-white p-[20px] pt-[70px] rounded-lg flex flex-col justify-start items-center'>
-              <Text className='text-[12px] w-full text-center'>
-                {error}
-              </Text>
-              <View className='flex flex-row justify-center items-center gap-3 mt-5 w-full'>
-                <Pressable onPress={() => {setPopUpInfo(false)}} className='w-full border border-b-[2px] border-blue-800 bg-blue-50 rounded-lg py-[10px] flex justify-center items-center'>
-                  <Text className='font-bold text-[12px]'>
-                    Close
-                  </Text>
-                </Pressable>
-                
-              </View>
-            </View>
-          </View>
-        </>
-      )}
-
+      
     </View>
     </KeyboardAvoidingView>
   )

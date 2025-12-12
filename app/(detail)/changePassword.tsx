@@ -27,21 +27,21 @@ const changePassword = () => {
                   <Text className='font-bold'>
                     Password Now :
                   </Text>
-                  <TextInput  className='  py-[15px] px-[15px] w-full  bg-gray-100 rounded-lg border-[1px] border-blue-800 mt-[5px]  '/>
+                  <TextInput  className='text-black  py-[15px] px-[15px] w-full  bg-gray-100 rounded-lg border-[1px] border-blue-800 mt-[5px]  '/>
                 </View>
 
                 <View className=' '>
                   <Text className='font-bold'>
                     New Password :
                   </Text>
-                  <TextInput  className='  py-[15px] px-[15px] w-full  bg-gray-100 rounded-lg border-[1px] border-blue-800 mt-[5px]  '/>
+                  <TextInput  className='text-black  py-[15px] px-[15px] w-full  bg-gray-100 rounded-lg border-[1px] border-blue-800 mt-[5px]  '/>
                 </View>
         
                 <View className=''>
                   <Text className='font-bold'>
                     Confirm Password :
                   </Text>
-                  <TextInput  className='  py-[15px] px-[15px] w-full  bg-gray-100 rounded-lg border-[1px] border-blue-800 mt-[5px]  '/>
+                  <TextInput  className='text-black  py-[15px] px-[15px] w-full  bg-gray-100 rounded-lg border-[1px] border-blue-800 mt-[5px]  '/>
                 </View>
               </View>  
       </View> 

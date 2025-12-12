@@ -32,8 +32,9 @@ const _layout = () => {
       >
         <Tabs.Screen
             name='home'
-            options={{ 
+            options={{
                 headerShown: false,
+                tabBarStyle: { display: 'none' },
                 tabBarIcon: ({ focused }) => (
                     <TabIcon 
                         focused={focused} 
@@ -48,7 +49,7 @@ const _layout = () => {
             name='history'
             options={{ 
                 headerShown: false,
-                // tabBarStyle: { display: 'none' },
+                tabBarStyle: { display: 'none' },
                 tabBarIcon: ({ focused }) => (
                     <TabIcon 
                         focused={focused} 
