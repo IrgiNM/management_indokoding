@@ -1,15 +1,24 @@
-import { View, Text, ScrollView, TextInput, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, ScrollView, TextInput, Pressable, KeyboardAvoidingView, Platform } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import HeaderBack from '@/components/headerBack'
 import { useRouter } from 'expo-router'
 import CardKaryawan from '@/components/cardKaryawan'
 import { Image } from 'expo-image'
 import { BlurView } from 'expo-blur'
+import { createUserNew } from '@/hooks/userFunction'
+import { dataUserFunction } from '@/hooks/dataUserFunction'
 
 const dataKaryawan = () => {
   const router = useRouter()
   const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [passwordConfirm, setPasswordConfirm] = useState('')
   const [createActive, setCreateActive] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const { dataAllNewUser } = dataUserFunction()
+  const [popUpInfo, setPopUpInfo] = useState(false);
 
   const dataKaryawan = [
     {
@@ -32,22 +41,53 @@ const dataKaryawan = () => {
     }
   ]
 
+  useEffect(()=>{
+    console.error('dataAllNewUser : ', dataAllNewUser);
+  })
+
+  const handleCreateKaryawan = async () => {
+    setLoading(true);
+    try {
+      if (password !== passwordConfirm) {
+        setError('Password dan konfirmasi password tidak sesuai.');
+        return;
+      }
+      const res = await createUserNew({
+        username: username,
+        email: email,
+        password: password,
+      })
+      if(res === 'berhasil membuat user'){
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        setPasswordConfirm('');
+        setError(res);
+        setPopUpInfo(true);
+      }else{
+        setError(res || 'Terjadi kesalahan saat membuat karyawan.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <View className='relative w-full bg-white flex-1 justify-start items-center'>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, width: '100%', backgroundColor: 'black' }}>
+    <View className='relative w-full h-full bg-white flex-1 justify-start items-center'>
 
       {/* HEADER */}
-      <HeaderBack title='Data Karyawan'/>
+      <HeaderBack title='Data Karyawan' type='python' textColor='text-white'/>
 
       {/* HISTORY LIST */}
-      <ScrollView className='w-full pb-[50px]'>
-        <View className='w-full flex justify-start items-center flex-col gap-3 mt-[20px] px-[20px]'>
-          {dataKaryawan.map((item,index)=>{
+      <ScrollView className='absolute inset-0 w-full border border-b-1 h-full pb-[50px]'>
+        <View className='w-full border-b-1 flex justify-start items-center flex-col gap-3 mt-[140px] px-[20px]'>
+          {dataAllNewUser.map((item,index)=>{
             return(
               <CardKaryawan 
                 key={index} 
-                id={item.id} 
                 email={item.email} 
-                reimburse={item.reimburse} 
+                reimburse={item.total_reimburse} 
                 username={item.username} 
                 link={() => {router.replace('/(admin)/dataKaryawanDetail')}} w='w-full'
               />
@@ -59,8 +99,12 @@ const dataKaryawan = () => {
       </ScrollView>
 
       {/* BUTTON ADD KARYAWAN POPUP */}
-      <Pressable onPress={() => {setCreateActive(true)}} className='w-[60px] h-[60px] rounded-lg border-[1px] border-b-[2px] border-purple-600 bg-purple-50 relative bottom-[80px] -right-[120px] flex justify-center items-center'>
-          <Image source={require("../../assets/icons/add-karyawan-2.png")} style={{ width: 30, height: 30 }}/>
+      <Pressable onPress={() => {setCreateActive(true)}} className='w-[60px] h-[60px] rounded-lg border-[1px] border-b-[2px] border-blue-600 bg-yellow-100 relative top-[520px] -right-[120px] flex justify-center items-center'>
+          <Image source={require("../../assets/icons/add-karyawan-3.png")} style={{ width: 30, height: 30 }}/>
+      </Pressable>
+      {/* BUTTON ADD KARYAWAN POPUP */}
+      <Pressable onPress={() => {router.replace('../(admin)/dataKaryawan')}} className='w-[50px] h-[50px] rounded-full border-[1px] border-b-[2px] border-blue-600 bg-yellow-100 relative top-[400px] -right-[120px] flex justify-center items-center'>
+          <Image source={require("../../assets/icons/refresh.png")} tintColor={'blue'} style={{ width: 20, height: 20 }}/>
       </Pressable>
 
       {/* POP UP CREATE KARYAWAN */}
@@ -70,48 +114,76 @@ const dataKaryawan = () => {
           <View className='absolute z-10 w-full h-full blur bg-black opacity-70'/>
           {/* FORM ADD KARYAWAN */}
           <View className='absolute z-20 bottom-[0px] w-full h-[500px] bg-white flex justify-start gap-3 items-center px-[30px] pt-[30px] rounded-t-3xl'>
-            <Text className='w-full font-bold mb-5'>Create Karyawan</Text>
-            <TextInput
-              className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
-              placeholder='Username'
-              value={username}
-              onChangeText={setUsername}
-            />
-            <TextInput
-              className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
-              placeholder='Email'
-              value={username}
-              onChangeText={setUsername}
-            />
-            <TextInput
-              className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
-              placeholder='Password'
-              value={username}
-              onChangeText={setUsername}
-            />
-            <TextInput
-              className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
-              placeholder='Confirm Password'
-              value={username}
-              onChangeText={setUsername}
-            />
-            <Pressable onPress={() => {}} className='p-[15px] w-full flex flex-row justify-center items-center bg-black rounded-lg mt-10'
-            >
-              <Text className='ml-2 font-bold text-white'>
-                  + Create
+              <Text className='w-full font-bold mb-5'>Create Karyawan</Text>
+              <TextInput
+                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                placeholder='Username'
+                value={username}
+                onChangeText={setUsername}
+              />
+              <TextInput
+                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                placeholder='Email'
+                value={email}
+                onChangeText={setEmail}
+              />
+              <TextInput
+                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                placeholder='Password'
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TextInput
+                className='p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] rounded-lg'
+                placeholder='Confirm Password'
+                value={passwordConfirm}
+                onChangeText={setPasswordConfirm}
+              />
+              {error !== '' && (
+                <Text className={`w-full border-[.5px] rounded-lg p-3 ${error === 'berhasil membuat user' ? 'border-green-600 text-green-500' : 'border-red-600 text-red-500'} text-center mt-2`}>
+                  {error}
+                </Text>
+              )}
+              <Pressable onPress={() => {handleCreateKaryawan()}} className='p-[15px] w-full flex flex-row justify-center items-center bg-black rounded-lg mt-10'
+              >
+                <Text className='ml-2 font-bold text-white'>
+                  {loading ? 'Creating...' : '+ Create'}
+                </Text>
+              </Pressable>
+              <Pressable onPress={() => {setCreateActive(false)}} className='p-[15px] w-full flex flex-row justify-center items-center border border-b-2 rounded-lg'
+              >
+                <Text className='ml-2 font-bold'>
+                    cancel
+                </Text>
+              </Pressable>
+          </View>
+        </>
+      )}
+
+      {/* POPUP INFO */}
+      {popUpInfo && (
+        <>
+          <View className='absolute w-full z-30 h-full opacity-70 bg-black'/>
+          <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-40'>
+            <View className='w-full bg-white p-[20px] pt-[70px] rounded-lg flex flex-col justify-start items-center'>
+              <Text className='text-[12px] w-full text-center'>
+                {error}
               </Text>
-            </Pressable>
-            <Pressable onPress={() => {setCreateActive(false)}} className='p-[15px] w-full flex flex-row justify-center items-center border border-b-2 rounded-lg'
-            >
-              <Text className='ml-2 font-bold'>
-                  cancel
-              </Text>
-            </Pressable>
+              <View className='flex flex-row justify-center items-center gap-3 mt-5 w-full'>
+                <Pressable onPress={() => {setPopUpInfo(false)}} className='w-full border border-b-[2px] border-blue-800 bg-blue-50 rounded-lg py-[10px] flex justify-center items-center'>
+                  <Text className='font-bold text-[12px]'>
+                    Close
+                  </Text>
+                </Pressable>
+                
+              </View>
+            </View>
           </View>
         </>
       )}
 
     </View>
+    </KeyboardAvoidingView>
   )
 }
 

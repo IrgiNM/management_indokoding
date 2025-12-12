@@ -7,21 +7,20 @@ import * as SecureStore from 'expo-secure-store';
 // }
 
 export async function saveToken(userId: string) {
-  await SecureStore.setItemAsync('user_id', userId);
+  await SecureStore.setItemAsync('token', userId);
 }
 
 export async function getToken() {
-  return await SecureStore.getItemAsync('access_token');
+  return await SecureStore.getItemAsync('token');
 }
 
-export async function getUserId() {
-  return await SecureStore.getItemAsync('userId');
-}
+// export async function getUserId() {
+//   return await SecureStore.getItemAsync('userId');
+// }
 
 export async function logoutUser() {
     try {
-      await SecureStore.deleteItemAsync('userId');
-      await SecureStore.deleteItemAsync('access_token');
+      await SecureStore.deleteItemAsync('token');
       router.replace('/login');
       console.log('Berhasil logout, semua data login dihapus');
     } catch (error) {

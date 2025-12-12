@@ -1,27 +1,182 @@
-import { View, Text, ScrollView, TextInput, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, ScrollView, TextInput, Pressable, Button } from 'react-native'
+import React, { use, useEffect, useState } from 'react'
 import HeaderBack from '@/components/headerBack'
 import { Image } from 'expo-image'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
+import * as ImagePicker from 'expo-image-picker';
+import { dataReimburseMain } from '@/hooks/dataReimburseFunction'
+import { createCategory, createReimburse, createReimburseItem } from '@/hooks/api'
+import { ReimbursementSendType } from '@/types/reimburseDataType'
 
 const reimburse = () => {
 
   const [popUpActive, setPopUpActive] = useState(false);
+  const [popUpInfo, setPopUpInfo] = useState(false);
+  const [infoText, setInfoText] = useState('');
   const [itemName, setItemName] = useState('');
   const [itemPrice, setItemPrice] = useState(0);
+  const { categoryReimburse } = dataReimburseMain();
+  const [categoryData, setCategoryData] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   // DATA REIMBURSE
   const [titleReimburse, setTitleReimburse] = useState('');
-  const [dataItem, setDataItem] = useState<{ name: string; price: number }[]>([]);
   const [descriptionReimburse, setDescriptionReimburse] = useState('');
-  const status = 'Pending';
+  const [image, setImage] = useState<ImagePicker.ImagePickerAsset[]>([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [dataReimburseSend, setDataReimburseSend] = useState<ReimbursementSendType>({
+    title: "",
+    total_amount: "0",
+    description: "",
+    status: "",
+  });
+  
+  // DATA ITEM
+  const [dataCategory, setDataCategory] = useState<{ name: string }[]>([]);
+  const [dataItem, setDataItem] = useState<{ name: string; price: number }[]>([]);
+  const [dataIdCategory, setDataIdCategory] = useState<number[]>([]);
+  const [dataIdReimburse, setDataIdReimburse] = useState(0);
+
+  useEffect(()=>{
+    setCategoryData(categoryReimburse);
+  }, [categoryReimburse])
+
+  useEffect(()=>{
+    const calculate = async ()=>{
+      const total = dataItem.reduce((sum, item) => sum + item.price, 0);
+      setTotalPrice(total);
+    };
+    calculate();
+  }, [dataItem]);
+
+  useEffect(() => {
+    setDataReimburseSend({
+      title: titleReimburse,
+      total_amount: totalPrice.toString(),
+      description: descriptionReimburse,
+      status: 'Pending',
+    });
+  }, [titleReimburse, descriptionReimburse, totalPrice]);
+
+  useEffect(()=>{
+    if(dataIdCategory.length > 0){
+      handleReimburse();
+    }
+  }, [dataIdCategory]);
+
+  useEffect(()=>{
+    if(dataIdReimburse!==0){
+      handleItem();
+    }
+  }, [dataIdReimburse]);
+
+  const pickImage = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permission.status !== 'granted') {
+      alert('Izin akses galeri dibutuhkan!');
+      return;
+    }
+  
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(prev => [...prev, ...result.assets]);
+    }
+  };
+
+  // const handleCategory = async () => {
+  //   // console.error('Data Category to submit:', dataCategory);
+  //   (dataCategory.map(async (item)=>{
+  //     const resCategory = await createCategory(item);
+  //     if(resCategory){
+  //       setDataIdCategory(prev=>[...prev, resCategory.data.id]);
+  //       console.log('Category created successfully', resCategory.data);
+  //       setInfoText('Category created successfully');
+  //       setPopUpInfo(true);
+  //       setCategoryData([]);
+  //       setItemPrice(0);
+  //     }
+  //     // console.error('ResponseCategory from createCategory:', resCategory);
+  //   }));
+  // }
+  const handleCategory = async () => {
+    try {
+      const responses = await Promise.all(
+        dataCategory.map(item => createCategory(item))
+      );
+  
+      const ids = responses
+        .filter(r => r)
+        .map(r => r.data.id);
+  
+      setDataIdCategory(ids);
+  
+      setInfoText("Category created successfully");
+      setPopUpInfo(true);
+      setCategoryData([]);
+      setItemPrice(0);
+  
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+
+  const handleReimburse = async () => {
+    try{
+      const resReimburse = await createReimburse(dataReimburseSend);
+      if(resReimburse){
+        setDataIdReimburse(resReimburse.data.id)
+        // console.error('Reimburse created successfully', resReimburse.data);
+      }
+    }catch{
+      // console.error("error dibagian kirim reimburse");
+    }
+  }
+
+  const handleItem = async () => {
+    try{
+      (dataIdCategory.map(async (item, index)=>{
+        // console.error("mengirim id reimburse:", dataIdReimburse,"mengirim id category:", item,"mengirim data item:", dataItem[index].price);
+        const resItem = await createReimburseItem({
+          reimbursement: dataIdReimburse,
+          category: item,
+          item_amount: dataItem[index].price.toString(),
+        })
+        if(resItem){
+          // console.error('Item created successfully', resItem.data);
+        }
+      }))
+      setDataItem([]);
+      setTitleReimburse('');
+      setDescriptionReimburse('');
+    }catch{
+      // console.error("error dibagian kirim item");
+    }
+  }
+  
+  const handleSubmit = async () => {
+    setLoading(true);
+    try{
+      await handleCategory();
+    } catch(error) {
+      // console.error('Error creating category', error);
+      setInfoText('Error creating category');
+      setPopUpInfo(true);
+    } finally {
+      setLoading(false);
+    }
+  }
   
   return (
     <View className='bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
       <HeaderBack title='Pengajuan Reimburse'/>
 
-      <ScrollView className='w-full pb-[50px] mt-5'>
+      <ScrollView className='w-full pb-[50px]'>
         <View className='w-full p-[15px] pt-[20px] bg-[#dfc1ef]'>
 
           <View className='w-full bg-white rounded-2xl border-[.5px] border-b-[1px] border-purple-600 flex flex-col justify-start items-center p-[20px]'>
@@ -43,9 +198,9 @@ const reimburse = () => {
                   <View className='flex flex-col justify-center items-center p-[20px] border-[1px] border-purple-100 mt-2 rounded-lg gap-1'>
                     {dataItem.length > 0 ? dataItem.map((item,index)=>{
                       return (
-                        <View className='w-full flex flex-row justify-between items-center'>
+                        <View key={index} className='w-full flex flex-row justify-between items-center'>
                           <View className='flex-row justify-between w-[80%] '>
-                            <Text className='text-purple-800 text-[12px]'>{item.name}</Text>
+                            <Text className='text-purple-900 text-[12px]'>{item.name}</Text>
                             <Text className='font-bold text-purple-800 text-[12px]'>{formatRupiah(item.price)}</Text>
                           </View>
                           <Pressable onPress={() => {setDataItem(prev => prev.filter(col => col.name !== item.name));
@@ -77,15 +232,35 @@ const reimburse = () => {
                 </View>
 
                 <View className='w-full flex-row gap-2 mt-2'>
-                  <Text className='bg-purple-100 border-[.5px] border-b-[1px] border-purple-800 rounded-lg py-[5px] px-[10px] mt-2 text-center text-[10px]'>Bensin</Text>
-                  <Text className='bg-purple-100 border-[.5px] border-b-[1px] border-purple-800 rounded-lg py-[5px] px-[10px] mt-2 text-center text-[10px]'>Listrik</Text>
-                  <Text className='bg-purple-100 border-[.5px] border-b-[1px] border-purple-800 rounded-lg py-[5px] px-[10px] mt-2 text-center text-[10px]'>Hotel</Text>
+                  <Pressable onPress={() => {
+                    setItemName('');
+                    setCategoryData(categoryReimburse);
+                  }} className='bg-purple-100 border-[.5px] border-b-[1px] border-purple-800 rounded-lg py-[5px] px-[10px] mt-2 text-center text-[10px]'>
+                    <Image source={require("../../assets/icons/refresh.png")} style={{ width: 12, height: 12 }} tintColor={'purple'}/>
+                  </Pressable>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} className='w-full'>
+                    <View className='flex-row gap-2'>
+                      {categoryData.map((item,index)=>{
+                        return (
+                          <Pressable onPress={() => {
+                            setItemName(item);
+                            setCategoryData(prev => prev.filter(col => col !== item));
+                          }} key={index} className='bg-purple-100 border-[.5px] border-b-[1px] border-purple-800 rounded-lg py-[5px] px-[10px] mt-2 text-center text-[10px]'>
+                            <Text className='text-[10px]'>
+                              {item}
+                            </Text>
+                          </Pressable>
+                        )
+                      })}
+                    </View>
+                  </ScrollView>
                 </View>
               </View>
 
               <Pressable onPress={()=>{
                 if(itemName && itemPrice){
                   setDataItem([...dataItem, { name: itemName, price: itemPrice }]);
+                  setDataCategory([...dataCategory, { name: itemName }]);
                   setItemName('');
                   setItemPrice(0);
                 }
@@ -110,9 +285,26 @@ const reimburse = () => {
 
               <View className=' mt-5 '>
                 <Text className='font-bold text-[12px]'>Image:</Text>
-                <View className='flex-row gap-5 w-full overflow-hidden'>
-                  <Text className=' pb-[50px] pl-5  bg-purple-800 w-[130px] mt-2 rounded-lg '></Text>
-                  <Text className=' pb-[50px] pl-5  bg-purple-800 w-[130px] mt-2 rounded-lg '></Text>
+                <View className='flex-row items-center gap-5 mt-2 w-full overflow-hidden'>
+                  <Pressable onPress={()=>{pickImage()}} className=' h-[60px] border-[1px] border-b-[2px] border-purple-600 bg-purple-50 w-[130px] rounded-lg flex justify-center items-center'>
+                    <Image source={require("../../assets/icons/add-image.png")} style={{ width: 20, height: 20 }} tintColor={'purple'}/>
+                  </Pressable>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} className='w-full'>
+                    <View className='flex-row gap-3 w-full'>
+                      {image && (
+                        (image.map((item, index)=>{
+                          return (
+                            <Image
+                              key={index}
+                              source={{ uri: item.uri }}
+                              style={{ width: 130, height: 60, borderRadius: 8 }}
+                              resizeMode="cover"
+                            />
+                          )
+                        }))
+                      )}
+                    </View>
+                  </ScrollView>
                 </View>
               </View>
 
@@ -130,10 +322,10 @@ const reimburse = () => {
             Total Reimburse Amount
           </Text>
           <Text className='font-bold text-[12px] text-purple-900'>
-            Rp. 1.000.000
+            {formatRupiah(totalPrice)}
           </Text>
         </View>
-        <Pressable onPress={() => {setPopUpActive(true)}} className='p-[15px] w-full flex flex-row justify-center items-center border border-b-2 border-purple-800 rounded-lg bg-green-500'
+        <Pressable onPress={() => {setPopUpActive(true)}} className='p-[15px] w-full flex flex-row justify-center items-center border border-b-2 border-purple-800 rounded-lg bg-purple-500'
         >
           <Image source={require('../../assets/icons/send.png')} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
           <Text className='ml-2 text-white font-bold'>
@@ -145,8 +337,8 @@ const reimburse = () => {
       {/* POPUP */}
       {popUpActive && (
         <>
-          <View className='absolute w-full z-30 h-full opacity-70 bg-black'/>
-          <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-40'>
+          <View className='absolute w-full z-[999] h-full opacity-70 bg-black'/>
+          <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-[1000]'>
             <View className='w-full bg-white p-[20px] pt-[70px] rounded-lg flex flex-col justify-start items-center'>
               <Text className='text-[12px] w-full text-center'>
                 Are you sure you want to proceed with this reimbursement?
@@ -157,11 +349,33 @@ const reimburse = () => {
                     No
                   </Text>
                 </Pressable>
-                <Pressable onPress={() => {}} className='w-[50%] border border-b-[2px] border-purple-800 bg-green-500 rounded-lg py-[10px] flex justify-center items-center'>
+                <Pressable onPress={() => {handleSubmit(); setPopUpActive(false)}} className='w-[50%] border border-b-[2px] border-purple-800 bg-green-500 rounded-lg py-[10px] flex justify-center items-center'>
                   <Text className='font-bold text-[12px] text-white'>
-                    Yes
+                    {loading ? 'Loading...' : 'Yes'}
                   </Text>
                 </Pressable>
+              </View>
+            </View>
+          </View>
+        </>
+      )}
+
+      {/* POPUP INFO */}
+      {popUpInfo && (
+        <>
+          <View className='absolute w-full z-[999] h-full opacity-70 bg-black'/>
+          <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-[1000]'>
+            <View className='w-full bg-white p-[20px] pt-[70px] rounded-lg flex flex-col justify-start items-center'>
+              <Text className='text-[12px] w-full text-center'>
+                {infoText}
+              </Text>
+              <View className='flex flex-row justify-center items-center gap-3 mt-5 w-full'>
+                <Pressable onPress={() => {setPopUpInfo(false)}} className='w-full border border-b-[2px] border-purple-800 bg-purple-50 rounded-lg py-[10px] flex justify-center items-center'>
+                  <Text className='font-bold text-[12px]'>
+                    Close
+                  </Text>
+                </Pressable>
+                
               </View>
             </View>
           </View>

@@ -14,5 +14,9 @@ export default function RootLayout() {
       name="historyReimburseKaryawan"
       options={{ headerShown: false }}
     />
+    <Stack.Screen
+      name="detailReimburseAdmin"
+      options={{ headerShown: false }}
+    />
   </Stack>;
 }

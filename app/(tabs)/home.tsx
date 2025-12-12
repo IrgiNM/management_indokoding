@@ -1,21 +1,53 @@
-import { View, Text, ScrollView, FlatList, Pressable, Dimensions } from 'react-native'
-import React, { use, useState } from 'react'
-import { Image, ImageBackground } from 'expo-image'
-import { useRouter } from 'expo-router'
 import CardInfo from '@/components/cardInfo'
 import { dataReimburseMain } from '@/hooks/dataReimburseFunction'
-import { getUserId } from '@/hooks/tokenFunction'
-import { getDataUserLogin } from '@/hooks/userFunction'
-import { UserType } from '@/types/userType'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
+import { getDataUserLogin } from '@/hooks/userFunction'
+import { Image, ImageBackground } from 'expo-image'
+import { useRouter } from 'expo-router'
+import React, { useEffect, useState } from 'react'
+import { Dimensions, FlatList, Pressable, ScrollView, Text, View } from 'react-native'
 const { width } = Dimensions.get('window');
 
 const home = () => {
 
   const router = useRouter();
   const [statusActieve, setStatusActive] = useState(1);
-  const { dataReimburse, dataMonth, totalAmountReimburse } = dataReimburseMain();
+  const { dataReimburseUser, totalAmountReimburse, dataMonth, dataThisMonthAll } = dataReimburseMain();
   const dataUserLogin = getDataUserLogin();
+  const [role, setRole] = useState<string>('karyawan');
+  const year = new Date().getFullYear();
+  const month = new Date().toString().slice(4, 7);
+  const [selectMonthPopUp, setSelectMonthPopUp] = useState(false);
+  const [selectMonth, setSelectMonth] = useState('');
+  const bulanMap: any = {
+    '1': 'Jan',
+    '2': 'Feb',
+    '3': 'Mar',
+    '4': 'Apr',
+    '5': 'May',
+    '6': 'Jun',
+    '7': 'Jul',
+    '8': 'Aug',
+    '9': 'Sep',
+    '10': 'Oct',
+    '11': 'Nov',
+    '12': 'Dec',
+  };
+
+  useEffect(()=>{
+    if(dataMonth.length > 0){
+        setSelectMonth(`${bulanMap[dataMonth[0]]} ${year.toString()}`);
+    }else{
+        setSelectMonth(`${month} ${year.toString()}`);
+    }
+  }, [dataMonth])
+
+
+  useEffect(()=>{
+    if(dataUserLogin.is_staff){
+        setRole('admin');
+    }
+  }, [dataUserLogin]);
 
   
 //   const dataUser = getDataUserLogin();
@@ -61,21 +93,21 @@ const home = () => {
         title: "create reimburse",
         icon: require("../../assets/icons/reimburse-active.png"),
         link: () => {router.replace('/reimburse')},
-        role: "all"
+        role: ['karyawan', 'admin']
     },
     {
         id: 1,
         title: "data Reimburse",
         icon: require("../../assets/icons/data-reimburse.png"),
         link: () => {router.replace('../(admin)/historyReimburseKaryawan')},
-        role: "admin"
+        role: ['admin']
     },
     {
         id: 1,
         title: "data karyawan",
         icon: require("../../assets/icons/karyawan.png"),
         link: () => {router.replace('../(admin)/dataKaryawan')},
-        role: "admin"
+        role: ['admin']
     },
   ]
 
@@ -84,7 +116,7 @@ const home = () => {
     <View className='bg-white flex-1 justify-start items-center'>
 
       {/* HEADER */}
-      <View className='flex flex-row justify-between items-center relative top-30 w-full h-[110px] p-[30px] pt-[55px]'>
+      <View className='flex flex-row justify-between items-center relative z-[997] top-30 w-full h-[110px] p-[30px] pt-[55px]'>
         <View className='flex flex-row justify-start items-center'>
             <View className='w-[40px] h-[40px] rounded-full bg-blue-300 flex justify-center items-center overflow-hidden'>
                 <Image source={require("../../assets/images/profile-bg.jpeg")} style={{ width: 40, height: 40 }}/>
@@ -96,7 +128,7 @@ const home = () => {
                 <Text className='font-bold'>Hi,
                 </Text>
                 <Text>
-                    {dataUserLogin?.[0]?.username}
+                    {dataUserLogin?.username}
                 </Text>
             </View>
         </View>
@@ -120,8 +152,12 @@ const home = () => {
                         <Text className="text-[10px] text-white">Total Reimburse</Text>
                         <View className='w-full flex flex-row justify-between items-center'>
                             <Text className="text-[20px] text-white font-bold">{formatRupiah(totalAmountReimburse||0)}</Text>
-                            <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)' }} onPress={() => {}} className="w-[100px] border-[.5px] border-b-[1px] border-white rounded-lg flex flex-row justify-center items-center bg-purple-500">
-                                <Text className="text-[12px] font-bold py-[5px] text-white">Okt 2025</Text>
+                            <Pressable android_ripple={{ color: 'rgba(0,0,0,0.1)' }} onPress={() => {
+                                if(dataMonth.length > 0){
+                                    setSelectMonthPopUp(true)
+                                }
+                                }} className="w-[100px] border-[.5px] border-b-[1px] border-white rounded-lg flex flex-row justify-center items-center bg-purple-500">
+                                <Text className="text-[12px] font-bold py-[5px] text-white">{selectMonth}</Text>
                                 <Image
                                 source={require('../../assets/icons/arrow-dropdown.png')}
                                 style={{ width: 7, height: 7, marginLeft: 5 }}
@@ -130,8 +166,6 @@ const home = () => {
                             </Pressable>
                         </View>
                     </View>
-
-                    
                 </View>
             </ImageBackground>
 
@@ -186,22 +220,38 @@ const home = () => {
         </View>
 
         {/* LIST REIMBURSE */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View className='h-[100px] w-full flex flex-row justify-start items-center gap-3 bg-[#F1E3FA] mt-5 pl-[30px] pr-[30px]'>
-                {dataReimburse.map((item, idx) => (
-                    <CardInfo 
-                        amount={item.amount.toString()} 
-                        date={item.date}
-                        description={item.description}
-                        title={item.title}
-                        status={item.status}
-                        key={idx}
-                        id={item.id}
-                        w="w-[300px]"
+        {dataThisMonthAll.length > 0 ? (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View className='h-[100px] w-full flex flex-row justify-start items-center gap-3 pl-[30px] pr-[30px] bg-[#F1E3FA] mt-5'>
+                    {dataReimburseUser.map((item, idx) => (
+                        <CardInfo 
+                            amount={Number(item.total_amount)} 
+                            date={item.created_at??'null'}
+                            description={item.description}
+                            title={item.title}
+                            status={item.status}
+                            key={idx}
+                            id={item.id??0}
+                            w="w-[300px]"
+                        />
+                    ))}
+                </View>
+            </ScrollView>
+        ) : (
+            <View className='h-[100px] w-full flex flex-row justify-center items-center gap-3 bg-[#F1E3FA] mt-5'>
+                <View className='flex flex-row justify-center items-center gap-2 text-[10px] py-3 px-[30px] border-[.5px] rounded-full border-purple-600 bg-purple-100 text-purple-800 font-bold'>
+                    <Image
+                    source={require('../../assets/icons/s-decline.png')}
+                    style={{ width: 7, height: 7 }}
+                    tintColor={'purple'}
                     />
-                ))}
+                    <Text className='text-[10px] text-purple-800 font-bold'>
+                        Not Reimbursements
+                    </Text>
+                </View>
             </View>
-        </ScrollView>
+        )}
+        
 
         {/* MENU LIST */}
         <View className='w-full flex justify-start items-center px-[30px] pt-[10px]'>
@@ -214,16 +264,20 @@ const home = () => {
 
             {/* STATUS ICON */}
             <View className='w-full justify-start items-center gap-5 flex flex-row flex-wrap mt-7 px-[20px]'>
-                {iconMenu.map((item, index) => (
-                    <Pressable key={index} onPress={item.link}className='flex flex-col justify-center items-center'>
-                            <View className='flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-white border-[.5px] border-b-[1px] border-purple-600'>
-                                <Image source={item.icon} style={{ width: 25, height: 25 }}/>
-                            </View>
-                            <Text className='text-[10px] text-center w-[50px] mt-2'>
-                                {item.title}
-                            </Text>
-                    </Pressable>
-                ))}
+                {iconMenu.map((item, index) => {
+                    if(item.role.includes(role)){
+                        return (
+                            <Pressable key={index} onPress={item.link}className='flex flex-col justify-center items-center'>
+                                <View className='flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-white border-[.5px] border-b-[1px] border-purple-600'>
+                                    <Image source={item.icon} style={{ width: 25, height: 25 }}/>
+                                </View>
+                                <Text className='text-[10px] text-center w-[50px] mt-2'>
+                                    {item.title}
+                                </Text>
+                            </Pressable>
+                        )
+                    }
+                })}
             </View>
         </View>
 
@@ -231,6 +285,24 @@ const home = () => {
         <View className='w-full h-[1000px] bg-white'></View>
 
       </ScrollView>
+
+      {selectMonthPopUp && (
+        <>
+            <View style={{ position: 'absolute', right: 0, top: 0, bottom: 0, left: 0 }} className='z-[998] bg-black opacity-60' />
+            <View style={{ position: 'absolute', right: 50, top: 210, }} className='w-[100px] rounded-lg border border-white justify-center items-center bg-purple-500 z-[999] px-[10px]'>         
+                {dataMonth.map((item, index) => {
+                    return <Pressable onPress={() => {
+                        setSelectMonth(`${bulanMap[item]} ${year.toString()}`);
+                        setSelectMonthPopUp(false);
+                    }} key={index} className='py-3 border border-l-[0px] border-r-[0px] border-purple-400 w-full flex justify-center items-center'>
+                        <Text className='text-white text-[12px] font-bold'>
+                            {bulanMap[item]} {year.toString()}
+                        </Text>
+                    </Pressable>;
+                })}
+            </View>
+        </>
+      )}
     </View>
   )
 }

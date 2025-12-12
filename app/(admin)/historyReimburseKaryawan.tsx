@@ -1,7 +1,10 @@
 import CardInfo from '@/components/cardInfo'
 import HeaderBack from '@/components/headerBack'
-import { reimburseData } from '@/data/reimburseData'
+import { ChangeUserReimburse, dataReimburseMain } from '@/hooks/dataReimburseFunction'
+import { dataUserFunction } from '@/hooks/dataUserFunction'
+import { formatRupiah } from '@/hooks/formatRupiahFunction'
 import { cardInfoType } from '@/types/cardInfoType'
+import { ReimbursementType } from '@/types/reimburseDataType'
 import { Image } from 'expo-image'
 import React, { useEffect, useState } from 'react'
 import { Dimensions, Pressable, ScrollView, Text, View } from 'react-native'
@@ -13,12 +16,28 @@ const historyReimburseKaryawan = () => {
   const [checkActive, setCheckActive] = useState(false);
   const [statusActive, setStatusActive] = useState('All');
   const [selectedId, setSelectedId] = useState<string[]>([]);
-
-  const [dataMonth, setDataMonth] = useState<string[]>([]);
+  const { dataThisMonthAll, dataMonthYear, dataThisYearAll, dataMonthAll } = dataReimburseMain();
+  // const [dataMonth, setDataMonth] = useState<string[]>([]);
   const today = new Date().toISOString().split("T")[0];
-  const thisMonth = today.slice(0,7);
-
-  const dataReimburse: cardInfoType[] = reimburseData;
+  const thisMonth = today.slice(5,7);
+  const thisYear = today.slice(0,4);
+  const [dataReimburse, setDataReimburse] = useState<ReimbursementType[]>([]);
+  const { dataAllNewUser } = dataUserFunction();
+  const bulanMap: any = {
+    '1': 'Jan',
+    '2': 'Feb',
+    '3': 'Mar',
+    '4': 'Apr',
+    '5': 'May',
+    '6': 'Jun',
+    '7': 'Jul',
+    '8': 'Aug',
+    '9': 'Sep',
+    '10': 'Oct',
+    '11': 'Nov',
+    '12': 'Dec',
+  };
+  
 
   const statusList = [
     { 
@@ -62,20 +81,22 @@ const historyReimburseKaryawan = () => {
   ];
 
   useEffect(() => {
-    const months: string[] = [];
-    dataReimburse.map((item) => {
-      const itemISO = new Date(item.date).toISOString();
-      const itemMonth = itemISO.slice(0,7);
-      months.push(itemMonth);
-    });
+    console.log("data:",dataMonthAll);
+  }, [dataMonthAll]);
 
-    const uniqueMonths = [...new Set(months)];
-    setDataMonth(uniqueMonths);
-  }, []);
+  useEffect(()=>{
+    console.error('dataThisYearAll:', dataThisYearAll);
+    if(isActive === "All"){
+      setDataReimburse(dataThisYearAll);
+    }
+  }, [dataThisYearAll, isActive]);
 
-  useEffect(() => {
-    console.log("data:",dataMonth);
-  }, [dataMonth]);
+  useEffect(()=>{
+    console.error('statusActive changed:', statusActive);
+    console.error('dataReimburse changed:', dataReimburse);
+    console.error('thisMonth', thisMonth);
+    console.error('dataMonth', dataMonthAll);
+  }, [statusActive, dataReimburse]);
 
   const toggleSelect = (id: string) => {
     setSelectedId(prev =>
@@ -85,8 +106,15 @@ const historyReimburseKaryawan = () => {
     );
   };
 
-  
+  const userHandle = async(email: string) => {
+    setIsActive(email);
+    const res = await ChangeUserReimburse(email);
+    if(res){
+      setDataReimburse(res);
+    }
+  }
 
+  
   return (
     <View className='w-full bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
@@ -107,38 +135,47 @@ const historyReimburseKaryawan = () => {
       {/* HISTORY LIST */}
       <ScrollView className='w-full pb-[50px]'>
         <View className='w-full flex justify-start items-center flex-col gap-3 mt-[20px]'>
-          {dataMonth.map((month, index) => {
+          {dataMonthAll.map((month, index) => {
+            const totalR = dataReimburse
+            .filter(item => item.created_at?.slice(5,7) === month)
+            .reduce((acc, item) => acc + Number(item.total_amount || 0), 0);
             if(month === thisMonth){
+              const total = dataReimburse
+              .filter(item => item.created_at?.slice(5,7) === thisMonth)
+              .reduce((acc, item) => acc + Number(item.total_amount || 0), 0);
               return (
                 <View className='w-full flex flex-col justify-start items-center mb-[30px]' key={index}>
                   <View className='w-full px-[20px] rounded-lg flex flex-row justify-between items-center mb-2'>
                     <Text className='text-[12px] font-bold mb-2'>This Month</Text>
-                    <Text className='text-[12px] font-bold mb-2'>Rp. 5.000.000</Text>
+                    <Text className='text-[12px] font-bold mb-2'>{formatRupiah(total)}</Text>
                   </View>
                   <View className='w-full px-[20px] pt-[15px] bg-blue-50 pb-[30px] flex flex-col justify-start items-center gap-2'>
-                    {dataReimburse.map((item, idx) => {
-                      const itemISO = new Date(item.date).toISOString();
-                      const itemMonth = itemISO.slice(0,7);
-                      if(itemMonth === thisMonth && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive)) && (isActive === "All" ? (item.user !== isActive) : (item.user === isActive))){
+                    {(isActive === "All" ? (dataReimburse) : (dataReimburse)).map((item, idx) => {
+                      const itemISO = item.created_at || '';
+                      const itemMonth = itemISO.slice(5,7);
+                      // console.error('itemMonth:', itemMonth, 'thisMonth:', thisMonth);
+                      if(itemMonth === thisMonth && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive))){
                         return (
                           <View className='w-full flex flex-row justify-start items-center' key={idx}>
                             {checkActive && (
-                              <Pressable key={index} onPress={()=>{toggleSelect(item.id.toString())}} className={`flex flex-row justify-center items-center mx-5 w-[22px] h-[22px] border rounded-lg border-purple-600`}>
+                              <Pressable key={index} onPress={()=>{
+                                  toggleSelect(item.id?.toString()??'');
+                                }} className={`flex flex-row justify-center items-center mx-5 w-[22px] h-[22px] border rounded-lg border-purple-600`}>
                                 {
-                                  selectedId.includes(item.id.toString()) && (
+                                  selectedId.includes(item.id?.toString()??'') && (
                                     <Image source={require("../../assets/icons/s-approve.png")} style={{ width: 10, height: 10 }} tintColor={"#9333EA"}/>
                                   )
                                 }
                               </Pressable>
                             )}
                             <CardInfo 
-                              amount={item.amount} 
-                              date={item.date}
+                              amount={Number(item.total_amount)} 
+                              date={item.created_at||''}
                               description={item.description}
                               status={item.status}
-                              title={isActive==="All" ? item.user??'tidak ada username' : item.title}
+                              title={isActive==="All" ? item.user_detail?.username??'tidak ada username' : item.title}
                               key={idx}
-                              id={item.id}
+                              id={item.id??0}
                               w="w-full"
                               longPress={() => setCheckActive(true)}
                             />
@@ -150,35 +187,38 @@ const historyReimburseKaryawan = () => {
                 </View>
               )
             }
+            
             return (
               <View className='w-full flex flex-col justify-start items-center mb-[30px]' key={index}>
                 <View className='w-full px-[20px] rounded-lg flex flex-row justify-between items-center mb-2'>
-                  <Text className='text-[12px] font-bold mb-2'>{month}</Text>
-                  <Text className='text-[12px] font-bold mb-2'>Rp. 5.000.000</Text>
+                  <Text className='text-[12px] font-bold mb-2'>{`${bulanMap[month]} ${thisYear}`}</Text>
+                  <Text className='text-[12px] font-bold mb-2'>{formatRupiah(totalR)}</Text>
                 </View>
                 <View className='w-full px-[20px] pt-[15px] bg-blue-50 pb-[30px] flex flex-col justify-start items-center gap-2'>
-                  {dataReimburse.map((item, idx) => {
-                    const itemISO = new Date(item.date).toISOString();
-                    const itemMonth = itemISO.slice(0,7);
-                    if(itemMonth === month && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive)) && (isActive === "All" ? (item.user !== isActive) : (item.user === isActive))){
+                  {(isActive === "All" ? (dataReimburse) : (dataReimburse)).map((item, idx) => {
+                    const itemISO = item.created_at || '';
+                    const itemMonth = itemISO.slice(5,7);
+                    if(itemMonth === month && (statusActive === "All" ? (item.status !== statusActive) : (item.status === statusActive)) && (isActive === "All" ? (item.user_detail?.email !== isActive) : (item.user_detail?.email === isActive))){
                       return (
                         <View className='w-full flex flex-row justify-start items-center' key={idx}>
                           {checkActive && (
-                            <Pressable key={index} onPress={()=>{toggleSelect(item.id.toString())}} className={`flex flex-row justify-center items-center mx-5 w-[22px] h-[22px] border rounded-lg border-purple-600`}>
+                            <Pressable key={index} onPress={()=>{
+                              toggleSelect(item.id?.toString()??'');
+                              }} className={`flex flex-row justify-center items-center mx-5 w-[22px] h-[22px] border rounded-lg border-purple-600`}>
                               {
-                                selectedId.includes(item.id.toString()) && (
+                                selectedId.includes(item.id?.toString()??'') && (
                                   <Image source={require("../../assets/icons/s-approve.png")} style={{ width: 10, height: 10 }} tintColor={"#9333EA"}/>
                                 )
                               }
                             </Pressable>
                           )}
                           <CardInfo 
-                            amount={item.amount} 
-                            date={item.date}
+                            amount={Number(item.total_amount)} 
+                            date={item.created_at||''}
                             description={item.description}
                             status={item.status}
-                            title={isActive==="All" ? item.user??'tidak ada username' : item.title}
-                            id={item.id}
+                            title={isActive==="All" ? item.user_detail?.username??'tidak ada username' : item.title}
+                            id={item.id??0}
                             w="w-full"
                             longPress={() => setCheckActive(true)}
                           />
@@ -220,7 +260,7 @@ const historyReimburseKaryawan = () => {
 
         <View className='bg-white w-full h-[150px] flex-row items-start px-[30px] pt-[20px] rounded-t-3xl gap-[10px] border border-purple-600'>
           <Pressable onPress={() => setIsActive("All")}
-          className={`w-[45px] h-[45px] flex  justify-center items-center mt-2 border-[1px] ${isActive==="All"?"border-purple-600 border-b-[2px]":"border-purple-200"} rounded-lg`}>
+          className={`w-[45px] h-[45px] flex  justify-center items-center mt-2 border-[1px] border-b-[2px] ${isActive==="All"?"border-purple-800 ":"border-purple-200"} rounded-lg`}>
             <Text className={`text-[12px] ${isActive==="All"?"text-purple-600":"text-purple-200"}`}>All</Text>
           </Pressable >
 
@@ -230,14 +270,16 @@ const historyReimburseKaryawan = () => {
             showsHorizontalScrollIndicator={false}
           >
             <View className='w-full h-[60px] flex flex-row items-center gap-2'>
-              {users.map((item, index) => {
+              {dataAllNewUser.map((item, index) => {
                 return (
                     <Pressable 
                       key={index}
-                      onPress={() => setIsActive(item.username)} // ✨ tambahan
-                      className={`bg-purple-300 w-[50px] h-[50px] flex justify-center items-center rounded-full ${isActive===item.username&&"border border-b-[2px] border-purple-600"}`}
+                      onPress={() => {
+                        userHandle(item.email);
+                      }}
+                      className={`w-[50px] h-[50px] flex justify-center items-center rounded-full ${isActive===item.email?"border border-b-[2px] border-purple-600 bg-purple-200":'bg-purple-500'}`}
                     >
-                      <Text className='text-white text-lg font-bold'>{item.username.charAt(0).toUpperCase()}</Text>
+                      <Text className={`text-white text-lg font-bold ${isActive===item.email?"text-purple-700":'text-white'}`}>{item.email.charAt(0).toUpperCase()}</Text>
                     </Pressable>
                 );
               })}

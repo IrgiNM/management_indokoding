@@ -4,6 +4,7 @@ import { Image } from 'expo-image'
 import { cardInfoType } from '@/types/cardInfoType'
 import { useRouter } from 'expo-router'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
+import { dateFormat } from '@/hooks/todayFunction'
 
 const CardInfo = ({id, amount, date, description, title, type, status, w, longPress}: cardInfoType) => {
   const router = useRouter();
@@ -48,10 +49,10 @@ const CardInfo = ({id, amount, date, description, title, type, status, w, longPr
         </View>
         <View className='flex flex-col justify-start items-start ml-3'>
             <Text className='text-[10px] font-bold'>
-                {title}
+                {title.slice(0, 20)}...
             </Text>
             <Text className='text-[10px] '>
-                {description}
+                {description.slice(0, 30)}...
             </Text>
         </View>
       </View>
@@ -66,7 +67,7 @@ const CardInfo = ({id, amount, date, description, title, type, status, w, longPr
                 {formatRupiah(Number(amount))}
             </Text>
             <Text className='text-[10px] '>
-                {date}
+                {dateFormat(date)}
             </Text>
         </View>
         <Image
