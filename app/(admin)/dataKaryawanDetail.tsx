@@ -6,6 +6,7 @@ import { formatRupiah } from '@/hooks/formatRupiahFunction';
 import { ReimbursementType } from '@/types/reimburseDataType';
 import { UserType } from '@/types/userType';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
@@ -142,10 +143,12 @@ const dataKaryawanDetail = () => {
 
       <View className='w-full flex flex-col justify-start items-center mt-5 px-[20px]'>
         <View className='w-full relative flex items-center mt-[-50px] z-[999]'>
-          <View className='bg-blue-300 border border-b-2 border-blue-800 flex justify-center items-center rounded-full w-[80px] h-[80px]'>
-            <Text className='text-white font-bold text-[30px] flex justify-center items-center'>
-                {dataUser.username.charAt(0).toUpperCase()}{dataUser.username.charAt(dataUser.username.length - 1).toUpperCase()}
-            </Text>
+          <View className='bg-blue-300 border-[6px] border-white flex justify-center items-center overflow-hidden rounded-full w-[80px] h-[80px]'>
+            <LinearGradient colors={['#5088FF', '#1A63FF']} className='w-full h-full flex justify-center items-center'>
+              <Text className='text-white font-bold text-[30px] flex justify-center items-center'>
+                  {dataUser.username.charAt(0).toUpperCase()}{dataUser.username.charAt(dataUser.username.length - 1).toUpperCase()}
+              </Text>
+            </LinearGradient>
           </View>
         </View>
 

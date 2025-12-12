@@ -4,6 +4,7 @@ import { Image } from 'expo-image'
 import { cardKaryawanType } from '@/types/cardKaryawanType'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
 import { useRouter } from 'expo-router'
+import { LinearGradient } from 'expo-linear-gradient'
 
 const CardKaryawan = ({email, reimburse, username, image, w}: cardKaryawanType) => {
   const router = useRouter();
@@ -15,12 +16,14 @@ const CardKaryawan = ({email, reimburse, username, image, w}: cardKaryawanType) 
       });
     }} className={`${w} h-[60px] bg-white border-[.5px] border-b-[1px] border-blue-800 rounded-lg flex flex-row justify-between items-center shadow-md`}>
       <View className='flex flex-row justify-start items-center'>
-        <View className='w-[40px] h-[40px] rounded-full bg-blue-300 ml-3 flex justify-center items-center overflow-hidden border border-blue-800'>
-            {image ? <Image source={image} style={{ width: 40, height: 40 }} className='rounded-full'/> :
-            <Text className='text-white font-bold'>
-                {username.charAt(0).toUpperCase()}{username.charAt(username.length - 1).toUpperCase()}
-            </Text>
-            }
+        <View className='w-[40px] h-[40px] rounded-full bg-blue-300 ml-3 flex justify-center items-center overflow-hidden'>
+            <LinearGradient colors={['#5088FF', '#1A63FF']} className='w-full h-full flex justify-center items-center'>
+              {image ? <Image source={image} style={{ width: 40, height: 40 }} className='rounded-full'/> :
+              <Text className='text-white font-bold'>
+                  {username.charAt(0).toUpperCase()}{username.charAt(username.length - 1).toUpperCase()}
+              </Text>
+              }
+            </LinearGradient>
         </View>
         <View className='flex flex-col justify-start items-start ml-3'>
             <Text className='text-[10px] font-bold text-[#CA5101]'>

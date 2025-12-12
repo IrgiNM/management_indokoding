@@ -57,7 +57,7 @@ const dataSiteSettings = () => {
   return (
     <View className='w-full bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
-      <HeaderBack title='Data Salary Karyawan' type='setting'/>    
+      <HeaderBack title='Data Site Setting' type='setting'/>    
 
       {dataSettings.length===0&&(
         <View className='w-full h-full pt-[140px] px-4 bg-[#ecf8f9] flex flex-col justify-start items-center'>

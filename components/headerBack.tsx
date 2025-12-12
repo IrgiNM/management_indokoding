@@ -37,7 +37,7 @@ const HeaderBack = ({ title, subTitle, type, textColor } : headerBackType ) => {
             type === "django" ? "#FFFFFF" :
             type === "setting" ? "#FFFFFF" :
             type === "python" ? "#FFFFFF" :
-            "#6615b1"
+            "#FFFFFF"
           }/>
       </Pressable>
       <Text className={`text-[15px] font-bold ml-5 h-[45px] pt-[12px] text-white`}>{title}</Text>

@@ -81,6 +81,7 @@ export const fetchDataSettingByCategoryAndKey = async(category: string, key: str
 // ----------------------------------------------------
 export const updateSettingFunction = async(category: string, key: string, value: string) => {
     try{
+        console.log('data update:', {category: category, key: key, value: value});
         const res = await updateSiteSetting({category: category, key: key, value: value});
         if(res.status === 200){
             return true
