@@ -4,6 +4,7 @@ import axios from 'axios';
 import { getToken } from './tokenFunction';
 import { FinanceManagementSendType } from "@/types/financeDataType";
 import { siteSettingSendType } from "@/types/siteSettingType";
+import { overtimeLogSendType } from "@/types/overtimeLogType";
 
 export const BASEURL = process.env.EXPO_PUBLIC_API_URL+'/api/';
 export const BASEURLIMAGE = process.env.EXPO_PUBLIC_API_URL;
@@ -76,3 +77,11 @@ export const deleteSiteSetting = (data: {category: string, key: string}) => api.
 export const getSiteSettingByCategoryAndKey = (category: string, key: string) => api.get(`settings/${category}/${key}/`);
 export const getSiteSettingsByCategory = (category: string) => api.get(`settings/${category}/`);
 export const getAllSiteSettings = () => api.get('settings/');
+
+// OVERTIME LOG
+export const getOvertimeLogAll = () => api.get('overtimelog/');
+export const getOvertimeLogByUser = (email: string) => api.get(`overtimelog/${email}/`);
+export const getMyOvertimeLog = () => api.get(`overtimelog/me/`);
+export const createOvertimeLog = (data: overtimeLogSendType) => api.post('overtime/create/', data);
+export const updateOvertimeLog = (id: number,data: overtimeLogSendType) => api.patch(`overtime/update/${id}/`, data);
+export const deleteOvertimeLog = (id: number) => api.delete(`overtime/delete/${id}/`);

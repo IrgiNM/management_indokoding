@@ -82,7 +82,7 @@ const dataKaryawan = () => {
       {/* HISTORY LIST */}
       <ScrollView className='absolute inset-0 w-full h-full'>
         <View className='w-full border-b-1 flex justify-start items-center flex-col gap-3 mt-[106px] pb-[50px]'>
-          <LinearGradient colors={['#5088FF', '#001749']} className='w-full h-full p-4 px-[20px] flex-1 flex-col justify-start items-center gap-2'>
+          <LinearGradient colors={['#527EFE', '#001749']} className='w-full h-full p-4 px-[20px] flex-1 flex-col justify-start items-center gap-2'>
             {dataAllNewUser.map((item,index)=>{
               return(
                 <CardKaryawan 

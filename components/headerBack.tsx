@@ -15,6 +15,8 @@ const HeaderBack = ({ title, subTitle, type, textColor } : headerBackType ) => {
               ? require('../assets/images/python-bg.png') :
             type === 'setting'
               ? require('../assets/images/golang-setting-page.png') :
+            type === 'mysql'
+              ? require('../assets/images/overtime-bg.png') :
             require('../assets/images/total-reimburse-bg.png')
             } 
           style={{ width: 420, height: 120, position: 'absolute', top: 0, left: 0, right: 0, }} contentFit="cover" className='absolute -z-1 w-full'
@@ -31,12 +33,14 @@ const HeaderBack = ({ title, subTitle, type, textColor } : headerBackType ) => {
           type === "django" ? "border-[#004344] bg-[#00b1c8]" :
           type === "setting" ? "border-[#004344] bg-[#00b1c8]" :
           type === "python" ? "border-[#002583] bg-[#5088FF]" :
+          type === "mysql" ? "border-[#a84900] bg-[#ffa850]" :
           "border-[#54079d] bg-[#B456FF]"
         } rounded-xl flex justify-center items-center`}>
           <Image source={require("../assets/objek/arrow-back.png")} style={{ width: 13, height: 17, }} tintColor={
             type === "django" ? "#FFFFFF" :
             type === "setting" ? "#FFFFFF" :
             type === "python" ? "#FFFFFF" :
+            type === "mysql" ? "#FFFFFF" :
             "#FFFFFF"
           }/>
       </Pressable>

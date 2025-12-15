@@ -14,5 +14,9 @@ export default function RootLayout() {
       name="editProfile"
       options={{ headerShown: false }}
     />
+    <Stack.Screen
+      name="overtimeLog"
+      options={{ headerShown: false }}
+    />
   </Stack>;
 }

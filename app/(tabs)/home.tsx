@@ -1,7 +1,5 @@
-import BottomBar from '@/components/bottomBar'
 import CardInfo from '@/components/cardInfo'
-import { iconHomeBar } from '@/data/iconHomeBarData'
-import { iconMenu } from '@/data/iconMenuData'
+import { iconMenuHome } from '@/data/iconMenuData'
 import { dataReimburseMain, getReimburseUserHome } from '@/hooks/dataReimburseFunction'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
 import { getDataUserLogin } from '@/hooks/userFunction'
@@ -10,12 +8,12 @@ import { Image, ImageBackground } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
-import { Dimensions, Pressable, ScrollView, Text, View } from 'react-native'
-const { width } = Dimensions.get('window');
+import { Pressable, ScrollView, Text, View } from 'react-native'
 
 const home = () => {
 
   const router = useRouter();
+  const { iconMenu } = iconMenuHome();
   const [statusActieve, setStatusActive] = useState(1);
   const { dataMonth } = dataReimburseMain();
   const [dataReimburse, setDataReimburse] = useState<ReimbursementType[]>([]);
@@ -279,14 +277,14 @@ const home = () => {
                     </Text>
                 </View>
 
-                {/* STATUS ICON */}
+                {/* MENU ICON */}
                 <View className='w-full justify-start items-center gap-5 flex flex-row flex-wrap mt-7 px-[20px]'>
                     {iconMenu.map((item, index) => {
                         if(item.role.includes(role)){
                             return (
                                 <Pressable key={index} onPress={item.link}className='flex flex-col justify-center items-center'>
-                                    <View className='flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-white border border-b-[2px] border-purple-600 overflow-hidden'>
-                                        <LinearGradient colors={['#FFFFFF', item.color]} className='h-full w-full flex flex-row justify-center items-center'>
+                                    <View className={`flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-white border border-b-[2px] ${item.border} overflow-hidden`}>
+                                        <LinearGradient colors={['#FFFFFF', item.color]} className='h-full w-full flex flex-row justify-center items-center border-2 border-white'>
                                             <Image source={item.icon} style={{ width: 30, height: 30 }}/>
                                         </LinearGradient>
                                     </View>

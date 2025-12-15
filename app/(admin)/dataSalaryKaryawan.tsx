@@ -235,7 +235,7 @@ const historyReimburseKaryawan = () => {
       <HeaderBack title={`Data Salary ${Username}`} type='python'/>
 
       <View className='w-full flex-1 bg-[#4d84f0]'>
-        <LinearGradient colors={['#5088FF', '#001749']} className='w-full h-full p-4 px-[20px] flex-1 flex-col justify-start items-center'>
+        <LinearGradient colors={['#527EFE', '#001749']} className='w-full h-full p-4 px-[20px] flex-1 flex-col justify-start items-center'>
         <View className={`relative top-[-20px] z-[998] w-full overflow-hidden ${buttonEdit?"h-[65%]":"h-[82%]"} p-3 rounded-lg bg-white flex justify-start items-center`}>
 
           {/* DATA HEADER TOTAL SALARY */}
