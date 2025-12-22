@@ -154,7 +154,7 @@ const historyReimburseKaryawan = () => {
   return (
     <View className='w-full bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
-      <HeaderBack title='Data Reimburse Karyawan'/>
+      <HeaderBack title='Data Reimburse Karyawan' backTo={'/home'}/>
       <View className='w-full px-[20px] py-[10px] bg-white pt-[20px] mt-2'>
         <View className='w-full flex flex-row justify-between items-center bg-purple-50 border-[.5px] border-b-[1px] rounded-full border-purple-600 py-[5px] px-[5px]'>
           {statusList.map((item, index)=>{
@@ -344,7 +344,7 @@ const historyReimburseKaryawan = () => {
           <View className='absolute w-full z-[999] h-full opacity-80 bg-[#1e0031]'/>
           <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-[1000]'>
             <View className='w-full bg-white p-[20px] pt-[60px] rounded-lg flex flex-col justify-start items-center'>
-              <View className={`w-[75px] h-[75px] absolute top-[-25px] border-[7px] border-white rounded-full ${popUpActive==='approve'?'bg-[#00AC5C]':'bg-[#FF0066]'} bg-[#FF0066] flex justify-center items-center`}>
+              <View className={`w-[75px] h-[75px] absolute top-[-25px] border-[7px] border-white rounded-full ${popUpActive==='approve'?'bg-[#00AC5C]':'bg-[#FF0066]'} flex justify-center items-center`}>
                 {popUpActive==='approve'?(
                   <Image source={require("../../assets/icons/s-approve.png")} style={{ width: 28, height: 25 }} tintColor={"#ffffff"} className='mb-5'/>
                 ):(

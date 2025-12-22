@@ -19,9 +19,11 @@ const CardSetting = ({name,value,click,click2}: cardSettingType) => {
                                 <Text className='text-[10px] text-gray-400'>{value}</Text>
                             )
                         }
-                        <Pressable onPress={click} className="w-[25px] h-[25px] bg-[#ecf8f9] rounded-md border-[.5px] border-b-[1px] border-[#008091] flex justify-center items-center">
-                            <Image source={require("../assets/icons/edit.png")} tintColor={"#008091"} style={{ width: 12, height: 12 }}/>
-                        </Pressable>
+                        {(value!=='true'&&value!=='false')&&(
+                            <Pressable onPress={click} className="w-[25px] h-[25px] bg-[#ecf8f9] rounded-md border-[.5px] border-b-[1px] border-[#008091] flex justify-center items-center">
+                                <Image source={require("../assets/icons/edit.png")} tintColor={"#008091"} style={{ width: 12, height: 12 }}/>
+                            </Pressable>
+                        )}
                     </View>
                 </View>
             </View>

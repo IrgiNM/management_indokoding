@@ -60,7 +60,7 @@ const index = () => {
   return (
     <View className='w-full bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
-      <HeaderBack title='History Reimburse' subTitle='detail' type=''/>
+      <HeaderBack title='History Reimburse' subTitle='detail' backTo={'/home'}/>
       <View className='w-full px-[20px] py-[10px] bg-white pt-[20px] mt-2'>
         <View className='w-full flex flex-row justify-between items-center bg-green-50 border-[.5px] border-b-[1px] rounded-full border-purple-600 py-[5px] px-[5px]'>
           {statusList.map((item, index)=>{

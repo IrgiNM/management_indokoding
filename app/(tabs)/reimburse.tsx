@@ -204,7 +204,7 @@ const reimburse = () => {
   return (
     <View className='bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
-      <HeaderBack title='Pengajuan Reimburse'/>
+      <HeaderBack title='Pengajuan Reimburse' backTo={'/home'}/>
 
       <ScrollView className='w-full pb-0'>
         <View className='w-full bg-[#dfc1ef] pb-0'>

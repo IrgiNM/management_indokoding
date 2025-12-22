@@ -5,6 +5,7 @@ import { getToken } from './tokenFunction';
 import { FinanceManagementSendType } from "@/types/financeDataType";
 import { siteSettingSendType } from "@/types/siteSettingType";
 import { overtimeLogSendType } from "@/types/overtimeLogType";
+import { EmployeeSendType } from "@/types/employeeType";
 
 export const BASEURL = process.env.EXPO_PUBLIC_API_URL+'/api/';
 export const BASEURLIMAGE = process.env.EXPO_PUBLIC_API_URL;
@@ -81,7 +82,15 @@ export const getAllSiteSettings = () => api.get('settings/');
 // OVERTIME LOG
 export const getOvertimeLogAll = () => api.get('overtimelog/');
 export const getOvertimeLogByUser = (email: string) => api.get(`overtimelog/${email}/`);
+export const getOvertimeLogByUserThisMonth = (email: string) => api.get(`overtimelog/thisMonth/${email}/`);
 export const getMyOvertimeLog = () => api.get(`overtimelog/me/`);
+export const getMyOvertimeLogThisMonth = () => api.get(`overtimelog/thisMonth/me/`);
 export const createOvertimeLog = (data: overtimeLogSendType) => api.post('overtime/create/', data);
 export const updateOvertimeLog = (id: number,data: overtimeLogSendType) => api.patch(`overtime/update/${id}/`, data);
 export const deleteOvertimeLog = (id: number) => api.delete(`overtime/delete/${id}/`);
+
+// EMPLOYEE
+export const createEmployeeByUser = (email: string, data: EmployeeSendType) => api.post(`employee/create/${email}/`, data);
+export const updateEmployeeByUser = (email: string, data: EmployeeSendType) => api.patch(`employee/update/${email}/`, data);
+export const getEmployeeByUser = (email: string) => api.get(`employee/get/${email}/`);
+export const getMyEmployeeData = () => api.get('employee/me/');

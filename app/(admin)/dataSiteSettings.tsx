@@ -2,8 +2,8 @@ import CardSetting from '@/components/cardSetting';
 import HeaderBack from '@/components/headerBack';
 import { detectType } from '@/hooks/cekTypeFunction';
 import { createSettingFunction, dataSiteSettingFunction, deleteSettingFunction, updateSettingFunction } from '@/hooks/dataSiteSettingFunction';
+import { formatLabel } from '@/hooks/formatCapitalizeEachWordFunction';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
@@ -57,7 +57,7 @@ const dataSiteSettings = () => {
   return (
     <View className='w-full bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
-      <HeaderBack title='Data Site Setting' type='setting'/>    
+      <HeaderBack title='Data Site Setting' type='setting' backTo={'/home'}/>    
 
       {dataSettings.length===0&&(
         <View className='w-full h-full pt-[140px] px-4 bg-[#ecf8f9] flex flex-col justify-start items-center'>
@@ -86,7 +86,7 @@ const dataSiteSettings = () => {
             return (
               <View className='w-full flex flex-col justify-start items-start' key={index}>
                 <View className='w-full px-4 py-3 bg-[#ecf8f9] flex flex-row justify-between items-center'>
-                  <Text className='font-bold text-[12px] text-[#006d7b]'>{item}</Text>
+                  <Text className='font-bold text-[12px] text-[#006d7b]'>{formatLabel(item)}</Text>
                   <Pressable onPress={()=>{
                       setPopUpEdit(true)
                       setCategoryData(item);
@@ -102,7 +102,7 @@ const dataSiteSettings = () => {
                       return (
                         <CardSetting
                           key={idx}
-                          name={setting.key}
+                          name={formatLabel(setting.key)}
                           value={setting.value}
                           click ={()=>{
                             setPopUpEdit(true);
@@ -143,6 +143,7 @@ const dataSiteSettings = () => {
                   {popUpTitle} Setting
                 </Text>
               </View>
+              <Text className='w-full text-[10px] font-bold pl-2'>Category :</Text>
               {categoryData==='create new'&&(
                 <TextInput
                   className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
@@ -185,12 +186,24 @@ const dataSiteSettings = () => {
                     </View>
                 </ScrollView>
               )}
-              <TextInput
-                className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
-                placeholder='new key'
-                value={keyData}
-                onChangeText={setKeyData}
-              />
+              <Text className='w-full text-[10px] font-bold pl-2'>Key :</Text>
+              {popUpTitle==="Create"?(
+                <TextInput
+                  className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px]'
+                  placeholder='new key'
+                  value={keyData}
+                  onChangeText={setKeyData}
+                />
+              ):(
+                <TextInput
+                  className='text-black p-[10px] pl-[20px] w-full flex flex-row justify-center items-center border-[.5px] border-[#006381] rounded-lg text-[12px] bg-gray-200'
+                  placeholder='new key'
+                  value={keyData}
+                  onChangeText={setKeyData}
+                  editable={false}
+                />
+              )}
+              <Text className='w-full text-[10px] font-bold pl-2'>Value :</Text>
               {value==='choose'?(
                 <>
                   <Text className='w-full text-center text-[10px] text-[#002531]'>choose type value</Text>

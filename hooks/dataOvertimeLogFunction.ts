@@ -1,6 +1,6 @@
 import { overtimeLogSendType, overtimeLogType } from "@/types/overtimeLogType";
 import { useEffect, useState } from "react";
-import { createOvertimeLog, deleteOvertimeLog, getMyOvertimeLog, getOvertimeLogAll, getOvertimeLogByUser, updateOvertimeLog } from "./api";
+import { createOvertimeLog, deleteOvertimeLog, getMyOvertimeLog, getMyOvertimeLogThisMonth, getOvertimeLogAll, getOvertimeLogByUser, getOvertimeLogByUserThisMonth, updateOvertimeLog } from "./api";
 
 export const fetchYearMonthAndDay = () => {
     const now = new Date();
@@ -41,6 +41,7 @@ export const fetchYearMonthAndDay = () => {
 
 export const myOvertimeLogFunction = () => {
     const [dataMyOvertimeLog, setDataMyOvertimeLog] = useState<overtimeLogType[]>([]);
+    const [dataMyOvertimeLogThisMonth, setDataMyOvertimeLogThisMonth] = useState<overtimeLogType[]>([]);
     const [dataMonthsNumber, setDataMonths] = useState<string[]>([]);
 
     useEffect(()=>{
@@ -48,6 +49,16 @@ export const myOvertimeLogFunction = () => {
             const res = await getMyOvertimeLog();
             if(res.status === 200){
                 setDataMyOvertimeLog(res.data);
+            }
+        }
+        fetch();
+    }, [])
+
+    useEffect(()=>{
+        const fetch = async() => {
+            const res = await getMyOvertimeLogThisMonth();
+            if(res.status === 200){
+                setDataMyOvertimeLogThisMonth(res.data);
             }
         }
         fetch();
@@ -68,12 +79,14 @@ export const myOvertimeLogFunction = () => {
         console.log('My month:', dataMonthsNumber);
     }, [dataMyOvertimeLog, dataMonthsNumber])
 
-    return { dataMyOvertimeLog, dataMonthsNumber }
+    return { dataMyOvertimeLog, dataMonthsNumber, dataMyOvertimeLogThisMonth }
 }
 
 export const overtimeLogAdminFunction = (email: string) => {
     const [dataOvertimeLogAll, setDataOvertimeLogAll] = useState<overtimeLogType[]>([]);
     const [dataOvertimeLogByUser, setDataOvertimeLogByUser] = useState<overtimeLogType[]>([]);
+    const [dataOvertimeLogByUserThisMonth, setDataOvertimeLogByUserthisMonth] = useState<overtimeLogType[]>([]);
+    const [dataMonthsNumber, setDataMonths] = useState<string[]>([]);
 
     useEffect(()=>{
         const fetch = async() => {
@@ -87,20 +100,44 @@ export const overtimeLogAdminFunction = (email: string) => {
 
     useEffect(()=>{
         const fetch = async() => {
-            const res = await getOvertimeLogByUser(email);
-            if(res.status === 200){
-                setDataOvertimeLogByUser(res.data);
+            if(email!=='All'&& email!==''){
+                const res = await getOvertimeLogByUser(email);
+                if(res.status === 200){
+                    setDataOvertimeLogByUser(res.data);
+                }
+            }
+        }
+        fetch();
+    }, [email])
+    
+    useEffect(()=>{
+        const fetch = async() => {
+            if(email!=='All'&& email!==''){
+                const res = await getOvertimeLogByUserThisMonth(email);
+                if(res.status === 200){
+                    setDataOvertimeLogByUserthisMonth(res.data);
+                }
             }
         }
         fetch();
     }, [email])
 
     useEffect(()=>{
-        console.error("Overtime Log By User:", dataOvertimeLogByUser);
-        console.error("Overtime Log All:", dataOvertimeLogAll);
+        const months = dataOvertimeLogAll.map(item =>
+            (item.date ?? '').slice(5, 7)
+        );
+        const all = [...months, ...dataMonthsNumber];
+        const uniqueMonths = [...new Set(all)];
+        uniqueMonths.sort((a, b) => Number(b) - Number(a));
+        setDataMonths(uniqueMonths);
+    }, [dataOvertimeLogAll])
+
+    useEffect(()=>{
+        // console.error("Overtime Log By User:", dataOvertimeLogByUser);
+        // console.error("Overtime Log All:", dataOvertimeLogAll);
     }, [dataOvertimeLogByUser, dataOvertimeLogAll])
 
-    return { dataOvertimeLogAll, dataOvertimeLogByUser }
+    return { dataOvertimeLogAll, dataOvertimeLogByUser, dataMonthsNumber, dataOvertimeLogByUserThisMonth }
 }
 
 export const createOvertimeLogFunction = async(data: overtimeLogSendType) => {
@@ -130,11 +167,25 @@ export const updateOvertimeLogFunction = async(id: number, data: overtimeLogSend
 export const deleteOvertimeLogFunction = async(id: number) => {
     try{
         const res = await deleteOvertimeLog(id)
-        if(res.status === 200){
+        if(res.status === 204){
             return true;
         }
         return false;
     }catch{
         console.error("Failed to delete overtime log");
+    }
+}
+
+export const ChangeUserOvertimeLog = async(email: string) => {
+    try{
+        // // console.error('email di change user reimburse : ', email);
+        const res = await getOvertimeLogByUser(email);
+        if(res.status === 200){
+            // console.error('res di change user reimburse : ', res.data);
+            return res.data;
+        }
+        return [];
+    }catch{
+        // console.error('Failed to change user reimburse');
     }
 }

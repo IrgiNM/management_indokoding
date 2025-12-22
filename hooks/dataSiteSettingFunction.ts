@@ -99,7 +99,7 @@ export const updateSettingFunction = async(category: string, key: string, value:
 export const createSettingFunction = async(category: string, key: string, value: string) => {
     try{
         const res = await createSiteSetting({category: category, key: key, value: value});
-        if(res.status === 200){
+        if(res.status === 201){
             return true
         }else{
             return false

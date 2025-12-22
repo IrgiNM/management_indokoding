@@ -1,15 +1,17 @@
-import { View, Text, TextInput, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
 import HeaderBack from '@/components/headerBack'
-import { Image, ImageBackground } from 'expo-image'
-import { useRouter } from 'expo-router'
+import { updateUser } from '@/hooks/api'
+import { dataFinanceKaryawan } from '@/hooks/dataFinanceKaryawan'
+import { myOvertimeLogFunction } from '@/hooks/dataOvertimeLogFunction'
+import { getReimburseUserHome } from '@/hooks/dataReimburseFunction'
+import { formatRupiah } from '@/hooks/formatRupiahFunction'
 import { logoutUser } from '@/hooks/tokenFunction'
 import { getDataUserLogin } from '@/hooks/userFunction'
-import { formatRupiah } from '@/hooks/formatRupiahFunction'
-import { getReimburseUserHome } from '@/hooks/dataReimburseFunction'
 import { ReimbursementType } from '@/types/reimburseDataType'
-import { updateUser } from '@/hooks/api'
+import { Image, ImageBackground } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useRouter } from 'expo-router'
+import React, { useEffect, useState } from 'react'
+import { Pressable, Text, TextInput, View } from 'react-native'
 
 const Profile = () => {
   const router = useRouter();
@@ -27,6 +29,12 @@ const Profile = () => {
   const [passwordConfirm, setPasswordConfirm] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false);
+
+  const {dataMyOvertimeLog, dataMyOvertimeLogThisMonth, dataMonthsNumber} = myOvertimeLogFunction();
+  const { dataFinancePerUser } = dataFinanceKaryawan(dataUserLogin.email);
+  const baseSalaryValue = Number(dataFinancePerUser?.base_salary ?? 0);
+  const overtimeLogThisMonth = Number(dataMyOvertimeLogThisMonth.filter(item=>item.status==="approved").reduce((sum,item)=>sum + Number(item.duration_hours),0));
+  const totalOvertimePrice = overtimeLogThisMonth * ((baseSalaryValue/173)*2);
   
 
   useEffect(() => {
@@ -99,7 +107,7 @@ const Profile = () => {
       imageStyle={{ borderRadius: 25, }} style={{ width: '100%' }} className='w-full'
       >
         <View className='relative w-full h-[200px] rounded-3xl flex justify-start items-center'>
-          <HeaderBack textColor='text-white' title='My Profile' type='django'/>
+          <HeaderBack textColor='text-white' title='My Profile' type='django' backTo={'/home'}/>
           <View className='absolute flex justify-center items-center bottom-[-50px] w-[120px] h-[120px] overflow-hidden border-[10px] border-white bg-[#00d7f4] rounded-full'>
             <LinearGradient colors={['#00d7f4', '#009fb4']} className='w-full h-full flex flex-row justify-center items-center'>
               <Text className='text-[#00495f] font-bold text-[40px]'>
@@ -119,7 +127,7 @@ const Profile = () => {
         </Text>
 
         <View className='w-full rounded-md bg-[#dbf6ff] p-3 mb-3'>
-          <View className='w-full p-6 rounded-md bg-white border border-b-2 border-purple-800 flex flex-row justify-between items-center'>
+          <View className='w-full p-4 rounded-md bg-white border border-b-2 border-purple-800 flex flex-row justify-between items-center'>
             <Text className='text-[12px] text-purple-800'>
               Reimburse this month :
             </Text>
@@ -127,12 +135,27 @@ const Profile = () => {
               {formatRupiah(totalReimburse)}
             </Text>
           </View>
-          <Pressable onPress={() => {router.replace('/history')}} className='p-3 w-full flex flex-row justify-center items-center   rounded-b-lg rounded-t-sm mt-1 bg-purple-200 border border-b-2 border-purple-800'
+          <Pressable onPress={() => {router.replace('/history')}} className='p-2 w-full flex flex-row justify-center items-center rounded-b-lg rounded-t-sm my-1 bg-purple-200 border border-b-2 border-purple-800'
           >
-            <Text className='mr-2 text-[12px] text-purple-800 font-bold'>
+            <Text className='mr-2 text-[10px] text-purple-800 font-bold'>
                 History Reimburse
             </Text>
             <Image source={require("../../assets/objek/arrow-more.png")} style={{ width: 6, height: 8, marginLeft: 5 }} tintColor={"purple"}/>
+          </Pressable>
+          <View className='w-full p-4 rounded-md bg-white border border-b-2 border-orange-800 flex flex-row justify-between items-center'>
+            <Text className='text-[12px] text-orange-800'>
+              Overtime this month :
+            </Text>
+            <Text className='text-[12px] text-orange-800 font-bold'>
+              {formatRupiah(totalOvertimePrice)}
+            </Text>
+          </View>
+          <Pressable onPress={() => {router.replace('/(detail)/overtimeLog')}} className='p-2 w-full flex flex-row justify-center items-center   rounded-b-lg rounded-t-sm mt-1 bg-orange-200 border border-b-2 border-orange-800'
+          >
+            <Text className='mr-2 text-[10px] text-orange-800 font-bold'>
+                History Overtime Log
+            </Text>
+            <Image source={require("../../assets/objek/arrow-more.png")} style={{ width: 6, height: 8, marginLeft: 5 }} tintColor={"orange"}/>
           </Pressable>
         </View>
 

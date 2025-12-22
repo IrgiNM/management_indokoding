@@ -26,5 +26,9 @@ export default function RootLayout() {
       name="dataSiteSettings"
       options={{ headerShown: false, animation: "none" }}
     />
+    <Stack.Screen
+      name="dataOvertimeLog"
+      options={{ headerShown: false, animation: "none" }}
+    />
   </Stack>;
 }

@@ -1,12 +1,10 @@
 import HeaderBack from '@/components/headerBack'
-import { updateReimburse } from '@/hooks/api'
 import { createFinanceUser, dataFinanceKaryawan, UpdateFinanceUser } from '@/hooks/dataFinanceKaryawan'
-import { ChangeUserReimburse, dataReimburseMain } from '@/hooks/dataReimburseFunction'
+import { overtimeLogAdminFunction } from '@/hooks/dataOvertimeLogFunction'
 import { fetchDataSettingPerCategory } from '@/hooks/dataSiteSettingFunction'
 import { dataUserFunction } from '@/hooks/dataUserFunction'
 import { formatRupiah } from '@/hooks/formatRupiahFunction'
 import { FinanceManagementSendType } from '@/types/financeDataType'
-import { ReimbursementType } from '@/types/reimburseDataType'
 import { siteSettingType } from '@/types/siteSettingType'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -22,6 +20,7 @@ const historyReimburseKaryawan = () => {
   const [Username, setUsername] = useState('');
   const [buttonEdit, setButtonEdit] = useState(false);
   const { dataReimburseUserThisMonth, dataFinancePerUser } = dataFinanceKaryawan(isActive);
+  const {dataOvertimeLogAll,dataOvertimeLogByUser,dataMonthsNumber, dataOvertimeLogByUserThisMonth} = overtimeLogAdminFunction(isActive);
   const [popUpSendUpdate, setPopUpSendUpdate] = useState(false);
   const [popUpEdit, setPopUpEdit] = useState(false);
   const [popUpEditSalary, setPopUpEditSalary] = useState(false);
@@ -93,10 +92,12 @@ const historyReimburseKaryawan = () => {
   const bpjsEmploymentAllowance = dataFinancePerUser?.enable_bpjs_employment ?? false;
   const bpjsHealth = Number(dataSetting?.find(item => item.key==="bpjs_health_percentage")?.value??0);
   const bpjsEmployment = Number(dataSetting?.find(item => item.key==="bpjs_employment_percentage")?.value??0);
+  const overtimeLogThisMonth = Number(dataOvertimeLogByUserThisMonth.filter(item=>item.status==="approved").reduce((sum,item)=>sum + Number(item.duration_hours),0));
   
   const totalSpouseAmount = (spouseAllowance?spouseAmount:0) * spouseAmountFromSetting;
   const totalChildAmount = (childAllowance?childAmount:0) * childAmountFromSetting;
-  const salaryPokok = baseSalary + totalSpouseAmount + totalChildAmount + totalReimburseValue;
+  const totalOvertimePrice = overtimeLogThisMonth * ((baseSalaryValue/173)*2);
+  const salaryPokok = baseSalary + totalSpouseAmount + totalChildAmount + totalReimburseValue + totalOvertimePrice;
   const bpjsHealthAmount = ((healthAllowance?bpjsHealth:0)/100) * baseSalaryValue;
   const bpjsEmploymentAmount = ((employAllowance?bpjsEmployment:0)/100) * baseSalaryValue;
   const potongGaji = (taxAllowance?taxAmount:0) + (healthAllowance?bpjsHealthAmount:0) + (employAllowance?bpjsEmploymentAmount:0);
@@ -232,11 +233,11 @@ const historyReimburseKaryawan = () => {
   return (
     <View className='w-full bg-white flex-1 justify-start items-center'>
       {/* HEADER */}
-      <HeaderBack title={`Data Salary ${Username}`} type='python'/>
+      <HeaderBack title={`Data Salary`} type='python' backTo={'/home'}/>
 
       <View className='w-full flex-1 bg-[#4d84f0]'>
         <LinearGradient colors={['#527EFE', '#001749']} className='w-full h-full p-4 px-[20px] flex-1 flex-col justify-start items-center'>
-        <View className={`relative top-[-20px] z-[998] w-full overflow-hidden ${buttonEdit?"h-[65%]":"h-[82%]"} p-3 rounded-lg bg-white flex justify-start items-center`}>
+        <View className={`relative top-[-20px] z-[998] w-full overflow-hidden ${buttonEdit?"h-[63%]":"h-[78%]"} p-3 rounded-lg bg-white flex justify-start items-center`}>
 
           {/* DATA HEADER TOTAL SALARY */}
           <View className='w-full h-[85px] rounded-lg overflow-hidden flex flex-col justify-center items-center'>
@@ -291,6 +292,34 @@ const historyReimburseKaryawan = () => {
                     </View>
                   </View>
                 </>
+              )}
+
+              {/* OVERTIME */}
+              {(overtimeLogThisMonth>0)&&(
+                <>
+                <View className='w-full flex flex-row justify-between items-center mb-1'>
+                  <Text className='text-[10px]'>kerja lembur</Text>
+                  <View className='flex flex-row justify-center items-center gap-2'>
+                    <Text className='text-[12px] p-2 px-3 border-[.5px] rounded-lg  opacity-30'>{overtimeLogThisMonth}</Text>
+                    <Text className='text-[12px]  opacity-30'>x</Text>
+                    <Text className='text-[12px] p-2 px-3 border-[.5px] rounded-lg  opacity-30'>{formatRupiah((baseSalary/173)*2)}</Text>
+                    {buttonEdit&&(
+                      <Pressable onPress={()=>{setPopUpEditSpouse(true)}} className="w-[25px] h-[25px] bg-[#ffeed9] rounded-md border-[.5px] border-b-[1px] border-[#913800] flex justify-center items-center">
+                          <Image source={require("../../assets/icons/edit.png")} tintColor={"#913800"} style={{ width: 12, height: 12 }}/>
+                      </Pressable>
+                    )}
+                  </View>
+                </View>
+                <View className='w-full flex flex-row justify-between items-center mb-1'>
+                  <Text className='text-[10px]'></Text>
+                  <View className='flex flex-row justify-center items-center gap-2'>
+                    <Text className='text-[12px] font-semibold text-blue-700 p-2 px-3 border-[.5px] border-b-[1px] border-blue-600 rounded-lg'>+ {formatRupiah(totalOvertimePrice)}</Text>
+                    {buttonEdit&&(
+                      <View className="w-[25px] h-[25px] opacity-0"></View>
+                    )}
+                  </View>
+                </View>
+              </>
               )}
 
               {/* TUNJANGAN ISTRI */}
@@ -489,7 +518,10 @@ const historyReimburseKaryawan = () => {
       </View>
 
       {/* FILTER USER */}
-      <View className='w-full h-[200px] flex flex-col justify-end absolute bottom-0 z-[999]' style={{ position: 'absolute', bottom: 0 }}>
+      <View className='w-full h-[200px] flex flex-col justify-end items-center absolute bottom-0 z-[999]' style={{ position: 'absolute', bottom: 0 }}>
+        <View className='p-2 bg-blue-500 flex justify-center items-center w-[300px] rounded-t-lg'>
+          <Text className='text-[10px] font-bold text-white'>User : {Username??'-'}</Text>
+        </View>
         <View className='bg-white w-full h-[140px] flex-row items-start px-[30px] pt-[20px] rounded-t-3xl gap-[10px] border-[.5px] border-blue-600'>
           {buttonEdit?(
             <Pressable onPress={()=>{setPopUpSendUpdate(true)}} className='w-full rounded-lg overflow-hidden'>

@@ -146,9 +146,11 @@ const home = () => {
                 <Image source={require("../../assets/icons/notif.png")} tintColor={"#7300BF"} style={{ width: 22, height: 22 }}/>
                 <View className='w-[12px] h-[12px] bg-red-500 absolute -top-1 -right-1 rounded-full'/>
             </Pressable>
-            <Pressable onPress={() => {router.replace('/(admin)/dataSiteSettings')}} className='w-[45px] h-[45px] rounded-xl bg-[#ecf8f9] border-[.5px] border-[#008091] border-b-[1px] flex justify-center items-center'>
-                <Image source={require("../../assets/icons/setting.png")} tintColor={"#008091"} style={{ width: 23, height: 22 }}/>
-            </Pressable>
+            {role==='admin'&&(
+                <Pressable onPress={() => {router.replace('/(admin)/dataSiteSettings')}} className='w-[45px] h-[45px] rounded-xl bg-[#ecf8f9] border-[.5px] border-[#008091] border-b-[1px] flex justify-center items-center'>
+                    <Image source={require("../../assets/icons/setting.png")} tintColor={"#008091"} style={{ width: 23, height: 22 }}/>
+                </Pressable>
+            )}
         </View>
       </View>
 

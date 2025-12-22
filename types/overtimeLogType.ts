@@ -2,7 +2,8 @@ import { UserType } from "./userType";
 
 export type overtimeLogType = {
     id?: number;
-    user?: UserType;
+    user?: number;
+    user_detail?: UserType;
     date: string;
     start_time: string;
     end_time: string;
@@ -16,8 +17,9 @@ export type overtimeLogType = {
 
 export type overtimeLogSendType = {
     email?: string;
-    date: string;
-    start_time: string;
-    end_time: string;
+    date?: string;
+    status?: string;
+    start_time?: string;
+    end_time?: string;
     description?: string;
 }

@@ -4,7 +4,7 @@ export const iconMenuHome = () => {
     const router = useRouter();
     const iconMenu = [
         {
-            title: "create reimburse",
+            title: "Create Reimburse",
             color: "#F3D1FF",
             border: "border-purple-800",
             icon: require("../assets/icons/reimburse-active.png"),
@@ -12,7 +12,7 @@ export const iconMenuHome = () => {
             role: ['karyawan', 'admin']
         },
         {
-            title: "data Reimburse",
+            title: "Data Reimburse",
             color: "#F3D1FF",
             border: "border-purple-800",
             icon: require("../assets/icons/data-reimburse.png"),
@@ -20,7 +20,7 @@ export const iconMenuHome = () => {
             role: ['admin']
         },
         {
-            title: "data karyawan",
+            title: "Data Karyawan",
             color: "#D1D6FF",
             border: "border-blue-800",
             icon: require("../assets/icons/karyawan.png"),
@@ -28,7 +28,7 @@ export const iconMenuHome = () => {
             role: ['admin']
         },
         {
-            title: "Salary karyawan",
+            title: "Salary Karyawan",
             color: "#D1D6FF",
             border: "border-blue-800",
             icon: require("../assets/icons/salary-karyawan.png"),
@@ -38,10 +38,18 @@ export const iconMenuHome = () => {
         {
             title: "Overtime Log",
             color: "#FFEDD1",
-            border: "border-[#760E00]",
-            icon: require("../assets/icons/salary-karyawan.png"),
+            border: "border-orange-800",
+            icon: require("../assets/icons/overtime-icon.png"),
             link: () => {router.replace('../(detail)/overtimeLog')},
             role: ['karyawan', 'admin']
+        },
+        {
+            title: "List Overtime",
+            color: "#FFEDD1",
+            border: "border-orange-800",
+            icon: require("../assets/icons/list-overtime-icon.png"),
+            link: () => {router.replace('../(admin)/dataOvertimeLog')},
+            role: ['admin']
         },
       ]
 

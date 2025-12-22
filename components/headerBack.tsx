@@ -4,7 +4,7 @@ import { Image } from 'expo-image'
 import { headerBackType } from '@/types/headerBackType'
 import { useRouter } from 'expo-router'
 
-const HeaderBack = ({ title, subTitle, type, textColor } : headerBackType ) => {
+const HeaderBack = ({ title, subTitle, type, textColor, backTo } : headerBackType ) => {
   const router = useRouter();
   return (
     <View style={{ width: '100%' }} className='flex flex-row justify-start items-center relative z-[998] top-[0px] w-full h-[120px] px-[30px] pb-[20px] pt-[50px] '>
@@ -23,11 +23,18 @@ const HeaderBack = ({ title, subTitle, type, textColor } : headerBackType ) => {
         />
       )}
       <Pressable onPress={() => {
-        if (router.canGoBack()) {
-          router.back();
-        } else {
-          router.push('/home');
+        if (backTo) {
+          router.replace(backTo);
+        } else if(router.canGoBack()) {
+             router.back();
+        }else {
+          router.replace("/home");
         }
+        // if (router.canGoBack()) {
+        //   router.back();
+        // } else {
+        //   router.push('/home');
+        // }
       }} className={`w-[45px] h-[45px] border border-b-[2px] 
         ${
           type === "django" ? "border-[#004344] bg-[#00b1c8]" :
