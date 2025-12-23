@@ -1,6 +1,6 @@
 import { EmployeeSendType, EmployeeType } from "@/types/employeeType";
 import { useEffect, useState } from "react";
-import { createEmployeeByUser, getEmployeeByUser, updateEmployeeByUser } from "./api";
+import { createEmployeeByUser, getEmployeeByUser, getMyEmployeeData, updateEmployeeByUser } from "./api";
 
 export const dataEmployeeFunction = (email: string) => {
     const [dataEmployee, setDataEmployee] = useState<EmployeeType>({} as EmployeeType);
@@ -20,6 +20,26 @@ export const dataEmployeeFunction = (email: string) => {
     }, [dataEmployee])
 
     return { dataEmployee }
+}
+
+export const dataMyEmployeeFunction = () => {
+    const [dataMyEmployee, setDataEmployee] = useState<EmployeeType>({} as EmployeeType);
+
+    useEffect(()=>{
+        const fetch = async() => {
+            const res = await getMyEmployeeData();
+            if(res.status === 200){
+                setDataEmployee(res.data);
+            }
+        }
+        fetch();
+    }, [])
+
+    useEffect(()=>{
+        console.error("Employee Data:", dataMyEmployee);
+    }, [dataMyEmployee])
+
+    return { dataMyEmployee }
 }
 
 

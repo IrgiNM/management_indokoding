@@ -836,7 +836,7 @@ const dataKaryawanDetail = () => {
                         <Text className='font-bold text-white text-[17px]'>active</Text>
                       </LinearGradient>
                     </Pressable>
-                    <Pressable onPress={() => {setFillEditEmployee('probation')}} className={`flex-1 overflow-hidden rounded-lg border border-b-2 border-blue-800 ${fillEditEmployee==='resigned'?"opacity-100":"opacity-40"}`}>
+                    <Pressable onPress={() => {setFillEditEmployee('resigned')}} className={`flex-1 overflow-hidden rounded-lg border border-b-2 border-blue-800 ${fillEditEmployee==='resigned'?"opacity-100":"opacity-40"}`}>
                       <LinearGradient colors={['#ffa850', '#E96500']} className='w-full py-2 flex justify-center items-center'>
                         <Text className='font-bold text-white text-[17px]'>resigned</Text>
                       </LinearGradient>
