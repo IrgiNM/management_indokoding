@@ -7,7 +7,7 @@ import { overtimeLogSendType } from '@/types/overtimeLogType'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useRouter } from 'expo-router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 
 const overtimeLog = () => {
@@ -16,9 +16,8 @@ const overtimeLog = () => {
     const {dataMyOvertimeLog, dataMyOvertimeLogThisMonth, dataMonthsNumber} = myOvertimeLogFunction();
     const { dataFinancePerUser } = dataFinanceKaryawan(dataUserLogin.email);
     const baseSalaryValue = Number(dataFinancePerUser?.base_salary ?? 0);
-    const overtimeLogThisMonth = Number(dataMyOvertimeLogThisMonth.filter(item=>item.status==="approved").reduce((sum,item)=>sum + Number(item.duration_hours),0));
+    const overtimeLogThisMonth = Math.ceil(dataMyOvertimeLogThisMonth.filter(item=>item.status==="approved").reduce((sum,item)=>sum + Number(item.duration_hours),0));
     const totalOvertimePrice = overtimeLogThisMonth * ((baseSalaryValue/173)*2);
-
 
     const [selectedDay, setSelectedDay] = useState<number>(day);
     const [selectedMonth, setSelectedMonth] = useState<number>(month);
@@ -27,6 +26,7 @@ const overtimeLog = () => {
     const [selectedMinuteStart, setSelectedMinuteStart] = useState("00");
     const [selectedHourEnd, setSelectedHourEnd] = useState("00");
     const [selectedMinuteEnd, setSelectedMinuteEnd] = useState("00");
+    const [description, setDescription] = useState('');
     const [activeDay, setActiveDay] = useState(false);
     const [activeMonth, setActiveMonth] = useState(false);
     const [activeYear, setActiveYear] = useState(false);
@@ -34,7 +34,9 @@ const overtimeLog = () => {
     const [activeMinuteStart, setActiveMinuteStart] = useState(false);
     const [activeHourEnd, setActiveHourEnd] = useState(false);
     const [activeMinuteEnd, setActiveMinuteEnd] = useState(false);
-    const [description, setDescription] = useState('');
+
+    const [hourLimitUp, setHourLimitUp] = useState(0);
+    const [hourLimitDown, setHourLimitDown] = useState(0);
 
     const [updateOrCreate, setUpdateOrCreate] = useState('create');
 
@@ -103,6 +105,11 @@ const overtimeLog = () => {
           link: ()=>{setSelectStatus('rejected')}
         },
       ]
+
+      useEffect(()=>{
+        setHourLimitUp(Number(selectedHourStart))
+        setHourLimitDown(Number(selectedHourEnd))
+      }, [selectedHourStart,selectedHourEnd])
 
     const handleCreate = async() => {
       setLoading(true);
@@ -588,7 +595,7 @@ const overtimeLog = () => {
                       {activeHourEnd &&(
                         <ScrollView className='w-full h-[100px] rounded-md'>
                           <View className='bg-orange-400 flex flex-col justify-center items-center rounded-b-lg rounded-t-sm w-full'>
-                            {hours.map((item, index) => (
+                            {hours.slice(hourLimitUp).map((item, index) => (
                               <Pressable onPress={() => {
                                 setSelectedHourEnd(item);
                                 setActiveHourEnd(false);

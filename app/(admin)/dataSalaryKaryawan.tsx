@@ -1,9 +1,11 @@
 import HeaderBack from '@/components/headerBack'
+import { dataEmployeeFunction } from '@/hooks/dataEmployeeFunction'
 import { createFinanceUser, dataFinanceKaryawan, UpdateFinanceUser } from '@/hooks/dataFinanceKaryawan'
 import { overtimeLogAdminFunction } from '@/hooks/dataOvertimeLogFunction'
 import { fetchDataSettingPerCategory } from '@/hooks/dataSiteSettingFunction'
+import { createManySlipSalary, dataSlipSalary, deleteManySlipSalary } from '@/hooks/dataSlipSalaryFunction'
 import { dataUserFunction } from '@/hooks/dataUserFunction'
-import { formatRupiah } from '@/hooks/formatRupiahFunction'
+import { formatRupiah, formatRupiahTanpaRp } from '@/hooks/formatRupiahFunction'
 import { FinanceManagementSendType } from '@/types/financeDataType'
 import { siteSettingType } from '@/types/siteSettingType'
 import { Image } from 'expo-image'
@@ -12,6 +14,8 @@ import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import { Dimensions, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 const { width } = Dimensions.get('window');
+// import * as Print from "expo-print";
+// import * as Sharing from "expo-sharing";
 
 const historyReimburseKaryawan = () => {
   const router =  useRouter();
@@ -30,6 +34,7 @@ const historyReimburseKaryawan = () => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false);
   const [dataSetting, setDataSetting] = useState<siteSettingType[]>([]);
+  const [dataSettingGeneral, setDataSettingGeneral] = useState<siteSettingType[]>([]);
 
   // SALARY DATA
   const [dataSalaryAll, setDataSalaryAll] = useState<FinanceManagementSendType>({
@@ -92,7 +97,7 @@ const historyReimburseKaryawan = () => {
   const bpjsEmploymentAllowance = dataFinancePerUser?.enable_bpjs_employment ?? false;
   const bpjsHealth = Number(dataSetting?.find(item => item.key==="bpjs_health_percentage")?.value??0);
   const bpjsEmployment = Number(dataSetting?.find(item => item.key==="bpjs_employment_percentage")?.value??0);
-  const overtimeLogThisMonth = Number(dataOvertimeLogByUserThisMonth.filter(item=>item.status==="approved").reduce((sum,item)=>sum + Number(item.duration_hours),0));
+  const overtimeLogThisMonth = Math.ceil(dataOvertimeLogByUserThisMonth.filter(item=>item.status==="approved").reduce((sum,item)=>sum + Number(item.duration_hours),0));
   
   const totalSpouseAmount = (spouseAllowance?spouseAmount:0) * spouseAmountFromSetting;
   const totalChildAmount = (childAllowance?childAmount:0) * childAmountFromSetting;
@@ -103,7 +108,44 @@ const historyReimburseKaryawan = () => {
   const potongGaji = (taxAllowance?taxAmount:0) + (healthAllowance?bpjsHealthAmount:0) + (employAllowance?bpjsEmploymentAmount:0);
 
   const totalSalary = salaryPokok - potongGaji;
-  
+
+  const { dataSlipSalaryAll,dataUserSlip } = dataSlipSalary();
+  const { dataEmployee } = dataEmployeeFunction(isActive);
+  const [popUpSendSlip, setPopUpSendSlip] = useState(false);
+  const [popUpShowSlip, setPopUpShowSlip] = useState(false);
+  const [checkActive, setCheckActive] = useState(false);
+  const [selectedEmail, setSelectedEmail] = useState<string[]>([]);
+  const [checkActiveDelete, setCheckActiveDelete] = useState(false);
+  const [selectedEmailDelete, setSelectedEmailDelete] = useState<string[]>([]);
+  const [errorSend, setErrorSend] = useState<string[]>([]);
+  const [popUpErrorMessage,setPopUpErrorMessage] = useState(false);
+  const months = [
+    "Januari", "Februari", "Maret", "April",
+    "Mei", "Juni", "Juli", "Agustus",
+    "September", "Oktober", "November", "Desember"
+  ];
+
+  // NILAI SETTING SLIP
+  const companyName = (dataSettingGeneral?.find(item => item.key==="company_name")?.value??'no data').toString();
+  const companyAddress = (dataSettingGeneral?.find(item => item.key==="company_address")?.value??'no data').toString();
+  const companyCity = (dataSettingGeneral?.find(item => item.key==="company_city")?.value??'no data').toString();
+  const adminName = (dataSettingGeneral?.find(item => item.key==="admin_name")?.value??'no data').toString();
+  const titleSlip = 'SLIP GAJI'
+  const namaLengkap = (dataEmployee.full_name)
+  const nik = (dataEmployee.identity_number)
+  const posisi = (dataEmployee.position)
+  const now = new Date();
+  const year = (new Date().getFullYear()).toString()
+  const month = months[now.getMonth()];
+
+  useEffect(()=>{
+    dataSetting.forEach(item => {
+      console.log(
+        item.key,
+        [...item.key].map(c => c.charCodeAt(0))
+      );
+    });    
+  }, [dataSetting])
 
   useEffect(()=>{
     if (dataAllNewUser && dataAllNewUser.length > 0) {
@@ -119,6 +161,18 @@ const historyReimburseKaryawan = () => {
       setLoading(false)
       if(res){
         setDataSetting(res);
+      }
+    }
+    handleGetSetting();
+  }, [])
+  
+  useEffect(()=>{
+    const handleGetSetting = async() => {
+      setLoading(true)
+      const res = await fetchDataSettingPerCategory("general");
+      setLoading(false)
+      if(res){
+        setDataSettingGeneral(res);
       }
     }
     handleGetSetting();
@@ -165,6 +219,109 @@ const historyReimburseKaryawan = () => {
     setData();
   }, [isActive,dataSetting,dataFinancePerUser]);
 
+  // const printSlipPdf = async () => {
+  //   const html = `
+  //   <html>
+  //     <head>
+  //       <style>
+  //         body {
+  //           font-family: Arial;
+  //           padding: 20px;
+  //           font-size: 10px;
+  //         }
+  //         .center { text-align: center; }
+  //         .row {
+  //           display: flex;
+  //           justify-content: space-between;
+  //           margin-bottom: 4px;
+  //         }
+  //         .label { width: 130px; }
+  //         .bold { font-weight: bold; }
+  //         .line {
+  //           border-bottom: 1px solid #000;
+  //           margin: 8px 0;
+  //         }
+  //       </style>
+  //     </head>
+  
+  //     <body>
+  //       <div class="center bold">${companyName}</div>
+  //       <div class="center">${companyAddress}</div>
+  //       <div class="center">${titleSlip}</div>
+  
+  //       <br/>
+  
+  //       <div class="row"><div class="label">Nama</div><div>${namaLengkap}</div></div>
+  //       <div class="row"><div class="label">NIK</div><div>${nik}</div></div>
+  //       <div class="row"><div class="label">Jabatan</div><div>${posisi}</div></div>
+  //       <div class="row"><div class="label">Bulan</div><div>${month} ${year}</div></div>
+  
+  //       <br/>
+  
+  //       <div class="row bold">
+  //         <div class="label">Gaji Pokok</div>
+  //         <div>Rp ${formatRupiahTanpaRp(baseSalaryValue)}</div>
+  //       </div>
+  
+  //       <div class="row">
+  //         <div class="label">Lemburan (${overtimeLogThisMonth} jam)</div>
+  //         <div>Rp ${formatRupiahTanpaRp(totalOvertimePrice)}</div>
+  //       </div>
+  
+  //       <div class="row">
+  //         <div class="label">Reimburse</div>
+  //         <div>Rp ${formatRupiahTanpaRp(totalReimburseValue)}</div>
+  //       </div>
+  
+  //       <br/>
+  
+  //       <div class="row bold">
+  //         <div class="label">TOTAL</div>
+  //         <div>Rp ${formatRupiahTanpaRp(totalSalary)}</div>
+  //       </div>
+  
+  //       <div class="line"></div>
+  
+  //       <div class="row bold">
+  //         <div class="label">JUMLAH DITERIMA</div>
+  //         <div>Rp ${formatRupiahTanpaRp(totalSalary)}</div>
+  //       </div>
+  
+  //       <br/><br/>
+  
+  //       <div style="text-align:right;">
+  //         ${companyCity}, ${month} ${year}
+  //       </div>
+  
+  //       <br/><br/>
+  
+  //       <div style="text-align:right;">
+  //         ${adminName}
+  //       </div>
+  //     </body>
+  //   </html>
+  //   `;
+  
+  //   const { uri } = await Print.printToFileAsync({ html });
+  
+  //   await Sharing.shareAsync(uri);
+  // };
+
+  const toggleSelect = (email: string) => {
+    setSelectedEmail(prev =>
+      prev.includes(email)
+        ? prev.filter(item => item !== email)
+        : [...prev, email]
+    );
+  };
+  
+  const toggleSelectDelete = (email: string) => {
+    setSelectedEmailDelete(prev =>
+      prev.includes(email)
+        ? prev.filter(item => item !== email)
+        : [...prev, email]
+    );
+  };
 
   const setAllSendData = async() => {
     const newData: FinanceManagementSendType = {
@@ -204,7 +361,7 @@ const historyReimburseKaryawan = () => {
   const handleUpdate = async() => {
     setLoading(true);
     const newData = await setAllSendData();
-    console.error('data send update finance', newData)
+    // console.error('data send update finance', newData)
     const res = await UpdateFinanceUser(newData);
     setLoading(false);
     if(res){
@@ -218,13 +375,39 @@ const historyReimburseKaryawan = () => {
   const handleCreate = async() => {
     setLoading(true);
     const newData = await setAllSendDataCreate();
-    console.error('data send create finance', newData)
+    // yconsole.error('data send create finance', newData)
     const res = await createFinanceUser(newData);
     setLoading(false);
     if(res){
       setPopUpEdit(false);
     }else{
       setError('gagal create data salary karyawan')
+    }
+  }
+  
+  const handleManyCreateSlip = async() => {
+    setLoading(true);
+    const res = await createManySlipSalary(selectedEmail);
+    setLoading(false);
+    if(res===true){
+      router.replace('/(admin)/dataSalaryKaryawan')
+    }else{
+      setPopUpErrorMessage(true)
+      setPopUpSendSlip(false)
+      setErrorSend(res)
+    }
+  }
+  
+  const handleManyDeleteSlip = async() => {
+    setLoading(true);
+    const res = await deleteManySlipSalary(selectedEmailDelete);
+    setLoading(false);
+    if(res===true){
+      router.replace('/(admin)/dataSalaryKaryawan')
+    }else{
+      setPopUpErrorMessage(true)
+      setPopUpSendSlip(false)
+      setErrorSend(res)
     }
   }
   
@@ -248,7 +431,9 @@ const historyReimburseKaryawan = () => {
               <Pressable onPress={()=>{setButtonEdit(!buttonEdit)}} className="w-[35px] h-[35px] bg-[#5088FF] rounded-md border-[.5px] border-b-[1px] border-[#ffffff] flex justify-center items-center absolute right-[20px]">
                   <Image source={require("../../assets/icons/edit.png")} tintColor={"#ffffff"} style={{ width: 14, height: 14 }}/>
               </Pressable>
-              <Pressable onPress={()=>{}} className="w-[35px] h-[35px] bg-[#5088FF] rounded-md border-[.5px] border-b-[1px] border-[#ffffff] flex justify-center items-center absolute left-[20px]">
+              <Pressable onPress={()=>{
+                setPopUpShowSlip(true)
+              }} className="w-[35px] h-[35px] bg-[#5088FF] rounded-md border-[.5px] border-b-[1px] border-[#ffffff] flex justify-center items-center absolute left-[20px]">
                   <Image source={require("../../assets/icons/file.png")} tintColor={"#ffffff"} style={{ width: 12, height: 14 }}/>
               </Pressable>
             </LinearGradient>
@@ -515,6 +700,15 @@ const historyReimburseKaryawan = () => {
         )}
 
         </LinearGradient>
+      </View>
+
+      <View style={{ position: 'absolute', top: 50, right: 0, zIndex: 999 }} className='w-[110px] rounded-l-lg h-[50px] bg-white p-2'>
+        <Pressable onPress={()=>{setPopUpSendSlip(true)}} className='w-full h-full rounded-lg overflow-hidden bg-blue-200'>
+          <LinearGradient colors={['#5088FF', '#1A63FF']} className='w-full h-full p-[15px] flex flex-row justify-center items-center gap-2'>
+            <Image source={require("../../assets/icons/file.png")} tintColor={"#FFFFFF"} style={{ width: 12, height: 14 }}/>
+            <Image source={require("../../assets/icons/send.png")} tintColor={"#FFFFFF"} style={{ width: 12, height: 12 }}/>
+          </LinearGradient>
+        </Pressable>
       </View>
 
       {/* FILTER USER */}
@@ -835,6 +1029,377 @@ const historyReimburseKaryawan = () => {
                 </Pressable>
               </View>
             </View>
+          </View>
+        </>
+      )}
+      
+      {/* POPUP SHOW SLIP*/}
+      {popUpShowSlip && (
+        <>
+          <View className='absolute w-full z-[999] h-full opacity-80 bg-[#000031]'/>
+          <View className='w-full h-full px-[30px] flex justify-center items-center absolute z-[1000]'>
+            <View className='w-full bg-white px-[25px] py-[30px] rounded-md flex flex-col justify-start items-center'>
+              <Text className='w-full text-center font-bold text-[12px]'>{companyName}</Text>
+              <Text className='w-full text-center text-[10px]'>{companyAddress}</Text>
+              <Text className='w-full text-center text-[10px] mb-2'>{titleSlip}</Text>
+              {/* IDENTITY */}
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px]'>Nama</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <Text className='text-[10px]'>{namaLengkap}</Text>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px]'>NIK</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <Text className='text-[10px]'>{nik}</Text>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px]'>Jabatan</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <Text className='text-[10px]'>{posisi}</Text>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px]'>Bulan</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <Text className='text-[10px]'>{month} {year}</Text>
+              </View>
+              {/* IDENTITY */}
+              <View className='w-full flex flex-row justify-start items-center mt-4'>
+                <Text className='text-[10px] w-[130px] font-bold'>Gaji Pokok</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <View className=' w-[110px] flex flex-row justify-between'>
+                  <Text className='text-[10px]'>Rp</Text>
+                  <Text className='text-[10px]'>{formatRupiahTanpaRp(baseSalaryValue)}</Text>
+                </View>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px]'>Lemburan ({overtimeLogThisMonth} jam)</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <View className=' w-[110px] flex flex-row justify-between'>
+                  <Text className='text-[10px]'>Rp</Text>
+                  <Text className='text-[10px]'>{formatRupiahTanpaRp(totalOvertimePrice)}</Text>
+                </View>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px]'>Reimburse</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <View className=' w-[110px] flex flex-row justify-between'>
+                  <Text className='text-[10px]'>Rp</Text>
+                  <Text className='text-[10px]'>{formatRupiahTanpaRp(totalReimburseValue)}</Text>
+                </View>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px] font-bold'>Tunjangan</Text>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px] font-bold'>Istri</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <View className=' w-[110px] flex flex-row justify-between'>
+                  <Text className='text-[10px]'>Rp</Text>
+                  <Text className='text-[10px]'>{formatRupiahTanpaRp(totalSpouseAmount)}</Text>
+                </View>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px]'>Anak</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <View className=' w-[110px] flex flex-row justify-between'>
+                  <Text className='text-[10px]'>Rp</Text>
+                  <Text className='text-[10px]'>{formatRupiahTanpaRp(totalChildAmount)}</Text>
+                </View>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px] font-bold'>Total</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <View className=' w-[110px] flex flex-row justify-between'>
+                  <Text className='text-[10px] font-bold'>Rp</Text>
+                  <Text className='text-[10px] font-bold'>{formatRupiahTanpaRp(salaryPokok)}</Text>
+                </View>
+              </View>
+              <View className=' w-full h-[1px] bg-black mt-2 mb-2'>
+                <Text>as</Text>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px] font-bold'>POTONGAN</Text>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px]'>PPh 21</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <View className=' w-[110px] flex flex-row justify-between'>
+                  <Text className='text-[10px]'>Rp</Text>
+                  <Text className='text-[10px]'>{formatRupiahTanpaRp(totalSpouseAmount)}</Text>
+                </View>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px]'>BPJS Kesehatan</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <View className=' w-[110px] flex flex-row justify-between'>
+                  <Text className='text-[10px]'>Rp</Text>
+                  <Text className='text-[10px]'>{formatRupiahTanpaRp(bpjsHealthAmount)}</Text>
+                </View>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px]'>BPJS Ketenagakerjaan</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <View className=' w-[110px] flex flex-row justify-between'>
+                  <Text className='text-[10px]'>Rp</Text>
+                  <Text className='text-[10px]'>{formatRupiahTanpaRp(bpjsEmploymentAmount)}</Text>
+                </View>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px]'>Kasbon (Angsuran 4)</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <View className=' w-[110px] flex flex-row justify-between'>
+                  <Text className='text-[10px]'>Rp</Text>
+                  <Text className='text-[10px]'>{formatRupiahTanpaRp(0)}</Text>
+                </View>
+              </View>
+              <View className='w-full flex flex-row justify-start items-center'>
+                <Text className='text-[10px] w-[130px] font-bold'>JUMLAH</Text>
+                <Text className='text-[10px] mr-2'>:</Text>
+                <View className=' w-[110px] flex flex-row justify-between'>
+                  <Text className='text-[10px] font-bold'>Rp</Text>
+                  <Text className='text-[10px] font-bold'>{formatRupiahTanpaRp(totalSalary)}</Text>
+                </View>
+              </View>
+              <View className='w-full flex flex-row justify-end items-center mt-4'>
+                <Text className='text-[10px]'>{companyCity}, {month} {year}</Text>
+              </View>
+              <View className='w-full h-[20px] flex flex-row justify-end items-center mt-4'>
+                <Text className='text-white'>sa</Text>
+              </View>
+              <View className='w-full flex flex-row justify-end items-center'>
+                <View className='w-[124px] flex flex-row justify-start'>
+                  <Text className='text-[10px] text-black'>{adminName}</Text>
+                </View>
+              </View>
+            </View>
+            <View className='flex flex-row gap-3 mt-3'>
+              <Pressable onPress={()=>{
+                setPopUpShowSlip(false)
+                }} className='border-2 mt-3 border-white w-[50px] h-[50px] rounded-full flex justify-center items-center'>
+                <Image source={require("../../assets/icons/s-decline.png")} style={{ width: 17, height: 17 }} tintColor={"#ffffff"}/>
+              </Pressable>
+              <Pressable onPress={()=>{
+                // printSlipPdf()
+                }} className='border-2 mt-3 border-white w-[50px] h-[50px] rounded-full flex justify-center items-center'>
+                <Image source={require("../../assets/icons/download.png")} style={{ width: 17, height: 17 }} tintColor={"#ffffff"}/>
+              </Pressable>
+            </View>
+          </View>
+        </>
+      )}
+      
+      {/* POPUP ERROR MESSAGE*/}
+      {popUpErrorMessage && (
+        <>
+          <View className='absolute w-full z-[999] h-full opacity-80 bg-[#31000f]'/>
+          <View className='w-full h-full px-[50px] flex justify-center items-center absolute z-[1000]'>
+            <View className='w-full bg-white p-[15px] rounded-lg flex flex-col justify-start items-center gap-2'>
+              <View className='flex flex-row justify-start items-center gap-2 mb-3'>
+                <Text className='text-[12px] font-bold text-[#31000d]'>
+                  error send slip
+                </Text>
+              </View>
+              <View className='w-full flex gap-2'>
+                {errorSend.map((item,index)=>{
+                  return(
+                    <View key={index} className='w-full rounded-md p-2 flex justify-center items-center border border-red-700'>
+                      <Text className='text-[10px] text-red-700'>{item}</Text>
+                    </View>
+                  )
+                })}
+              </View>
+              <View className='flex flex-row justify-center items-center gap-2 mt-3 w-full'>
+                <Pressable onPress={() => {router.replace('/(admin)/dataSalaryKaryawan')}} className='border border-b-[2px] border-[#003681] bg-blue-50 rounded-lg py-[8px] flex-1 justify-center items-center'>
+                  <Text className='font-bold text-[12px] text-[#003681]'>
+                    Close
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </>
+      )}
+      
+      {/* POPUP SEND SLIP*/}
+      {popUpSendSlip && (
+        <>
+          <View className='absolute w-full z-[999] h-full opacity-80 bg-[#001431]'/>
+          <View className='w-full h-full px-[30px] flex justify-center items-center absolute z-[1000]'>
+            <Text className='text-[15px] font-bold text-white mb-3'>
+              SEND SLIP SALARY
+            </Text>
+            <Text className='text-[10px] text-white mb-3 text-justify'>
+              pilih user yang mau dikirim slip gajinya. tekan yang lama card usernya untuk memilih banyak user.
+            </Text>
+            <View className='w-full p-[10px] rounded-lg flex flex-col justify-start items-center gap-2 border border-white'>
+              <View className='w-full h-[300px]'>
+                <ScrollView className='w-full h-full'>
+                  <View className='w-full h-full flex justify-center items-center gap-2'>
+                    {dataAllNewUser.length>0?
+                    (
+                      dataAllNewUser.map((item,index)=>{
+                        const isMatch = dataUserSlip.some(
+                          (userEmail) => userEmail === item.email
+                        );
+                      
+                        if (isMatch) return null;
+                        return(
+                          <View key={index} className='w-full flex flex-row gap-2 justify-center items-center rounded-md'>
+                            {checkActive && (
+                            <Pressable onPress={()=>{
+                                toggleSelect(item.email?.toString()??'');
+                                }} className={`flex flex-row justify-center items-center mx-5 w-[22px] h-[22px] border rounded-lg border-white `}>
+                                {
+                                selectedEmail.includes(item.email?.toString()??'') && (
+                                    <Image source={require("../../assets/icons/s-approve.png")} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
+                                )
+                                }
+                            </Pressable>
+                            )}
+                            <Pressable onLongPress={()=>{setCheckActive(true)}} className={`${checkActive?'w-[80%]':'w-full'} p-2 rounded-md bg-white flex flex-row justify-start items-center`}>
+                              <View
+                                className={`w-[40px] h-[40px] flex justify-center items-center overflow-hidden rounded-full`}
+                              >
+                                <LinearGradient colors={['#5088FF', '#1A63FF']} className={`w-full h-full flex justify-center items-center`}>
+                                  <Text className={`text-lg font-bold text-white`}>{item.username.charAt(0).toUpperCase()}{item.username.charAt(item.username.length - 1).toUpperCase()}</Text>
+                                </LinearGradient>
+                              </View>
+                              <View className='w-[1px] h-full bg-blue-400 mx-2'/>
+                              <View className='flex justify-center items-start'>
+                                <Text className='text-[12px] font-bold text-blue-900'>{item.username}</Text>
+                                <Text className='text-[12px] text-blue-900'>{item.email}</Text>
+                              </View>
+                            </Pressable>
+                          </View>
+                        )
+                      })
+                    ):(
+                      <Text className='text-[12px] text-white font-bold'>
+                        All Done Send
+                      </Text>
+                    )}
+                  </View>
+                </ScrollView>
+                <View className='w-full flex flex-row gap-2 mt-2'>
+                  <Pressable onPress={()=>{
+                    handleManyCreateSlip()
+                  }} className={`${checkActive?'w-[80%]':'w-full'} ${selectedEmail.length>0?'opacity-100':'opacity-50'} py-3 flex flex-row justify-center items-center gap-2 bg-blue-500 rounded-md`}>
+                      <Text className='text-[12px] font-bold text-white'>
+                        {loading?'Send...':'Send'}
+                      </Text>
+                      <Image source={require("../../assets/icons/send.png")} tintColor={"#FFFFFF"} style={{ width: 12, height: 12 }}/>
+                  </Pressable>
+                  {checkActive&&(
+                    <Pressable onPress={()=>{
+                      setCheckActive(false)
+                      setSelectedEmail([])
+                    }} className='w-[50px] h-[40px] flex flex-row justify-center items-center gap-2 bg-blue-500 rounded-md p-1'>
+                      <View className='w-full h-full border-2 border-white rounded-md flex justify-center items-center'>
+                        <Image source={require("../../assets/icons/s-decline.png")} tintColor={"#FFFFFF"} style={{ width: 12, height: 12 }}/>
+                      </View>
+                    </Pressable>
+                  )}
+                </View>
+              </View>
+              
+            </View>
+            <Text className='text-[10px] font-bold mt-3 text-white'>Done Send :</Text>
+            <Text className='text-[10px] text-white mb-3 text-justify'>
+              tekan yang lama card usernya untuk menghapus slip gaji.
+            </Text>
+            <View className={`w-full ${checkActiveDelete?'h-[230px]':'h-[150px]'} border border-white p-2 flex gap-2 mt-2 rounded-md`}>
+              <ScrollView className='w-full h-full'>
+                <View className='w-full h-full flex justify-center items-center gap-2'>
+                  
+                  {dataAllNewUser.length > 0 ? (
+                    dataAllNewUser.map((item, index) => {
+                      const isMatch = dataUserSlip.some(
+                        (userEmail) => userEmail === item.email
+                      );
+                    
+                      if (!isMatch) return null;
+                    
+                      return (
+                        <View
+                          key={index}
+                          className="opacity-60 w-full flex flex-row gap-2 justify-center items-center rounded-md"
+                        >
+                          {checkActiveDelete && (
+                          <Pressable onPress={()=>{
+                              toggleSelectDelete(item.email?.toString()??'');
+                              }} className={`flex flex-row justify-center items-center mx-5 w-[22px] h-[22px] border rounded-lg border-white `}>
+                              {
+                              selectedEmailDelete.includes(item.email?.toString()??'') && (
+                                  <Image source={require("../../assets/icons/s-approve.png")} style={{ width: 10, height: 10 }} tintColor={"#ffffff"}/>
+                              )
+                              }
+                          </Pressable>
+                          )}
+                          <Pressable onLongPress={()=>{setCheckActiveDelete(true)}}
+                            className={`${checkActiveDelete?'w-[80%]':'w-full'} p-2 rounded-md bg-white flex flex-row justify-start items-center`}
+                          >
+                            <View className="w-[40px] h-[40px] flex justify-center items-center overflow-hidden rounded-full">
+                              <LinearGradient
+                                colors={['#5088FF', '#1A63FF']}
+                                className="w-full h-full flex justify-center items-center"
+                              >
+                                <Text className="text-lg font-bold text-white">
+                                  {item.username.charAt(0).toUpperCase()}
+                                  {item.username.charAt(item.username.length - 1).toUpperCase()}
+                                </Text>
+                              </LinearGradient>
+                            </View>
+                      
+                            <View className="w-[1px] h-full bg-blue-400 mx-2" />
+                      
+                            <View className="flex justify-center items-start">
+                              <Text className="text-[12px] font-bold text-blue-900">
+                                {item.username}
+                              </Text>
+                              <Text className="text-[12px] text-blue-900">
+                                {item.email}
+                              </Text>
+                            </View>
+                          </Pressable>
+                        </View>
+                      );
+                    })
+                  ) : (
+                    <Text className="text-[12px] text-white font-bold">
+                      No User Has Send
+                    </Text>
+                  )}
+                </View>
+              </ScrollView>
+              {checkActiveDelete&&(
+                <View className='w-full flex flex-row gap-2 mt-2'>
+                  <Pressable onPress={()=>{
+                    handleManyDeleteSlip()
+                  }} className={`${checkActiveDelete?'w-[80%]':'w-full'} ${selectedEmailDelete.length>0?'opacity-100':'opacity-50'} py-3 flex flex-row justify-center items-center gap-2 bg-[#dc0049] rounded-md`}>
+                      <Text className='text-[12px] font-bold text-white'>
+                        {loading?'Deleting...':'Delete'}
+                      </Text>
+                      <Image source={require("../../assets/icons/send.png")} tintColor={"#FFFFFF"} style={{ width: 12, height: 12 }}/>
+                  </Pressable>
+                  {checkActiveDelete&&(
+                    <Pressable onPress={()=>{
+                      setCheckActiveDelete(false)
+                      setSelectedEmailDelete([])
+                    }} className='w-[50px] h-[40px] flex flex-row justify-center items-center gap-2 bg-blue-500 rounded-md p-1'>
+                      <View className='w-full h-full border-2 border-white rounded-md flex justify-center items-center'>
+                        <Image source={require("../../assets/icons/s-decline.png")} tintColor={"#FFFFFF"} style={{ width: 12, height: 12 }}/>
+                      </View>
+                    </Pressable>
+                  )}
+                </View>
+              )}
+            </View>
+            <Pressable onPress={()=>{
+              setPopUpSendSlip(false)
+              }} className='border-2 mt-3 border-white w-[50px] h-[50px] rounded-full flex justify-center items-center'>
+              <Image source={require("../../assets/icons/s-decline.png")} style={{ width: 17, height: 17 }} tintColor={"#ffffff"}/>
+            </Pressable>
           </View>
         </>
       )}

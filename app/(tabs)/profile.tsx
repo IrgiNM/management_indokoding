@@ -341,11 +341,6 @@ const Profile = () => {
                         <Text className='font-bold text-white text-[10px]'>{employmentStatus}</Text>
                       </LinearGradient>
                     </View>
-                    {buttonEdit&&(
-                      <Pressable onPress={()=>{setPopUpEditEmployee('Employment Status');setFillEditEmployee(employmentStatus)}} className="w-[25px] h-[25px] bg-[#f9ecec] rounded-md border-[.5px] border-b-[1px] border-[#912200] flex justify-center items-center">
-                          <Image source={require("../../assets/icons/edit.png")} tintColor={"#912200"} style={{ width: 12, height: 12 }}/>
-                      </Pressable>
-                    )}
                   </View>
                 </View>
               </View>

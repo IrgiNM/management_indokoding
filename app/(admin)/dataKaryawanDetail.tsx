@@ -1,10 +1,16 @@
 import CardInfo from '@/components/cardInfo';
 import HeaderBack from '@/components/headerBack';
 import { DeleteUserByEmail, getUserByEmail, updateUser } from '@/hooks/api';
+import { dataBankAccountByUserFunction } from '@/hooks/dataBankAccountFunction';
 import { createEmployeeDataFunction, dataEmployeeFunction, updateEmployeeDataFunction } from '@/hooks/dataEmployeeFunction';
+import { dataFinanceKaryawan } from '@/hooks/dataFinanceKaryawan';
+import { overtimeLogAdminFunction } from '@/hooks/dataOvertimeLogFunction';
 import { ChangeUserReimburse, dataReimburseMain } from '@/hooks/dataReimburseFunction';
+import { fetchDataSettingPerCategory } from '@/hooks/dataSiteSettingFunction';
 import { formatRupiah } from '@/hooks/formatRupiahFunction';
+import { BankAccountType } from '@/types/bankAccountType';
 import { ReimbursementType } from '@/types/reimburseDataType';
+import { siteSettingType } from '@/types/siteSettingType';
 import { UserType } from '@/types/userType';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -24,6 +30,35 @@ const dataKaryawanDetail = () => {
   const { dataMonthAll } = dataReimburseMain();
   const today = new Date().toISOString().split("T")[0];
   const thisMonth = today.slice(5,7);
+
+  const { dataReimburseUserThisMonth, dataFinancePerUser } = dataFinanceKaryawan(emailData);
+  const [dataSetting, setDataSetting] = useState<siteSettingType[]>([]);
+  const {dataOvertimeLogByUserThisMonth} = overtimeLogAdminFunction(emailData);
+  
+
+  // NILAI
+  const baseSalaryValue = Number(dataFinancePerUser?.base_salary ?? 0);
+  const totalReimburseValue = Number((dataReimburseUserThisMonth.filter(item=>item.status==="Approved")).reduce((sum,item)=>sum + Number(item.total_amount),0) ?? 0);
+  const spouseAmountFromSetting = Number(dataSetting?.find(item => item.key==="spouse_amount")?.value??0);
+  const childAmountFromSetting = Number(dataSetting?.find(item => item.key==="child_amount")?.value??0);
+  const spouseAllowanceValue = dataFinancePerUser?.spouse_allowance ?? 0;
+  const childAllowanceValue = dataFinancePerUser?.child_allowance ?? 0;
+  const taxValue = Number(dataFinancePerUser?.tax_rate_percentage ?? 0);
+  const bpjsHealthAllowance = dataFinancePerUser?.enable_bpjs_health ?? false;
+  const bpjsEmploymentAllowance = dataFinancePerUser?.enable_bpjs_employment ?? false;
+  const bpjsHealth = Number(dataSetting?.find(item => item.key==="bpjs_health_percentage")?.value??0);
+  const bpjsEmployment = Number(dataSetting?.find(item => item.key==="bpjs_employment_percentage")?.value??0);
+  const overtimeLogThisMonth = Number(dataOvertimeLogByUserThisMonth.filter(item=>item.status==="approved").reduce((sum,item)=>sum + Number(item.duration_hours),0));
+  
+  const totalSpouseAmount = spouseAllowanceValue * spouseAmountFromSetting;
+  const totalChildAmount = childAllowanceValue * childAmountFromSetting;
+  const totalOvertimePrice = overtimeLogThisMonth * ((baseSalaryValue/173)*2);
+  const salaryPokok = baseSalaryValue + totalSpouseAmount + totalChildAmount + totalReimburseValue + totalOvertimePrice;
+  const bpjsHealthAmount = ((bpjsHealthAllowance?bpjsHealth:0)/100) * baseSalaryValue;
+  const bpjsEmploymentAmount = ((bpjsEmploymentAllowance?bpjsEmployment:0)/100) * baseSalaryValue;
+  const potongGaji = taxValue + bpjsHealthAmount + bpjsEmploymentAmount;
+
+  const totalSalary = salaryPokok - potongGaji;
 
   // Personal Information
   const [emlpoyeeId, setEmlpoyeeId] = useState('');
@@ -107,6 +142,20 @@ const dataKaryawanDetail = () => {
     role: 'karyawan',
   });
 
+  const { dataBankAccount } = dataBankAccountByUserFunction(emailData)
+
+  useEffect(()=>{
+    const handleGetSetting = async() => {
+      setLoading(true)
+      const res = await fetchDataSettingPerCategory("payroll");
+      setLoading(false)
+      if(res){
+        setDataSetting(res);
+      }
+    }
+    handleGetSetting();
+  }, [])
+
   useEffect(()=>{
     setEmlpoyeeId(dataEmployee.employee_id?dataEmployee.employee_id:(dataEmployee.employee_id==='')?'unknown':'unknown');
     setFullName(dataEmployee.full_name?dataEmployee.full_name:(dataEmployee.full_name==='')?'unknown':'unknown');
@@ -186,7 +235,7 @@ const dataKaryawanDetail = () => {
     try{
       const res = await updateUser(dataUser.email, {is_staff: true});
       if(res !== undefined){
-        console.error('User update successfully');
+        // console.error('User update successfully');
         setPopUpRole(false);
         router.push({
           pathname: "../(admin)/dataKaryawanDetail",
@@ -378,32 +427,77 @@ const dataKaryawanDetail = () => {
         ):selectMenu==='Salary'?(
           <>
             <View className='w-full h-[60%] p-2 bg-blue-100 rounded-lg mb-8 mt-2 overflow-hidden flex flex-col justify-start items-center gap-2'>
-              <View className='w-full flex p-4 justify-between items-center flex-row rounded-lg bg-white'>
-                <View className='flex flex-row gap-2 pl-3'>
-                  <Text className='text-[12px] text-blue-900'>Monthly salary :</Text>
-                  <Text className='text-[12px] text-blue-900 font-bold ml-4'>{formatRupiah(salary)}</Text>
-                </View>
-                <Pressable onPress={()=>{setPopUpActive('true')}} className='w-[30px] h-[30px] flex justify-center items-center border border-b-2 border-blue-800 bg-blue-50 rounded-lg'>
-                  <Image source={require("../../assets/icons/edit.png")} style={{ width: 12, height: 12 }} tintColor={'blue'}/>
-                </Pressable>
-              </View>
-              <View className='w-full flex p-4 justify-between items-center flex-row rounded-lg bg-white border border-b-2 border-blue-800'>
-                <View className='flex flex-col justify-start gap-2 pl-3'>
-                  <Text className='text-[12px] text-blue-900'>Monthly Salary :</Text>
-                  <Text className='text-[12px] text-blue-900 font-bold ml-4'>{formatRupiah(salary)}</Text>
-                </View>
-                <View className='flex flex-col justify-center items-center gap-2 pl-3'>
-                  <Text className='text-[20px] text-blue-900'>+</Text>
-                </View>
-                <View className='flex flex-col gap-2 justify-start pl-3'>
-                  <Text className='text-[12px] text-blue-900'>Monthly Reimburse :</Text>
-                  <Text className='text-[12px] text-blue-900 font-bold ml-4'>{formatRupiah(total)}</Text>
+              <View className='w-full flex p-2 border border-blue-600 justify-between items-center flex-row rounded-lg bg-white'>
+                {/* DATA HEADER TOTAL SALARY */}
+                <View className='w-full h-[85px] rounded-lg overflow-hidden flex flex-col justify-center items-center'>
+                  <LinearGradient colors={['#5088FF', '#1A63FF']} className='w-full h-full p-[15px] flex flex-col justify-center items-center'>
+                    <Text className='text-[12px] text-white'>total salary</Text>
+                    <Text className='text-[20px] text-white font-bold'>{formatRupiah(totalSalary)}</Text>
+                    <Text className='text-[10px] opacity-50 text-white font-bold'>+ {formatRupiah(salaryPokok)} - {formatRupiah(potongGaji)}</Text>
+                    <Pressable onPress={()=>{router.replace('/(admin)/dataSalaryKaryawan')}} className="w-[35px] h-[35px] bg-[#5088FF] rounded-md border-[.5px] border-b-[1px] border-[#ffffff] flex justify-center items-center absolute right-[20px]">
+                        <Image source={require("../../assets/objek/arrow-more.png")} tintColor={"#ffffff"} style={{ width: 10, height: 14 }}/>
+                    </Pressable>
+                  </LinearGradient>
                 </View>
               </View>
-              <View className='w-full flex p-4 justify-center items-center flex-row rounded-lg bg-blue-800'>
-                <Text className='text-[12px] text-white'>Total salary :</Text>
-                <Text className='text-[12px] text-white font-bold ml-4'>{formatRupiah(salary+total)}</Text>
-              </View>
+              <Text className='w-full text-center mt-2 font-bold text-[12px] text-blue-800'>
+                Bank Account
+              </Text>
+              <ScrollView className='w-full h-full'>
+                <View className='w-full h-full flex justify-start items-center gap-2 mt-2'>
+                    {dataBankAccount.length>0?
+                        dataBankAccount.map((item,index)=>{
+                            return(
+                              <View key={index} className='w-full flex flex-row items-center gap-3'>
+                                <View className={`${buttonEdit?'w-[85%]':'w-full'} bg-white overflow-hidden rounded-md flex flex-col justify-center items-center border-[.5px] border-b-[1px] ${item.is_primary?'border-blue-600 mb-3':'border-blue-300'}`}>
+                                    {item.is_primary&&(
+                                        <Text className='font-bold text-white text-[10px] w-full text-center bg-blue-500 py-1'>Primary</Text>
+                                    )}
+                                    <View className='w-full  p-3 flex flex-row justify-between items-center'>
+                                        <Image source={
+                                            item.bank_name === 'BCA'
+                                            ? require('../../assets/objek/bank-bca.jpeg') :
+                                            item.bank_name === 'BNI'
+                                            ? require('../../assets/objek/bank-bni.png') :
+                                            item.bank_name === 'BRI'
+                                            ? require('../../assets/objek/bank-bri.png') :
+                                            item.bank_name === 'MANDIRI'
+                                            ? require('../../assets/objek/bank-mandiri.png') :
+                                            item.bank_name === 'CIMB'
+                                            ? require('../../assets/objek/bank-cimb.png') :
+                                            item.bank_name === 'BTN'
+                                            ? require('../../assets/objek/bank-btn.png') :
+                                            item.bank_name === 'DANAMON'
+                                            ? require('../../assets/objek/bank-danamon.png') :
+                                            item.bank_name === 'PERMATA'
+                                            ? require('../../assets/objek/bank-permata.png') :
+                                            require('../../assets/images/total-reimburse-bg.png')
+                                            } style={{
+                                                height: 20,
+                                                width: undefined,
+                                                aspectRatio: 4,
+                                              }}
+                                              resizeMode="contain"
+                                        />
+                                        <View className='flex flex-row items-center'>
+                                            <View className='flex justify-center items-end'>
+                                                <Text className='text-[12px] font-bold'>{item.account_number}</Text>
+                                                <Text className='text-[12px]'>{item.account_holder}</Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                              </View>
+                            )
+                        })
+                        :
+                        (
+                            <Text className='rounded-lg w-full text-center p-2 font-bold border-[.5px] border-b-[1px] border-blue-800 text-blue-800 bg-white text-[10px]'>no data</Text>
+                        )
+                    }
+                </View>
+              </ScrollView>
+              
             </View>
           </>
         ):selectMenu==='Info'?(

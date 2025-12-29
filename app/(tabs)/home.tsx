@@ -13,7 +13,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native'
 const home = () => {
 
   const router = useRouter();
-  const { iconMenu } = iconMenuHome();
+  const { iconMenu, iconMenuHidden } = iconMenuHome();
   const [statusActieve, setStatusActive] = useState(1);
   const { dataMonth } = dataReimburseMain();
   const [dataReimburse, setDataReimburse] = useState<ReimbursementType[]>([]);
@@ -23,6 +23,7 @@ const home = () => {
   const month = new Date().toString().slice(4, 7);
   const monthNumber = new Date().toISOString().slice(5, 7);
   const [selectMonthPopUp, setSelectMonthPopUp] = useState(false);
+  const [menuActive, setMenuActive] = useState(false);
   const [selectMonth, setSelectMonth] = useState('');
   const [monthTotalPrice, setMonthTotalPrice] = useState(monthNumber);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -234,39 +235,41 @@ const home = () => {
 
             {/* LIST REIMBURSE */}
             <View className='w-full h-[100px] bg-blue-50 mt-5 p-0' style={{ width: '100%' }}>
-                {((selectStatus==="All"?dataReimburse:(dataReimburse.filter(item=>item.status===selectStatus))).length??0) > 0 ? (
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ width: '100%' }}>
-                        <LinearGradient colors={['#E2B7F1', '#A950FF']} className='h-[100px] w-full flex flex-row justify-start items-center gap-3 pl-[30px] pr-[30px] bg-[#F1E3FA]'>
-                            {(selectStatus==="Pending"?dataReimburse.filter(i=>i.status==="Pending"):selectStatus==="Approved"?dataReimburse.filter(i=>i.status==="Approved"):selectStatus==="Rejected"?dataReimburse.filter(i=>i.status==="Rejected"):dataReimburse).map((item, idx) => (
-                                <CardInfo 
-                                    amount={Number(item.total_amount)} 
-                                    date={item.created_at??'null'}
-                                    description={item.description}
-                                    title={item.title}
-                                    status={item.status}
-                                    key={idx}
-                                    id={item.id??0}
-                                    w="w-[300px]"
-                                />
-                            ))}
-                        </LinearGradient>
-                    </ScrollView>
-                ) : (
-                    <View className='w-full h-[100px]'>
-                        <LinearGradient colors={['#E2B7F1', '#A950FF']} className='h-[100px] w-full flex flex-row justify-center items-center gap-3 bg-[#F1E3FA]'>
-                            <View className='flex flex-row justify-center items-center gap-2 text-[10px] py-3 px-[30px] border-[.5px] rounded-full border-purple-600 bg-purple-200 text-purple-800 font-bold'>
-                                <Image
-                                source={require('../../assets/icons/s-decline.png')}
-                                style={{ width: 7, height: 7 }}
-                                tintColor={'purple'}
-                                />
-                                <Text className='text-[10px] text-purple-800 font-bold'>
-                                    Not Reimbursements
-                                </Text>
+                <LinearGradient colors={['#E2B7F1', '#A950FF']} className='h-[100px] w-full flex flex-row justify-start items-center gap-3 bg-[#F1E3FA]'>    
+                    {((selectStatus==="All"?dataReimburse:(dataReimburse.filter(item=>item.status===selectStatus))).length??0) > 0 ? (
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ width: '100%' }}>
+                            <View className='w-full h-full flex flex-row justify-start items-center gap-3 px-[30px]'>
+                                {(selectStatus==="Pending"?dataReimburse.filter(i=>i.status==="Pending"):selectStatus==="Approved"?dataReimburse.filter(i=>i.status==="Approved"):selectStatus==="Rejected"?dataReimburse.filter(i=>i.status==="Rejected"):dataReimburse).map((item, idx) => (
+                                    <CardInfo 
+                                        amount={Number(item.total_amount)} 
+                                        date={item.created_at??'null'}
+                                        description={item.description}
+                                        title={item.title}
+                                        status={item.status}
+                                        key={idx}
+                                        id={item.id??0}
+                                        w="w-[300px]"
+                                    />
+                                ))}
                             </View>
-                        </LinearGradient>
-                    </View>
-                )}
+                        </ScrollView>
+                    ) : (
+                        <View className='w-full h-[100px]'>
+                            <LinearGradient colors={['#E2B7F1', '#A950FF']} className='h-[100px] w-full flex flex-row justify-center items-center gap-3 bg-[#F1E3FA]'>
+                                <View className='flex flex-row justify-center items-center gap-2 text-[10px] py-3 px-[30px] border-[.5px] rounded-full border-purple-600 bg-purple-200 text-purple-800 font-bold'>
+                                    <Image
+                                    source={require('../../assets/icons/s-decline.png')}
+                                    style={{ width: 7, height: 7 }}
+                                    tintColor={'purple'}
+                                    />
+                                    <Text className='text-[10px] text-purple-800 font-bold'>
+                                        Not Reimbursements
+                                    </Text>
+                                </View>
+                            </LinearGradient>
+                        </View>
+                    )}
+                </LinearGradient>
             </View>
             
 
@@ -277,11 +280,17 @@ const home = () => {
                     <Text className='text-[10px] font-bold'>
                         Menu
                     </Text>
+                    <Pressable onPress={() => {setMenuActive(true)}} className='flex flex-row justify-center items-center p-[10px] py-[5px] bg-purple-50 border-[.5px] border-b-[1px] border-purple-600 rounded-md'>
+                        <Text className='text-[10px] text-[#40006B]'>
+                            More
+                        </Text>
+                        <Image source={require("../../assets/objek/arrow-more.png")} style={{ width: 6, height: 8, marginLeft: 5 }} tintColor={"#40006B"}/>
+                    </Pressable>
                 </View>
 
                 {/* MENU ICON */}
                 <View className='w-full justify-start items-center gap-5 flex flex-row flex-wrap mt-7 px-[20px]'>
-                    {iconMenu.map((item, index) => {
+                    {iconMenuHidden.map((item, index) => {
                         if(item.role.includes(role)){
                             return (
                                 <Pressable key={index} onPress={item.link}className='flex flex-col justify-center items-center'>
@@ -299,13 +308,43 @@ const home = () => {
                     })}
                 </View>
             </View>
-
-            {/* TAMBAHAN BIAR BISA SCROLL */}
-            <View className='w-full h-[1000px] bg-white'></View>
-
         </ScrollView>
       </View>
 
+      {menuActive && (
+        <>
+          {/* EFEK BLUR */}
+          <View className='absolute w-full h-full blur opacity-80 bg-[#000331] z-[999]'/>
+          {/* FORM ADD KARYAWAN */}
+          <View className='absolute z-[1000] bottom-[0px] w-full h-[600px] bg-white flex justify-start gap-3 items-center px-[30px] pt-[30px] rounded-t-3xl'>
+              <Text className='w-full text-center font-bold mb-5 text-blue-900'>Menu List</Text>
+              <View className='w-full justify-start items-center gap-5 flex flex-row flex-wrap mt-7 px-[20px]'>
+                  {iconMenu.map((item, index) => {
+                      if(item.role.includes(role)){
+                          return (
+                              <Pressable key={index} onPress={item.link}className='flex flex-col justify-center items-center'>
+                                  <View className={`flex justify-center items-center w-[50px] h-[50px] rounded-lg bg-white border border-b-[2px] ${item.border} overflow-hidden`}>
+                                      <LinearGradient colors={['#FFFFFF', item.color]} className='h-full w-full flex flex-row justify-center items-center border-2 border-white'>
+                                          <Image source={item.icon} style={{ width: 30, height: 30 }}/>
+                                      </LinearGradient>
+                                  </View>
+                                  <Text className='text-[10px] text-center w-[50px] mt-2'>
+                                      {item.title}
+                                  </Text>
+                              </Pressable>
+                          )
+                      }
+                  })}
+              </View>
+              <Pressable onPress={() => {setMenuActive(false)}} className='p-[15px] w-full flex flex-row justify-center items-center border border-b-2 border-purple-900 rounded-lg'
+              >
+                <Text className='ml-2 font-bold text-purple-900'>
+                    close
+                </Text>
+              </Pressable>
+          </View>
+        </>
+      )}
 
       {selectMonthPopUp && (
         <>

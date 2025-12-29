@@ -6,6 +6,7 @@ import { FinanceManagementSendType } from "@/types/financeDataType";
 import { siteSettingSendType } from "@/types/siteSettingType";
 import { overtimeLogSendType } from "@/types/overtimeLogType";
 import { EmployeeSendType } from "@/types/employeeType";
+import { BankAccountSendType } from "@/types/bankAccountType";
 
 export const BASEURL = process.env.EXPO_PUBLIC_API_URL+'/api/';
 export const BASEURLIMAGE = process.env.EXPO_PUBLIC_API_URL;
@@ -33,6 +34,16 @@ api.interceptors.request.use(
     error => Promise.reject(error)
 )
 
+
+// USER
+export const login = (data: loginType) => api.post('login/', data);
+export const getUserId = () => api.get('user/me');
+export const getUserByEmail = (email: string) => api.get(`user/${email}/`);
+export const DeleteUserByEmail = (email: string) => api.delete(`user/delete/${email}/`);
+export const createUser = (data: object) => api.post('user/create', data);
+export const getUserAll = () => api.get('users');
+export const updateUser = (email: string, data: object) => api.patch(`user/update/${email}/`, data);
+
 // REIMBURSEMENT
 export const getReimburseAll = () => api.get('reimbursements/');
 export const getReimburseId = (id: number) => api.get(`reimbursements/${id}`);
@@ -49,15 +60,6 @@ export const createReimburse = (data: FormData | ReimbursementSendType) => api.p
     },
 });
 export const updateReimburse = (id: number, data: object) => api.patch(`reimbursements/update/${id}`, data);
-
-// USER
-export const login = (data: loginType) => api.post('login/', data);
-export const getUserId = () => api.get('user/me');
-export const getUserByEmail = (email: string) => api.get(`user/${email}/`);
-export const DeleteUserByEmail = (email: string) => api.delete(`user/delete/${email}/`);
-export const createUser = (data: object) => api.post('user/create', data);
-export const getUserAll = () => api.get('users');
-export const updateUser = (email: string, data: object) => api.patch(`user/update/${email}/`, data);
 
 // REIMBURSE ITEM
 export const getReimburseItemId = (id: number) => api.get(`item/${id}`);
@@ -94,3 +96,17 @@ export const createEmployeeByUser = (email: string, data: EmployeeSendType) => a
 export const updateEmployeeByUser = (email: string, data: EmployeeSendType) => api.patch(`employee/update/${email}/`, data);
 export const getEmployeeByUser = (email: string) => api.get(`employee/get/${email}/`);
 export const getMyEmployeeData = () => api.get('employee/me/');
+
+// BANK ACCOUNT
+export const getBankAccountAll = () => api.get('bankAccount/');
+export const getMyBankAccount = () => api.get('bankAccount/me/');
+export const getBankAccountByUser = (email: string) => api.get(`bankAccount/${email}/`);
+export const createMyBankAccount = (data: BankAccountSendType) => api.post(`bankAccount/create/self/`, data);
+export const createBankAccountByUser = (email: string, data: BankAccountSendType) => api.post(`bankAccount/create/${email}/`, data);
+export const updateBankAccountByUser = (id: number, data: BankAccountSendType) => api.patch(`bankAccount/update/${id}/`, data);
+export const deleteBankAccountByUser = (id: number) => api.delete(`bankAccount/delete/${id}/`);
+
+// SLIP SALARY
+export const getAllSlipSalary = () => api.get('slipSalary/');
+export const createSlipSalaryByUser = (email: string) => api.post(`slipSalary/create/${email}/`)
+export const deleteSlipSalaryByUser = (email: string) => api.delete(`slipSalary/delete/${email}/`)

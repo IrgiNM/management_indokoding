@@ -16,7 +16,7 @@ const CardSetting = ({name,value,click,click2}: cardSettingType) => {
                                 </Pressable>
                             ):
                             (
-                                <Text className='text-[10px] text-gray-400'>{value}</Text>
+                                <Text className='text-[10px] text-gray-400'>{value.slice(0, 20)}{value.length>19&&'...'}</Text>
                             )
                         }
                         {(value!=='true'&&value!=='false')&&(

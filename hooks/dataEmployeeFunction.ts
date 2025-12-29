@@ -7,6 +7,7 @@ export const dataEmployeeFunction = (email: string) => {
 
     useEffect(()=>{
         const fetch = async() => {
+            if(!email)return;
             const res = await getEmployeeByUser(email);
             if(res.status === 200){
                 setDataEmployee(res.data);
@@ -36,7 +37,7 @@ export const dataMyEmployeeFunction = () => {
     }, [])
 
     useEffect(()=>{
-        console.error("Employee Data:", dataMyEmployee);
+        // console.error("Employee Data:", dataMyEmployee);
     }, [dataMyEmployee])
 
     return { dataMyEmployee }

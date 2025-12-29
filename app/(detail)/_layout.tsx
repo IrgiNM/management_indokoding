@@ -18,5 +18,9 @@ export default function RootLayout() {
       name="overtimeLog"
       options={{ headerShown: false }}
     />
+    <Stack.Screen
+      name="bankAccount"
+      options={{ headerShown: false }}
+    />
   </Stack>;
 }

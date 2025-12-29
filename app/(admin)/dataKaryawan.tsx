@@ -80,24 +80,26 @@ const dataKaryawan = () => {
       <HeaderBack title='Data Karyawan' type='python' textColor='text-white' backTo={'/home'}/>
 
       {/* HISTORY LIST */}
-      <ScrollView className='absolute inset-0 w-full h-full'>
-        <View className='w-full border-b-1 flex justify-start items-center flex-col gap-3 mt-[106px] pb-[50px]'>
+        <View className='w-full h-full border-b-1 flex justify-start items-center flex-col gap-3 pb-[50px]'>
           <LinearGradient colors={['#527EFE', '#001749']} className='w-full h-full p-4 px-[20px] flex-1 flex-col justify-start items-center gap-2'>
-            {dataAllNewUser.map((item,index)=>{
-              return(
-                <CardKaryawan 
-                  key={index} 
-                  email={item.email} 
-                  reimburse={item.total_reimburse} 
-                  username={item.username} 
-                  w='w-full'
-                />
-              )
-            })}
-            <View className='w-full h-[300px]'/>
+            <ScrollView className='w-full h-full'>
+              <View className='w-full h-full flex justify-start items-center gap-2'>
+                {dataAllNewUser.map((item,index)=>{
+                  return(
+                    <CardKaryawan 
+                      key={index} 
+                      email={item.email} 
+                      reimburse={item.total_reimburse} 
+                      username={item.username} 
+                      w='w-full'
+                    />
+                  )
+                })}
+              </View>
+              <View className='w-full h-[300px]'/>
+            </ScrollView>
           </LinearGradient>
         </View>
-      </ScrollView>
 
       {/* BOTTOM BAR */}
       <View className='w-full h-[150px] flex flex-col justify-end absolute bottom-0 z-[999]' style={{ position: 'absolute', bottom: 0 }}>
