@@ -14,8 +14,8 @@ import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import { Dimensions, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 const { width } = Dimensions.get('window');
-// import * as Print from "expo-print";
-// import * as Sharing from "expo-sharing";
+import * as Print from "expo-print";
+import * as Sharing from "expo-sharing";
 
 const historyReimburseKaryawan = () => {
   const router =  useRouter();
@@ -219,93 +219,154 @@ const historyReimburseKaryawan = () => {
     setData();
   }, [isActive,dataSetting,dataFinancePerUser]);
 
-  // const printSlipPdf = async () => {
-  //   const html = `
-  //   <html>
-  //     <head>
-  //       <style>
-  //         body {
-  //           font-family: Arial;
-  //           padding: 20px;
-  //           font-size: 10px;
-  //         }
-  //         .center { text-align: center; }
-  //         .row {
-  //           display: flex;
-  //           justify-content: space-between;
-  //           margin-bottom: 4px;
-  //         }
-  //         .label { width: 130px; }
-  //         .bold { font-weight: bold; }
-  //         .line {
-  //           border-bottom: 1px solid #000;
-  //           margin: 8px 0;
-  //         }
-  //       </style>
-  //     </head>
+  const printSlipPdf = async () => {
+    const html = `
+      <html>
+        <head>
+          <style>
+            @page {
+              size: A4;
+              margin: 20mm;
+            }
+            body {
+              font-family: 'Helvetica', 'Arial', sans-serif;
+              padding: 30px 25px;
+              background-color: white;
+              color: #000;
+            }
+            .container { width: 100%; display: flex; flex-direction: column; }
+            .center { text-align: center; width: 100%; }
+            .company-name { font-size: 24px; font-weight: bold; margin-bottom: 2px; }
+            .header-text { font-size: 22px; margin-bottom: 2px; }
+            .title-slip { font-size: 22px; margin-bottom: 10px; }
+            
+            .row {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              width: 100%;
+              font-size: 22px;
+              margin-bottom: 2px;
+            }
+            .label { width: 250px; }
+            .separator { margin-right: 8px; }
+            .value-container {
+              width: 310px;
+              display: flex;
+              justify-content: space-between;
+            }
+            .bold { font-weight: bold; }
+            .mt-2 { margin-top: 8px; }
+            .mt-4 { margin-top: 35px; }
+            .mb-2 { margin-bottom: 25px; }
+            .line {
+              width: 100%;
+              height: 1px;
+              background-color: black;
+              margin: 8px 0;
+            }
+            .right-align {
+              text-align: right;
+              width: 100%;
+              display: flex;
+              flex-direction: column;
+              align-items: flex-end;
+            }
+            .signature-box {
+              width: 270px;
+              text-align: left;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="center company-name">${companyName}</div>
+            <div class="center header-text">${companyAddress}</div>
+            <div class="center title-slip mb-2">${titleSlip}</div>
   
-  //     <body>
-  //       <div class="center bold">${companyName}</div>
-  //       <div class="center">${companyAddress}</div>
-  //       <div class="center">${titleSlip}</div>
+            <div class="row"><div class="label">Nama</div><div class="separator">:</div><div>${namaLengkap}</div></div>
+            <div class="row"><div class="label">NIK</div><div class="separator">:</div><div>${nik}</div></div>
+            <div class="row"><div class="label">Jabatan</div><div class="separator">:</div><div>${posisi}</div></div>
+            <div class="row"><div class="label">Bulan</div><div class="separator">:</div><div>${month} ${year}</div></div>
   
-  //       <br/>
+            <div class="row mt-4 bold">
+              <div class="label">Gaji Pokok</div>
+              <div class="separator">:</div>
+              <div class="value-container"><span>Rp</span><span>${formatRupiahTanpaRp(baseSalaryValue)}</span></div>
+            </div>
+            <div class="row">
+              <div class="label">Lemburan (${overtimeLogThisMonth} jam)</div>
+              <div class="separator">:</div>
+              <div class="value-container"><span>Rp</span><span>${formatRupiahTanpaRp(totalOvertimePrice)}</span></div>
+            </div>
+            <div class="row">
+              <div class="label">Reimburse</div>
+              <div class="separator">:</div>
+              <div class="value-container"><span>Rp</span><span>${formatRupiahTanpaRp(totalReimburseValue)}</span></div>
+            </div>
+            
+            <div class="row bold">Tunjangan</div>
+            <div class="row">
+              <div class="label">Istri</div>
+              <div class="separator">:</div>
+              <div class="value-container"><span>Rp</span><span>${formatRupiahTanpaRp(totalSpouseAmount)}</span></div>
+            </div>
+            <div class="row">
+              <div class="label">Anak</div>
+              <div class="separator">:</div>
+              <div class="value-container"><span>Rp</span><span>${formatRupiahTanpaRp(totalChildAmount)}</span></div>
+            </div>
+            <div class="row bold">
+              <div class="label">Total</div>
+              <div class="separator">:</div>
+              <div class="value-container"><span>Rp</span><span>${formatRupiahTanpaRp(salaryPokok)}</span></div>
+            </div>
   
-  //       <div class="row"><div class="label">Nama</div><div>${namaLengkap}</div></div>
-  //       <div class="row"><div class="label">NIK</div><div>${nik}</div></div>
-  //       <div class="row"><div class="label">Jabatan</div><div>${posisi}</div></div>
-  //       <div class="row"><div class="label">Bulan</div><div>${month} ${year}</div></div>
+            <div class="line"></div>
   
-  //       <br/>
+            <div class="row bold">POTONGAN</div>
+            <div class="row">
+              <div class="label">PPh 21</div>
+              <div class="separator">:</div>
+              <div class="value-container"><span>Rp</span><span>${formatRupiahTanpaRp(totalSpouseAmount)}</span></div>
+            </div>
+            <div class="row">
+              <div class="label">BPJS Kesehatan</div>
+              <div class="separator">:</div>
+              <div class="value-container"><span>Rp</span><span>${formatRupiahTanpaRp(bpjsHealthAmount)}</span></div>
+            </div>
+            <div class="row">
+              <div class="label">BPJS Ketenagakerjaan</div>
+              <div class="separator">:</div>
+              <div class="value-container"><span>Rp</span><span>${formatRupiahTanpaRp(bpjsEmploymentAmount)}</span></div>
+            </div>
+            <div class="row">
+              <div class="label">Kasbon (Angsuran 4)</div>
+              <div class="separator">:</div>
+              <div class="value-container"><span>Rp</span><span>${formatRupiahTanpaRp(0)}</span></div>
+            </div>
   
-  //       <div class="row bold">
-  //         <div class="label">Gaji Pokok</div>
-  //         <div>Rp ${formatRupiahTanpaRp(baseSalaryValue)}</div>
-  //       </div>
+            <div class="row bold">
+              <div class="label">JUMLAH</div>
+              <div class="separator">:</div>
+              <div class="value-container"><span>Rp</span><span>${formatRupiahTanpaRp(totalSalary)}</span></div>
+            </div>
   
-  //       <div class="row">
-  //         <div class="label">Lemburan (${overtimeLogThisMonth} jam)</div>
-  //         <div>Rp ${formatRupiahTanpaRp(totalOvertimePrice)}</div>
-  //       </div>
+            <div class="right-align mt-4">
+              <div style="font-size: 22px;">${companyCity}, ${month} ${year}</div>
+              <div style="height: 100px;"></div>
+              <div class="signature-box">
+                <span style="font-size: 22px;">${adminName}</span>
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
   
-  //       <div class="row">
-  //         <div class="label">Reimburse</div>
-  //         <div>Rp ${formatRupiahTanpaRp(totalReimburseValue)}</div>
-  //       </div>
-  
-  //       <br/>
-  
-  //       <div class="row bold">
-  //         <div class="label">TOTAL</div>
-  //         <div>Rp ${formatRupiahTanpaRp(totalSalary)}</div>
-  //       </div>
-  
-  //       <div class="line"></div>
-  
-  //       <div class="row bold">
-  //         <div class="label">JUMLAH DITERIMA</div>
-  //         <div>Rp ${formatRupiahTanpaRp(totalSalary)}</div>
-  //       </div>
-  
-  //       <br/><br/>
-  
-  //       <div style="text-align:right;">
-  //         ${companyCity}, ${month} ${year}
-  //       </div>
-  
-  //       <br/><br/>
-  
-  //       <div style="text-align:right;">
-  //         ${adminName}
-  //       </div>
-  //     </body>
-  //   </html>
-  //   `;
-  
-  //   const { uri } = await Print.printToFileAsync({ html });
-  
-  //   await Sharing.shareAsync(uri);
-  // };
+    const { uri } = await Print.printToFileAsync({ html });
+    await Sharing.shareAsync(uri);
+  };
 
   const toggleSelect = (email: string) => {
     setSelectedEmail(prev =>
@@ -712,7 +773,7 @@ const historyReimburseKaryawan = () => {
       </View>
 
       {/* FILTER USER */}
-      <View className='w-full h-[200px] flex flex-col justify-end items-center absolute bottom-0 z-[999]' style={{ position: 'absolute', bottom: 0 }}>
+      <View className={`w-full h-[200px] flex flex-col justify-end items-center absolute bottom-0 ${popUpShowSlip?'z-[1001]':'z-[999]'}`} style={{ position: 'absolute', bottom: 0 }}>
         <View className='p-2 bg-blue-500 flex justify-center items-center w-[300px] rounded-t-lg'>
           <Text className='text-[10px] font-bold text-white'>User : {Username??'-'}</Text>
         </View>
@@ -1037,7 +1098,7 @@ const historyReimburseKaryawan = () => {
       {popUpShowSlip && (
         <>
           <View className='absolute w-full z-[999] h-full opacity-80 bg-[#000031]'/>
-          <View className='w-full h-full px-[30px] flex justify-center items-center absolute z-[1000]'>
+          <View className='w-full h-full px-[30px] pt-[60px] flex justify-start items-center absolute z-[1000]'>
             <View className='w-full bg-white px-[25px] py-[30px] rounded-md flex flex-col justify-start items-center'>
               <Text className='w-full text-center font-bold text-[12px]'>{companyName}</Text>
               <Text className='w-full text-center text-[10px]'>{companyAddress}</Text>
@@ -1180,7 +1241,7 @@ const historyReimburseKaryawan = () => {
                 <Image source={require("../../assets/icons/s-decline.png")} style={{ width: 17, height: 17 }} tintColor={"#ffffff"}/>
               </Pressable>
               <Pressable onPress={()=>{
-                // printSlipPdf()
+                printSlipPdf()
                 }} className='border-2 mt-3 border-white w-[50px] h-[50px] rounded-full flex justify-center items-center'>
                 <Image source={require("../../assets/icons/download.png")} style={{ width: 17, height: 17 }} tintColor={"#ffffff"}/>
               </Pressable>

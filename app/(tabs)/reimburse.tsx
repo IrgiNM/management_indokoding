@@ -177,7 +177,7 @@ const reimburse = () => {
         })
         if(resItem){
           // // console.error('Item created successfully', resItem.data);
-          router.push('/home');
+          // router.replace('/home');
         }
       }))
       setDataItem([]);
@@ -409,7 +409,13 @@ const reimburse = () => {
                 {infoText}
               </Text>
               <View className='flex flex-row justify-center items-center gap-3 mt-5 w-full'>
-                <Pressable onPress={() => {setPopUpInfo(false)}} className='w-full border border-b-[2px] border-purple-800 bg-purple-50 rounded-lg py-[10px] flex justify-center items-center'>
+                <Pressable onPress={() => {
+                  setPopUpInfo(false)
+                  router.replace({
+                    pathname: '/home',
+                    params: { t: Date.now() }, // gunakan params untuk bikin key unik
+                  });
+                }} className='w-full border border-b-[2px] border-purple-800 bg-purple-50 rounded-lg py-[10px] flex justify-center items-center'>
                   <Text className='font-bold text-[12px]'>
                     Close
                   </Text>

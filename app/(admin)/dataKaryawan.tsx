@@ -1,7 +1,10 @@
 import CardKaryawan from '@/components/cardKaryawan'
 import HeaderBack from '@/components/headerBack'
+import { dataFinanceKaryawan } from '@/hooks/dataFinanceKaryawan'
+import { overtimeLogAdminFunction } from '@/hooks/dataOvertimeLogFunction'
 import { dataUserFunction } from '@/hooks/dataUserFunction'
 import { createUserNew } from '@/hooks/userFunction'
+import { siteSettingType } from '@/types/siteSettingType'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useRouter } from 'expo-router'
@@ -82,6 +85,13 @@ const dataKaryawan = () => {
       {/* HISTORY LIST */}
         <View className='w-full h-full border-b-1 flex justify-start items-center flex-col gap-3 pb-[50px]'>
           <LinearGradient colors={['#527EFE', '#001749']} className='w-full h-full p-4 px-[20px] flex-1 flex-col justify-start items-center gap-2'>
+            {dataAllNewUser.length===0&&(
+              <View className='w-full h-[400px] flex justify-center items-center'>
+                <View className='w-full h-full flex justify-center items-center animate-spin'>
+                    <Image source={require("../../assets/images/loading-yellow.png")} className='animate-spin' style={{ width: 50, height: 50 }}/>
+                </View>
+              </View>
+            )}
             <ScrollView className='w-full h-full'>
               <View className='w-full h-full flex justify-start items-center gap-2'>
                 {dataAllNewUser.map((item,index)=>{
@@ -89,7 +99,7 @@ const dataKaryawan = () => {
                     <CardKaryawan 
                       key={index} 
                       email={item.email} 
-                      reimburse={item.total_reimburse} 
+                      reimburse={item.total_salary} 
                       username={item.username} 
                       w='w-full'
                     />

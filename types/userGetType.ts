@@ -2,7 +2,7 @@ export type UserGetType = {
     username: string;
     email: string;
     is_staff: boolean;
-    total_reimburse: number;
+    total_salary: number;
 }
 
 export type UserGetAllType = {
